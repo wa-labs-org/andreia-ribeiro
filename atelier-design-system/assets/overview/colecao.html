@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noivas · Andreia Ribeiro Atelier</title>
+<meta name="description" content="Vestidos de noiva sob medida: pontos de partida para um molde feito no seu corpo.">
+<script>(function(h){try{if(sessionStorage.getItem('at-curtain'))h.classList.add('at-arriving');var m=sessionStorage.getItem('at-motion');if(m)h.setAttribute('data-motion',m)}catch(e){}h.classList.add('at-js');if(!h.getAttribute('data-motion')&&matchMedia('(prefers-reduced-motion: reduce)').matches)h.setAttribute('data-motion','reduce')})(document.documentElement)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,0..100,0..1;1,9..144,300..600,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../css/atelier.css">
+<link rel="icon" href="../images/svg/monograma.svg" type="image/svg+xml">
+<script src="../js/icons.js" defer></script>
+<script src="../js/atelier.js" defer></script>
+<style>
+  .col-hero { padding-top: 8rem; padding-bottom: var(--at-section-y-s); }
+  .col-hero__meta { display: flex; flex-wrap: wrap; gap: var(--at-space-3) var(--at-space-6); }
+  .col-hero__wide { margin-top: var(--at-space-8); }
+  .col-hero__wide .at-photo { --at-ratio: 4 / 5; }
+  @media (min-width: 768px) { .col-hero__wide .at-photo { --at-ratio: 21 / 9; } .col-hero__wide .at-photo__fig { inset: 4% 30%; width: 40%; height: 92%; } }
+  .col-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--at-space-7) var(--at-grid-gutter); margin-top: var(--at-space-7); }
+  @media (min-width: 1024px) { .col-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .col-grid > :nth-child(3n+2 of :not([hidden])) { margin-top: var(--at-space-9); } }
+  .col-grid > [hidden] { display: none; }
+  .col-detail { position: relative; }
+  .col-detail .at-photo { --at-ratio: 1; }
+  .col-cta { text-align: center; display: grid; justify-items: center; gap: var(--at-space-6); }
+</style>
+</head>
+<body>
+<a class="at-skip" href="#conteudo">Pular para o conteúdo</a>
+<div class="at-fita" aria-hidden="true"></div>
+<div class="at-curtain" aria-hidden="true">
+  <div class="at-curtain__inner"><span class="at-label">Andreia Ribeiro · Atelier</span><span class="at-curtain__seam"></span></div>
+</div>
+
+<header class="at-header">
+  <div class="at-header__inner">
+    <div class="at-header__start">
+      <nav class="at-header__nav" aria-label="Coleções">
+        <a class="at-navlink" href="colecao.html" aria-current="page">Noivas</a>
+        <a class="at-navlink" href="colecao.html">Madrinhas</a>
+        <a class="at-navlink" href="index.html#alfaiataria" data-transition>Noivos</a>
+        <a class="at-navlink" href="index.html#alfaiataria" data-transition>Padrinhos</a>
+      </nav>
+    </div>
+    <a class="at-brand" href="index.html" data-transition aria-label="Andreia Ribeiro Atelier — início">
+      <svg class="at-brand__mono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><circle cx="24" cy="24" r="20"/><circle cx="24" cy="24" r="15" stroke-dasharray="2.4 2.4"/><circle cx="19.5" cy="19.5" r="2"/><circle cx="28.5" cy="19.5" r="2"/><circle cx="19.5" cy="28.5" r="2"/><circle cx="28.5" cy="28.5" r="2"/><path d="M20.9 20.9 27.1 27.1M27.1 20.9 20.9 27.1" stroke="#B99847" stroke-width="1.5"/></svg>
+      <span class="at-brand__name"><b>Andreia Ribeiro</b><small>Atelier · sob medida</small></span>
+    </a>
+    <div class="at-header__end">
+      <a class="at-btn at-btn--s at-header__cta" href="index.html#agendar" data-transition><span data-roll>Agendar prova</span></a>
+      <button class="at-menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="at-menu">
+        <span class="at-menu-toggle__label"><span>Menu</span><span aria-hidden="true">Fechar</span></span>
+        <span class="at-menu-toggle__icon" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="at-menu" id="at-menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <nav class="at-menu__list" aria-label="Principal">
+    <div class="at-menu__item"><a class="at-menu__link" href="index.html" data-transition><span class="at-note">00</span>Início</a></div>
+    <div class="at-menu__item"><a class="at-menu__link" href="colecao.html" aria-current="page"><span class="at-note">01</span>Noivas</a></div>
+    <div class="at-menu__item"><a class="at-menu__link" href="colecao.html"><span class="at-note">02</span>Madrinhas</a></div>
+    <div class="at-menu__item"><a class="at-menu__link" href="index.html#alfaiataria" data-transition><span class="at-note">03</span>Noivos &amp; <em>padrinhos</em></a></div>
+    <div class="at-menu__item"><a class="at-menu__link" href="index.html#agendar" data-transition><span class="at-note">04</span>Agendar prova</a></div>
+  </nav>
+  <div class="at-menu__foot"><span class="at-note">Rua das Tecelãs, 120 · sala 3</span><span class="at-note">Ter a sáb · 10h–19h</span></div>
+</div>
+
+<main id="conteudo">
+  <!-- 1 · HERO DA COLEÇÃO ------------------------------------------------ -->
+  <section class="col-hero" data-intro aria-labelledby="col-title">
+    <div class="at-container">
+      <nav aria-label="Você está em" data-reveal="fade"><p class="at-note"><a class="at-navlink" href="index.html" data-transition>Início</a> / Coleções / <span aria-current="page">Noivas</span></p></nav>
+      <div class="at-grid" style="margin-top:var(--at-space-6);align-items:end">
+        <h1 class="at-col-full at-col-lg-8 at-display-xl" id="col-title" data-reveal="linhas" style="--at-delay:120ms">
+          <span class="at-line"><span>Vestidos</span></span>
+          <span class="at-line"><span>de <em>noiva</em></span></span>
+        </h1>
+        <div class="at-col-full at-col-lg-4 at-stack">
+          <p class="at-lead" data-reveal="linhas" style="--at-delay:400ms">Cada vestido aqui é um ponto de partida, não um modelo fechado. O molde é cortado no seu corpo.</p>
+          <div class="col-hero__meta" data-reveal="fade" style="--at-delay:650ms">
+            <span class="at-note">9 pontos de partida</span><span class="at-note">6–14 semanas</span><span class="at-note">3 provas em média</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-hero__wide" data-reveal="queda" style="--at-delay:300ms">
+        <div class="at-photo">
+          <div class="at-photo__inner" data-parallax="0.1"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt="Croqui de vestido evasê com cauda. No site final: fotografia horizontal da peça inteira no ateliê."></div>
+          <span class="at-photo__caption at-note">Foto · vestido inteiro, manequim, fundo de morim</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · FILTROS + GRADE ------------------------------------------------- -->
+  <section class="at-section--s" aria-labelledby="pecas-title">
+    <div class="at-container">
+      <hr class="at-stitch" data-reveal="costura">
+      <div class="at-grid" style="margin-top:var(--at-space-6)">
+        <h2 class="at-col-full at-col-lg-4 at-h2" id="pecas-title" data-reveal="linhas">Escolha pela <em>silhueta</em>.</h2>
+        <div class="at-col-full at-col-lg-8 at-filters" data-filters="grade" role="radiogroup" aria-label="Filtrar por silhueta">
+          <label class="at-choice"><input type="radio" name="silhueta" value="todas" checked><span>Todas</span></label>
+          <label class="at-choice"><input type="radio" name="silhueta" value="evase"><span>Evasê</span></label>
+          <label class="at-choice"><input type="radio" name="silhueta" value="coluna"><span>Coluna</span></label>
+          <label class="at-choice"><input type="radio" name="silhueta" value="sereia"><span>Sereia</span></label>
+          <label class="at-choice"><input type="radio" name="silhueta" value="civil"><span>Civil / midi</span></label>
+          <span class="at-note at-filters__result" data-result aria-live="polite">9 peças</span>
+        </div>
+      </div>
+
+      <ul class="col-grid" id="grade" role="list" data-reveal="pecas">
+        <li data-reveal-item data-tags="evase"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Sob medida</span></div><div class="at-card__body"><h3 class="at-card__title">Evasê em crepe de seda</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 01 · decote coração</p></div></a></li>
+        <li data-reveal-item data-tags="coluna"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Sob medida</span></div><div class="at-card__body"><h3 class="at-card__title">Coluna de zibeline</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 02 · um ombro</p></div></a></li>
+        <li data-reveal-item data-tags="sereia"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Renda</span></div><div class="at-card__body"><h3 class="at-card__title">Sereia com renda chantilly</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 03 · costas abertas</p></div></a></li>
+        <li data-reveal-item data-tags="evase"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Tule</span></div><div class="at-card__body"><h3 class="at-card__title">Volume em tule ilusione</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 04 · cinco camadas</p></div></a></li>
+        <li data-reveal-item data-tags="civil"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Civil</span></div><div class="at-card__body"><h3 class="at-card__title">Midi de organza</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 05 · manga bufante</p></div></a></li>
+        <li data-reveal-item data-tags="coluna"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Sob medida</span></div><div class="at-card__body"><h3 class="at-card__title">Coluna de cetim duchesse</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 06 · gola canoa</p></div></a></li>
+        <li data-reveal-item data-tags="sereia"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Sob medida</span></div><div class="at-card__body"><h3 class="at-card__title">Sereia em crepe pesado</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 07 · cauda destacável</p></div></a></li>
+        <li data-reveal-item data-tags="civil"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/madrinha.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Civil</span></div><div class="at-card__body"><h3 class="at-card__title">Tailleur de crepe</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 08 · saia e casaqueto</p></div></a></li>
+        <li data-reveal-item data-tags="evase"><a class="at-card" href="#" data-cursor-label="Ver peça"><div class="at-card__media"><div class="at-photo"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><div class="at-card__alt at-photo at-photo--molde at-tex-molde"><img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt=""></div><span class="at-crop"></span><span class="at-tag at-card__tag">Ajuste</span></div><div class="at-card__body"><h3 class="at-card__title">Vestido de família, refeito</h3><svg class="at-icon at-card__arrow" aria-hidden="true"><use href="#i-seta"/></svg><p class="at-card__meta at-note">Ponto de partida 09 · renda de 1984</p></div></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 · O DETALHE ------------------------------------------------------ -->
+  <section class="at-section at-section--cetim col-detail" aria-labelledby="det-title">
+    <div class="at-container">
+      <div class="at-grid" style="align-items:center">
+        <div class="at-col-full at-col-lg-6" style="position:relative" data-reveal="tule">
+          <div class="at-photo at-tex-tule" style="background-color:var(--at-color-rose)">
+            <img class="at-photo__fig" src="../images/figurinos/noiva.svg" alt="Detalhe do corpete com renda aplicada. No site final: macrofotografia do bordado.">
+            <span class="at-photo__caption at-note">Foto · macro do corpete, luz rasante</span>
+          </div>
+          <span class="at-prova__mark at-note is-on" style="top:16%;left:56%"><i></i>Renda aplicada à mão</span>
+          <span class="at-prova__mark at-note is-on" style="top:30%;left:56%"><i></i>Barbatana forrada</span>
+        </div>
+        <div class="at-col-full at-col-lg-5 at-col-lg-start-8 at-stack" style="--at-flow:var(--at-space-6)">
+          <p class="at-eyebrow at-label" data-reveal="fade">O detalhe</p>
+          <h2 class="at-h1" id="det-title" data-reveal="linhas">Renda aplicada <em>motivo a motivo</em>.</h2>
+          <svg class="at-thread" data-stitch viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:2.5rem"><path class="at-thread__seam" d="M0 20C60 0 120 40 200 20S340 0 400 20"/></svg>
+          <p class="at-body-l at-muted" data-reveal="linhas">Recortamos cada flor da renda chantilly e a costuramos à mão sobre o tule, seguindo a curva do seu corpo. Não há emenda visível: a renda termina onde a pele começa.</p>
+          <p class="at-note" data-reveal="fade">Cerca de 40 horas de bordado por corpete</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · MOSTRUÁRIO DE TECIDOS -------------------------------------------- -->
+  <section class="at-section" aria-labelledby="tec-title">
+    <div class="at-container">
+      <div class="at-grid">
+        <div class="at-col-full at-col-lg-4 at-stack">
+          <p class="at-eyebrow at-label" data-reveal="fade">Mostruário</p>
+          <h2 class="at-h2" id="tec-title" data-reveal="linhas">Os tecidos que <em>mais pedem</em> prova.</h2>
+          <p class="at-body at-muted" data-reveal="linhas">Passe o cursor para ver a luz no tecido. Na primeira conversa você toca em cada um.</p>
+        </div>
+        <ul class="at-col-full at-col-lg-8 at-swatches" role="list" data-reveal="pecas">
+          <li class="at-swatch" data-reveal-item><div class="at-swatch__cloth" style="--sw:#F6F1E8;--sheen:.25"></div><p class="at-h4">Crepe de seda</p><p class="at-note">100% seda · cai reto</p></li>
+          <li class="at-swatch" data-reveal-item><div class="at-swatch__cloth" style="--sw:#F2EBDD;--sheen:.7"></div><p class="at-h4">Cetim duchesse</p><p class="at-note">seda e poliéster · estrutura</p></li>
+          <li class="at-swatch" data-reveal-item><div class="at-swatch__cloth" style="--sw:#EFE8DC;--sheen:.5"></div><p class="at-h4">Zibeline</p><p class="at-note">seda encorpada · brilho fosco</p></li>
+          <li class="at-swatch" data-reveal-item><div class="at-swatch__cloth at-tex-tule" style="--sw:#F8F5EF;--sheen:.15"></div><p class="at-h4">Tule ilusione</p><p class="at-note">nylon fino · quase invisível</p></li>
+          <li class="at-swatch" data-reveal-item><div class="at-swatch__cloth at-tex-tule" style="--sw:#EDE3D3;--sheen:.2"></div><p class="at-h4">Renda chantilly</p><p class="at-note">algodão e seda · aplicada à mão</p></li>
+          <li class="at-swatch" data-reveal-item><div class="at-swatch__cloth" style="--sw:#F4EFE7;--sheen:.45"></div><p class="at-h4">Organza</p><p class="at-note">seda pura · transparente e firme</p></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · CTA ------------------------------------------------------------- -->
+  <section class="at-section at-section--molde at-tex-molde" aria-labelledby="cta-title">
+    <div class="at-container col-cta">
+      <span class="at-pique" aria-hidden="true"></span>
+      <h2 class="at-display-l" id="cta-title" data-reveal="linhas">Um ponto de partida <em>já basta</em>.</h2>
+      <p class="at-lead at-measure-narrow" data-reveal="linhas">Traga uma foto, um tecido ou só a data. O molde a gente faz junto.</p>
+      <div class="at-hero__actions" style="justify-content:center" data-reveal="fade">
+        <a class="at-btn" href="index.html#agendar" data-transition data-magnet><svg class="at-btn__botao" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-botao"/></svg><span data-roll>Agendar prova</span></a>
+        <a class="at-btn at-btn--pesponto" href="index.html#alfaiataria" data-transition><svg class="at-btn__seam" aria-hidden="true"><rect x=".5" y=".5" width="100%" height="100%"/></svg><span data-roll>Ver alfaiataria</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="at-footer">
+  <div class="at-overlock" aria-hidden="true" style="position:absolute;top:0;left:0;right:0"></div>
+  <div class="at-container">
+    <div class="at-footer__top">
+      <div class="at-footer__col"><p class="at-lead at-measure-narrow">Peças cortadas, provadas e arrematadas à mão, para o dia que <em>não se repete</em>.</p></div>
+      <nav class="at-footer__col" aria-label="Coleções (rodapé)"><span class="at-note">Coleções</span><ul role="list"><li><a class="at-navlink" href="colecao.html" aria-current="page">Noivas</a></li><li><a class="at-navlink" href="colecao.html">Madrinhas</a></li><li><a class="at-navlink" href="index.html#alfaiataria" data-transition>Noivos</a></li><li><a class="at-navlink" href="index.html#alfaiataria" data-transition>Padrinhos</a></li></ul></nav>
+      <nav class="at-footer__col" aria-label="Atelier (rodapé)"><span class="at-note">Atelier</span><ul role="list"><li><a class="at-navlink" href="index.html#processo" data-transition>Como trabalhamos</a></li><li><a class="at-navlink" href="index.html#agendar" data-transition>Agendar prova</a></li></ul></nav>
+      <div class="at-footer__col"><span class="at-note">Visite</span><p class="at-body-s">Rua das Tecelãs, 120 · sala 3<br>Terça a sábado, 10h às 19h</p></div>
+    </div>
+    <p class="at-footer__mark">Andreia Ribeiro</p>
+    <hr class="at-stitch" data-reveal="costura">
+    <div class="at-footer__legal"><span class="at-note">© 2026 Andreia Ribeiro Atelier</span><a class="at-note at-navlink" href="#">Privacidade</a></div>
+  </div>
+</footer>
+</body>
+</html>

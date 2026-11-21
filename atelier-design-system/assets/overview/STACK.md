@@ -1,0 +1,9 @@
+- **HTML + CSS + JavaScript vanilla**: sem framework e sem build; abre direto do disco (`file://`) ou de qualquer servidor estático
+- **CSS custom properties**: todos os tokens em `../tokens/tokens.css` (espelhados em `../tokens/tokens.json`, formato W3C Design Tokens)
+- **atelier.css**: base, componentes e motion; estados ocultos de entrada só com `html.at-js` (sem JS, todo o conteúdo aparece)
+- **atelier.js**: motor de movimento próprio (~25 KB): IntersectionObserver para revelações, uma rAF compartilhada para rolagem (header, fita métrica, paralaxe, scrub, manequim, arara), cursor em canvas, cortina de transição via `sessionStorage`
+- **icons.js**: sprite SVG injetado inline (mesmo conteúdo de `../images/svg/icons.svg`), para `<use href="#i-…">` funcionar também via `file://`
+- **Google Fonts**: Fraunces (variável: ital, opsz, wght, SOFT, WONK), Instrument Sans (variável: wdth, wght), IBM Plex Mono
+- **Croquis SVG** (`../images/figurinos/`): placeholders de fotografia com linhas de construção
+- **prefers-reduced-motion**: resolvido no `<head>` em `html[data-motion]`, antes do primeiro paint; o catálogo pode forçar o modo via `postMessage` / `sessionStorage`
+- **Caminho de produção sugerido**: os mesmos tokens em GSAP (`CustomEase` para `caimento`/`cortina`, `ScrollTrigger` para manequim e arara) + Lenis para rolagem suave, como nas referências
