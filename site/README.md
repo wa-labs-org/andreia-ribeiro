@@ -119,25 +119,28 @@ Algumas regras de desempenho que valem para toda a biblioteca:
 
 - **Menu sobre o header.** No vanilla o menu (`z 95`) cobre o header (`z 90`) e o botão "Fechar" fica invisível. Aqui o header sobe acima do menu enquanto ele está aberto (`Header.css`, só com tokens de camada).
 - **Cursor.** A regra `.at-has-cursor [data-cursor-label] { cursor: none }` não foi portada: o ponteiro nativo nunca some (DECISOES.md, 08-acessibilidade).
-- **Hero em tela cheia** (`mediaMode="tela-cheia"`, o padrão). A seção tem **exatamente a altura da tela** (`height: 100svh`, com `100vh` de fallback, e `overflow: hidden`). O espaço de cima vem da altura do header mais `--at-space-4`, e o de baixo é `--at-space-5` (folga mínima de 24 px). Ela veste "noite": texto marfim, e header e cursor escuros sobre ela. Não há cue nem alinhavo na tela cheia: cairiam sobre a foto clara ou sobre o texto.
+- **Hero em tela cheia** (`mediaMode="tela-cheia"`, o padrão). A seção tem **exatamente a altura da tela** (`height: 100svh`, com `100vh` de fallback, e `overflow: hidden`). O espaço de cima vem da altura do header mais `--at-space-4`, e o de baixo é `--at-space-5` (folga mínima de 24 px). O fundo é **claro**, com texto café, e header e cursor ficam no tema padrão. Não há cue nem alinhavo na tela cheia: cairiam sobre a foto ou sobre o texto.
 
   São três arranjos, com as mesmas media queries de `HERO_IMAGEM` em `content/hero.ts`:
-  - **cobre** (paisagem a partir de 768 px de largura, acima de 480 px de altura e abaixo de 2,28:1): a foto cobre a seção, o título fica em cima e o aside embaixo à esquerda (colunas 1–3). O fundo é `--at-veil-organza-lateral`, medido na largura renderizada da foto.
-    - O `object-position` vertical é calculado pela proporção da tela, com unidades de contêiner: a cabeça da noiva fica sempre em `--hero-topo` (header + `--at-space-5` = 104 px).
-    - Em telas largas e baixas o corte sai da ponta da cauda, nunca da cabeça, do buquê ou do vestido.
-    - A paralaxe só tem sobra em cima, porque o deslocamento é sempre para baixo.
-  - **lado** (paisagem baixa, estreita ou mais larga que 2,28:1): texto à esquerda sobre café e foto inteira (`contain`) à direita, abaixo do header. Acima de 2,28:1, com a cabeça presa abaixo do header, o vestido não caberia na tela;
-  - **retrato** (qualquer tela em pé): texto em cima sobre café e foto inteira embaixo, sem paralaxe.
+  - **cobre** (paisagem a partir de 768 px de largura, acima de 480 px de altura e abaixo de 2,28:1): a foto cobre a seção e o texto fica à esquerda sobre um véu marfim (`--at-veil-tule`, 72%), medido na largura renderizada da foto. O véu tem duas faixas:
+    - na altura do título, opaco até 58,5% e zero em 60,5%;
+    - abaixo dele, opaco até 42% e zero em 46%;
+    - a transição acontece nos 24 px logo abaixo do título.
 
-  **Prioridade:** título e CTA primário nunca somem. Os cortes seguem a ordem eyebrow → lead (só em paisagem) → título desce de token (xl → l → h1). Eles são aplicados por **faixas de altura** que valem para qualquer largura. As faixas saem de uma varredura contínua: larguras de 360 a 2560 px de 16 em 16 e alturas de 340 a 1400 px de 10 em 10, medidas com as larguras reais da Fraunces.
+    Todo o texto fica sob véu opaco (café passa AA até sobre preto puro) e a noiva fica fora dele. O `object-position` vertical é calculado pela proporção da tela, com unidades de contêiner, e a cabeça fica sempre em `--hero-topo` (header + `--at-space-5` = 104 px). Em telas largas e baixas o corte sai da ponta da cauda.
 
-  | Arranjo | Regra fixa                                                                              | Cortes por altura                                                                                     |
-  | ------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-  | cobre   | ≤ 820: título L e só o CTA primário; lead sempre curto                                  | eyebrow ≤ 740 (e 820–920 com XL) · lead ≤ 700 (e 820–870 com XL)                                      |
-  | lado    | ≤ 480: título h2, sem eyebrow, só o CTA primário; 480–820: título L e só o CTA primário | ≤ 480: lead ≤ 470 · acima: eyebrow ≤ 660, lead ≤ 620, título h1 ≤ 520 (e eyebrow/lead 820–910 com XL) |
-  | retrato | ≤ 700: só o CTA primário; ≤ 680: lead curto                                             | eyebrow ≤ 630 · título h1 ≤ 570                                                                       |
+  - **lado** (paisagem baixa, estreita ou mais larga que 2,28:1): texto à esquerda sobre marfim e foto inteira (`contain`) à direita, abaixo do header;
+  - **retrato** (qualquer tela em pé): texto em cima sobre marfim e foto inteira embaixo, sem paralaxe.
 
-  **Fallback** (`html` sem `.at-fontes`, até a Fraunces carregar): eyebrow e lead saem em toda a tela cheia. O título desce um token na foto cobrindo acima de 820 px (XL → L) e no lado a lado acima de 480 px (L → h1). Assim, com a fonte de sistema, nada vaza nem cai sobre a noiva.
+  **Prioridade:** título e CTA primário nunca somem. Os cortes seguem a ordem eyebrow → lead (só em paisagem) → título desce de token (xl → l → h1). Eles são aplicados por **faixas de altura** que valem para qualquer largura. As faixas saem de uma varredura contínua, com as larguras reais da Fraunces.
+
+  | Arranjo | Título                                                               | Outras regras fixas                        | Cortes por altura                                        |
+  | ------- | -------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------- |
+  | cobre   | L até 1060 px, XL acima (o véu do título encostaria na noiva)        | só o CTA primário ≤ 820; lead sempre curto | eyebrow ≤ 740 · lead ≤ 700                               |
+  | lado    | h2 ≤ 480 · L até 905 (o XL quebraria na meia coluna) · h1 em 481–520 | sem eyebrow ≤ 480; só o CTA primário ≤ 820 | lead ≤ 470 (≤ 480 px) · acima: eyebrow ≤ 660, lead ≤ 620 |
+  | retrato | L ≤ 820, XL acima                                                    | só o CTA primário ≤ 700; lead curto ≤ 680  | eyebrow ≤ 630 · título h1 ≤ 570                          |
+
+  **Fallback** (`html` sem `.at-fontes`, até a Fraunces carregar): eyebrow e lead saem em toda a tela cheia. O título desce para h1 (L acima de 1060 px) na foto cobrindo e para h1 no lado a lado acima de 480 px. Assim, com a fonte de sistema, nada vaza, quebra ou sai do véu.
 
   `mediaMode="coluna"` reproduz o layout do doc 06.
 
