@@ -1,6 +1,8 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { cx } from '../../lib/cx';
+import { createPortal } from 'react-dom';
 import { IntroContext } from '../../motion/context';
+import { HeroControlsContext } from '../Hero/heroControls';
 import { useIntro } from '../../motion/useIntro';
 import { useReducedMotion } from '../../motion/useReducedMotion';
 import './HeroSequence.css';
@@ -62,6 +64,7 @@ export function HeroSequence({
   const introReady = useIntro();
   const liberado = !intro || introReady;
   const liberadoRef = useRef(liberado);
+  const controlsSlot = useContext(HeroControlsContext);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const urls = useMemo(
     () => (typeof frames === 'number' ? Array.from({ length: frames }, (_, i) => src(i)) : [...frames]),
@@ -238,20 +241,23 @@ export function HeroSequence({
   }, [paused]);
 
   const a11y = alt ? { role: 'img', 'aria-label': alt } : { 'aria-hidden': true as const };
+  const toggle =
+    longa && !reduced && (playing || paused) ? (
+      <button
+        type="button"
+        className={cx('at-btn at-btn--linha', !controlsSlot && 'at-hero-seq__toggle')}
+        onClick={() => {
+          setPaused((p) => !p);
+        }}
+      >
+        <span>{paused ? rotuloRetomar : rotuloPausar}</span>
+      </button>
+    ) : null;
   return (
     <>
       <canvas ref={canvasRef} className={cx('at-hero-seq', 'at-photo__img', className)} {...a11y} />
-      {longa && !reduced && (playing || paused) ? (
-        <button
-          type="button"
-          className="at-btn at-btn--linha at-hero-seq__toggle"
-          onClick={() => {
-            setPaused((p) => !p);
-          }}
-        >
-          <span>{paused ? rotuloRetomar : rotuloPausar}</span>
-        </button>
-      ) : null}
+      {/* dentro de um Hero, o controle vai para o espaço dele (acima do véu); fora, fica sobre a mídia */}
+      {toggle && controlsSlot ? createPortal(toggle, controlsSlot) : toggle}
     </>
   );
 }
