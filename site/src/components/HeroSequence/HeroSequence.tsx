@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { cx } from '../../lib/cx';
+import { IntroContext } from '../../motion/context';
+import { useIntro } from '../../motion/useIntro';
 import { useReducedMotion } from '../../motion/useReducedMotion';
 import './HeroSequence.css';
 
@@ -19,7 +21,7 @@ export interface HeroSequenceProps {
    * passar de 5 s, um controle de pausa aparece (WCAG 2.2.2).
    */
   loop?: boolean;
-  /** frame mostrado no modo reduzido e antes de tocar (base 0) */
+  /** frame mostrado no modo reduzido (base 0; o único baixado nesse modo). No modo completo a sequência toca do frame 0. */
   frameEstatico?: number;
   /** quantos frames carregar em paralelo em segundo plano */
   concorrencia?: number;
@@ -40,6 +42,8 @@ interface Size {
  * Sequência de imagens tocando como vídeo num <canvas>: object-fit cover responsivo, devicePixelRatio,
  * primeiro frame imediato e o resto pré-carregado em segundo plano. Pausa fora da viewport e com a aba
  * oculta. No modo reduzido mostra só o frame estático (e não baixa os outros).
+ * Dentro de uma entrada coreografada (Hero com intro), só começa a tocar quando a entrada é liberada,
+ * junto com o tule (0 ms da partitura).
  */
 export function HeroSequence({
   frames,
@@ -54,6 +58,10 @@ export function HeroSequence({
   className,
 }: HeroSequenceProps) {
   const reduced = useReducedMotion();
+  const intro = useContext(IntroContext);
+  const introReady = useIntro();
+  const liberado = !intro || introReady;
+  const liberadoRef = useRef(liberado);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const urls = useMemo(
     () => (typeof frames === 'number' ? Array.from({ length: frames }, (_, i) => src(i)) : [...frames]),
@@ -71,7 +79,8 @@ export function HeroSequence({
     if (!cv || !ctx || urls.length === 0) return;
 
     const total = urls.length;
-    const first = Math.min(Math.max(0, frameEstatico), total - 1);
+    // completo: toca do frame 0 · reduzido: só o frame estático
+    const first = reduced ? Math.min(Math.max(0, frameEstatico), total - 1) : 0;
     const imgs: (HTMLImageElement | null)[] = new Array<HTMLImageElement | null>(total).fill(null);
     let size: Size = { w: 0, h: 0, dpr: 1 };
     let current = first;
@@ -80,6 +89,7 @@ export function HeroSequence({
     let alive = true;
     let start = 0;
     let shown = first;
+    let ended = false;
 
     const draw = (i: number): void => {
       const img = imgs[i];
@@ -94,11 +104,13 @@ export function HeroSequence({
     };
 
     const resize = (): void => {
-      const r = cv.getBoundingClientRect();
+      // caixa de layout (clientWidth/Height), não o retângulo transformado: o tule escala a imagem em 1.12
+      const w = cv.clientWidth;
+      const h = cv.clientHeight;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      size = { w: r.width, h: r.height, dpr };
-      cv.width = Math.round(r.width * dpr);
-      cv.height = Math.round(r.height * dpr);
+      size = { w, h, dpr };
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       draw(shown);
     };
@@ -135,7 +147,10 @@ export function HeroSequence({
       let target = Math.floor(((now - start) / 1000) * fps);
       if (target >= total) {
         if (!loop) {
-          draw(total - 1);
+          // a cena para no último frame, que fica como fundo
+          current = total - 1;
+          draw(current);
+          ended = true;
           setPlaying(false);
           return;
         }
@@ -152,7 +167,7 @@ export function HeroSequence({
       raf = requestAnimationFrame(tick);
     };
     const play = (): void => {
-      if (raf || reduced || pausedRef.current) return;
+      if (raf || ended || reduced || pausedRef.current || !liberadoRef.current) return;
       start = 0;
       setPlaying(true);
       raf = requestAnimationFrame(tick);
@@ -209,6 +224,12 @@ export function HeroSequence({
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [urls, fps, loop, frameEstatico, concorrencia, reduced]);
+
+  // a entrada do hero foi liberada: começa a tocar
+  useEffect(() => {
+    liberadoRef.current = liberado;
+    if (liberado) ctrl.current?.play();
+  }, [liberado]);
 
   useEffect(() => {
     pausedRef.current = paused;
