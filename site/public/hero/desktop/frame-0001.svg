@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F9F1D8"/><stop offset="1" stop-color="#F3DFD2"/></linearGradient>
+    <radialGradient id="l" cx="70.00%" cy="18.00%" r="75%"><stop offset="0" stop-color="#FDF7E7" stop-opacity=".9"/><stop offset=".6" stop-color="#FDF7E7" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g)"/>
+  <rect width="1600" height="900" fill="url(#l)"/>
+  <g transform="translate(1010 70) scale(2.1) rotate(1.200 120 14)"><g fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke="#3D3226" stroke-width="1.2">
+    <path d="M113 14h14M120 14v12"/>
+    <path d="M92 40c12 6 44 6 56 0"/>
+    <path d="M92 40c-2 22 4 46 12 64M148 40c2 22-4 46-12 64"/>
+    <path d="M98 54c6 8 16 8 22 2 6 6 16 6 22-2"/>
+    <path d="M104 104c8 4 24 4 32 0"/>
+    <path d="M104 104C88 170 62 252 32 328M136 104c16 66 44 148 76 224"/>
+    <path d="M32 328c50 16 126 18 180 0 12 6 20 14 14 22-48 8-158 6-200-2-6-6-2-14 6-20z"/>
+  </g>
+  <g stroke="#3D3226" stroke-width=".7" opacity=".55">
+    <path d="M114 110c-4 70-16 150-26 226M126 110c6 74 20 150 38 228M108 110C96 180 76 260 58 334M132 110c12 70 34 150 58 222"/>
+  </g>
+  <g stroke="#B99847" stroke-width=".9" stroke-dasharray="6 5"><path d="M74 104h92M60 220h120"/></g>
+  <g stroke="#7A6230" stroke-width=".9"><path d="M120 132v168M115 138l5-6 5 6M115 294l5 6 5-6"/></g>
+  <g fill="#7A6230" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing=".5">
+    <text x="170" y="107">CINTURA</text><text x="184" y="223">QUADRIL</text><text x="128" y="216" transform="rotate(-90 128 216)">FIO</text>
+  </g>
+</g></g>
+  <text x="1180" y="40" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="1" fill="#7A6230">PLACEHOLDER · DESKTOP · 0001</text>
+</svg>

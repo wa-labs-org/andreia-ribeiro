@@ -19,20 +19,25 @@
   .at-hero__cue { display: inline-flex; position: absolute; left: 50%; bottom: var(--at-space-6); transform: translateX(-50%); }
 }
 
+/* Título abaixo de 480px: Display L, para "primeira prova." caber na linha manual (≈293px de 335 a 375px). */
+@media (max-width: 479px) { .at-hero__title.at-display-xl { font-size: var(--at-text-display-l); } }
+
 /* Mídia em tela cheia (HeroSequence ou foto cobrindo a seção).
-   Texto sobre fotografia: véu de sombra + organza por baixo (08-acessibilidade), cores do par
-   café/marfim e dourado claro já validados para o registro Casimira. */
-.at-hero--tela-cheia { color: var(--at-color-marfim); --at-focus-ring: 2px solid var(--at-color-dourado-claro); }
-.at-hero--tela-cheia :focus-visible { outline-color: var(--at-color-dourado-claro); }
+   Texto em café (o padrão da página) sobre tule de morim (--at-veil-tule, marfim 72%) só atrás do texto:
+   com o véu cheio, o café passa AA até sobre preto puro (≈5.9:1). Fora dele, a imagem fica livre. */
 .at-hero__backdrop { position: absolute; inset: 0; z-index: 0; }
 .at-hero__backdrop .at-photo { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; }
 .at-hero__backdrop::after {
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: var(--at-veil-organza), linear-gradient(var(--at-veil-sombra), var(--at-veil-sombra));
+  /* mobile e tablet: de baixo para cima, atrás do bloco de texto (título + aside ≈ 32–38rem) */
+  background: linear-gradient(to top, var(--at-veil-tule) 0, var(--at-veil-tule) 39rem, transparent 48rem);
+}
+@media (min-width: 1024px) {
+  /* desktop: sai da coluna do texto (aside, colunas 1–5 ≈ 41%) e some antes da metade da tela */
+  .at-hero__backdrop::after { background: linear-gradient(90deg, var(--at-veil-tule) 0, var(--at-veil-tule) 42%, transparent 49%); }
 }
 .at-hero--tela-cheia .at-container { position: relative; z-index: 2; }
 .at-hero--tela-cheia .at-hero__cue { z-index: 2; }
-.at-hero--tela-cheia .at-note, .at-hero--tela-cheia .at-muted { color: var(--at-color-dourado-claro); }
-.at-hero--tela-cheia .at-btn { --btn-bg: var(--at-color-marfim); --btn-fg: var(--at-color-cafe); --btn-fill: var(--at-color-dourado-claro); --btn-fill-fg: var(--at-color-cafe); }
-.at-hero--tela-cheia .at-btn--linha { --btn-bg: transparent; --btn-fg: currentColor; --btn-fill: transparent; --btn-fill-fg: currentColor; }
-.at-hero--tela-cheia .at-btn--pesponto { --btn-bg: transparent; --btn-fg: var(--at-color-marfim); --btn-fill: rgb(253 247 231 / .08); --btn-fill-fg: var(--at-color-marfim); }
+/* Controles da mídia (pausa do HeroSequence): acima do véu e do texto, à direita, longe do cue central */
+.at-hero__controls { position: absolute; right: var(--at-grid-margin); bottom: var(--at-space-5); z-index: 3; display: flex; gap: var(--at-space-3); }
+.at-hero__controls:empty { display: none; }

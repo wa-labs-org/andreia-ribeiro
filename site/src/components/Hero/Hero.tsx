@@ -1,9 +1,9 @@
-import { useId, useRef, type HTMLAttributes, type ReactNode } from 'react';
+import { useId, useState, type HTMLAttributes, type ReactNode } from 'react';
 import { cx } from '../../lib/cx';
 import { IntroContext } from '../../motion/context';
 import { Reveal } from '../Reveal';
-import { useRegistro } from '../Registro';
 import { Stitch } from '../Stitch';
+import { HeroControlsContext } from './heroControls';
 import './Hero.css';
 
 /** Alinhavo que atravessa o hero de lado a lado (viewBox 1440 × 900). */
@@ -19,8 +19,8 @@ export interface HeroProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   /** <Photo reveal="tule" …> com imagem ou <HeroSequence> dentro */
   media: ReactNode;
   /**
-   * tela-cheia (padrão): a mídia cobre a seção, com véu organza + sombra e texto em marfim;
-   * o header troca para "noite" sobre ela.
+   * tela-cheia (padrão): a mídia cobre a seção; texto em café sobre um degradê de tule
+   * (--at-veil-tule) só atrás da área do texto. Header e cursor seguem no tema padrão.
    * coluna: layout do doc 06 — título sobre a imagem nas colunas 8–12 (3:4; 4:5 no mobile).
    */
   mediaMode?: 'tela-cheia' | 'coluna';
@@ -52,69 +52,69 @@ export function Hero({
   ...rest
 }: HeroProps) {
   const titleId = `hero-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
-  const ref = useRef<HTMLElement>(null);
   const cheia = mediaMode === 'tela-cheia';
-  // sobre a imagem escura o header e o cursor vestem "noite", como sobre Casimira
-  useRegistro(ref, cheia ? 'casimira' : undefined);
+  const [controls, setControls] = useState<HTMLDivElement | null>(null);
 
   return (
     <IntroContext.Provider value={intro}>
-      <section
-        {...rest}
-        ref={ref}
-        className={cx('at-hero', cheia && 'at-hero--tela-cheia', className)}
-        data-intro={intro ? '' : undefined}
-        data-cursor-thread={cursorThread ? '' : undefined}
-        aria-labelledby={titleId}
-      >
-        {cheia ? <div className="at-hero__media at-hero__backdrop">{media}</div> : null}
-        {alinhavo ? (
-          <Stitch
-            className="at-hero__thread"
-            viewBox="0 0 1440 900"
-            preserveAspectRatio="none"
-            d={alinhavo}
-            delay={700}
-            style={{ inset: 0, width: '100%', height: '100%' }}
-          />
-        ) : null}
-        <div className="at-container">
-          <div className="at-grid at-hero__grid">
-            <Reveal
-              as="h1"
-              tipo="linhas"
-              className="at-hero__title at-display-xl"
-              id={titleId}
-              delay={150}
-              linhas={titulo}
+      <HeroControlsContext.Provider value={controls}>
+        <section
+          {...rest}
+          className={cx('at-hero', cheia && 'at-hero--tela-cheia', className)}
+          data-intro={intro ? '' : undefined}
+          data-cursor-thread={cursorThread ? '' : undefined}
+          aria-labelledby={titleId}
+        >
+          {cheia ? <div className="at-hero__media at-hero__backdrop">{media}</div> : null}
+          {alinhavo ? (
+            <Stitch
+              className="at-hero__thread"
+              viewBox="0 0 1440 900"
+              preserveAspectRatio="none"
+              d={alinhavo}
+              delay={700}
+              style={{ inset: 0, width: '100%', height: '100%' }}
             />
-            {cheia ? null : <div className="at-hero__media">{media}</div>}
-            <div className="at-hero__aside">
-              {eyebrow ? (
-                <Reveal as="p" tipo="fade" className="at-eyebrow at-label" delay={500}>
-                  {eyebrow}
-                </Reveal>
-              ) : null}
-              {lead ? (
-                <Reveal as="p" tipo="linhas" className="at-lead at-measure-narrow" delay={600}>
-                  {lead}
-                </Reveal>
-              ) : null}
-              {acoes ? (
-                <Reveal tipo="fade" className="at-hero__actions" delay={850}>
-                  {acoes}
-                </Reveal>
-              ) : null}
+          ) : null}
+          <div className="at-container">
+            <div className="at-grid at-hero__grid">
+              <Reveal
+                as="h1"
+                tipo="linhas"
+                className="at-hero__title at-display-xl"
+                id={titleId}
+                delay={150}
+                linhas={titulo}
+              />
+              {cheia ? null : <div className="at-hero__media">{media}</div>}
+              <div className="at-hero__aside">
+                {eyebrow ? (
+                  <Reveal as="p" tipo="fade" className="at-eyebrow at-label" delay={500}>
+                    {eyebrow}
+                  </Reveal>
+                ) : null}
+                {lead ? (
+                  <Reveal as="p" tipo="linhas" className="at-lead at-measure-narrow" delay={600}>
+                    {lead}
+                  </Reveal>
+                ) : null}
+                {acoes ? (
+                  <Reveal tipo="fade" className="at-hero__actions" delay={850}>
+                    {acoes}
+                  </Reveal>
+                ) : null}
+              </div>
             </div>
           </div>
-        </div>
-        {cue ? (
-          <div className="at-hero__cue at-grain" aria-hidden="true">
-            <span className="at-note">{cue}</span>
-            <span className="at-grain__line" />
-          </div>
-        ) : null}
-      </section>
+          {cue ? (
+            <div className="at-hero__cue at-grain" aria-hidden="true">
+              <span className="at-note">{cue}</span>
+              <span className="at-grain__line" />
+            </div>
+          ) : null}
+          <div className="at-hero__controls" ref={setControls} />
+        </section>
+      </HeroControlsContext.Provider>
     </IntroContext.Provider>
   );
 }

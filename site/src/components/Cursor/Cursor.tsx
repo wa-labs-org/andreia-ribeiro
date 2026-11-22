@@ -4,7 +4,7 @@ import { useReducedMotion } from '../../motion/useReducedMotion';
 import './Cursor.css';
 
 const ACTIVE = 'a, button, label, [role="button"], input, select, textarea';
-const NOITE = '[data-registro="casimira"], .at-header[data-theme="noite"], .at-hero--tela-cheia';
+const NOITE = '[data-registro="casimira"], .at-header[data-theme="noite"]';
 const N = 22;
 
 function goldRgb(): string {
