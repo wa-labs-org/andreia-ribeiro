@@ -1,0 +1,8 @@
+/* Pular para o conteúdo — extraído de atelier.css (valores sem alteração). */
+
+.at-skip {
+  position: fixed; left: var(--at-space-4); top: var(--at-space-4); z-index: calc(var(--at-z-transition) + 1);
+  padding: var(--at-space-3) var(--at-space-4); background: var(--at-color-cafe); color: var(--at-color-manteiga);
+  font: 600 var(--at-text-button)/1 var(--at-font-text); letter-spacing: var(--at-tracking-button); text-transform: uppercase;
+  transform: translateY(-200%); transition: transform var(--at-dur-ponto) var(--at-ease-caimento);
+}
