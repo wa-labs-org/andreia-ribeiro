@@ -1,0 +1,1 @@
+export { FitaMetrica } from './FitaMetrica';

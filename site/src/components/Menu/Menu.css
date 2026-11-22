@@ -1,0 +1,31 @@
+/* Menu em tela cheia — extraído de atelier.css (valores sem alteração). */
+
+/* Menu em tela cheia: cortina de tule que cai do topo */
+.at-menu {
+  position: fixed; inset: 0; z-index: var(--at-z-menu);
+  display: grid; grid-template-rows: 1fr auto; padding: 6rem var(--at-grid-margin) var(--at-space-6);
+  background: var(--at-color-marfim); color: var(--at-color-cafe);
+  clip-path: inset(0 0 100% 0); visibility: hidden;
+  transition: clip-path calc(var(--at-dur-caimento) * .9) var(--at-ease-cortina), visibility 0s linear calc(var(--at-dur-caimento) * .9);
+}
+.at-menu.is-open { clip-path: inset(0 0 0 0); visibility: visible; transition: clip-path var(--at-dur-caimento) var(--at-ease-cortina), visibility 0s; }
+.at-menu__list { align-self: center; display: flex; flex-direction: column; gap: var(--at-space-2); }
+.at-menu__item { overflow: hidden; }
+.at-menu__link {
+  display: inline-flex; align-items: baseline; gap: var(--at-space-4); text-decoration: none;
+  font: 300 clamp(2.5rem, 1.4rem + 5vw, 5.5rem)/1.05 var(--at-font-display); font-variation-settings: "SOFT" var(--at-soft);
+  transform: translateY(105%); transition: transform var(--at-dur-caimento) var(--at-ease-caimento);
+  transition-delay: calc(var(--at-dur-alinhavo) * .5 + var(--i, 0) * var(--at-stagger-linha));
+}
+.at-menu__link .at-note { transform: translateY(-1.2em); }
+.at-menu__link em { font-style: italic; }
+.at-menu.is-open .at-menu__link { transform: none; }
+.at-menu__link:hover em { color: var(--at-color-bronze); }
+.at-menu__foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--at-space-4); opacity: 0; transition: opacity var(--at-dur-alinhavo) var(--at-ease-caimento) var(--at-dur-caimento); }
+.at-menu.is-open .at-menu__foot { opacity: 1; }
+body.at-menu-open { overflow: hidden; }
+
+/* Movimento reduzido (seção 19 de atelier.css) */
+[data-motion="reduce"] .at-menu { clip-path: none; opacity: 0; transition: opacity 160ms, visibility 0s linear 160ms; }
+[data-motion="reduce"] .at-menu.is-open { opacity: 1; transition: opacity 160ms; }
+[data-motion="reduce"] .at-menu__link { transform: none; }
