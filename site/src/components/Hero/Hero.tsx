@@ -1,8 +1,7 @@
-import { useId, useRef, useState, type HTMLAttributes, type ReactNode } from 'react';
+import { useId, useState, type HTMLAttributes, type ReactNode } from 'react';
 import { cx } from '../../lib/cx';
 import { IntroContext } from '../../motion/context';
 import { Reveal } from '../Reveal';
-import { useRegistro } from '../Registro';
 import { Stitch } from '../Stitch';
 import { HeroControlsContext } from './heroControls';
 import './Hero.css';
@@ -22,10 +21,9 @@ export interface HeroProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   /** <Photo reveal="tule" …> com imagem ou <HeroSequence> dentro */
   media: ReactNode;
   /**
-   * tela-cheia (padrão): a seção tem exatamente a altura da tela (100svh) e veste "noite":
-   * texto marfim; header e cursor escuros sobre ela. Paisagem: a foto cobre a seção e o texto fica
-   * à esquerda, na área escura. Retrato: texto em cima sobre café, foto inteira embaixo. Celular
-   * deitado: texto à esquerda sobre café, foto à direita.
+   * tela-cheia (padrão): a seção tem exatamente a altura da tela (100svh), com fundo claro e texto
+   * café. Paisagem: a foto cobre a seção e o texto fica à esquerda sobre véu marfim. Retrato: texto
+   * em cima, foto inteira embaixo. Celular deitado e telas muito largas: texto à esquerda, foto à direita.
    * coluna: layout do doc 06 — título sobre a imagem nas colunas 8–12 (3:4; 4:5 no mobile).
    */
   mediaMode?: 'tela-cheia' | 'coluna';
@@ -59,9 +57,6 @@ export function Hero({
 }: HeroProps) {
   const titleId = `hero-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const cheia = mediaMode === 'tela-cheia';
-  const ref = useRef<HTMLElement>(null);
-  // sobre a foto escura, header e cursor vestem "noite", como sobre Casimira
-  useRegistro(ref, cheia ? 'casimira' : undefined);
   const [controls, setControls] = useState<HTMLDivElement | null>(null);
 
   return (
@@ -69,7 +64,6 @@ export function Hero({
       <HeroControlsContext.Provider value={controls}>
         <section
           {...rest}
-          ref={ref}
           className={cx('at-hero', cheia && 'at-hero--tela-cheia', className)}
           data-intro={intro ? '' : undefined}
           data-cursor-thread={cursorThread ? '' : undefined}
