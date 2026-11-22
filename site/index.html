@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR" data-loader>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Andreia Ribeiro · Atelier de trajes festivos</title>
+    <meta
+      name="description"
+      content="Vestidos de noiva e madrinha, trajes de noivo e padrinho — sob medida e ajustes, prova a prova."
+    />
+    <!-- Estado de movimento, JS e cortina/loader antes do primeiro paint (igual ao design system). -->
+    <script>
+      (function (h) {
+        try {
+          if (sessionStorage.getItem('at-curtain')) h.classList.add('at-arriving');
+          else if (h.hasAttribute('data-loader') && !sessionStorage.getItem('at-visited'))
+            h.classList.add('at-loading');
+          var m = sessionStorage.getItem('at-motion');
+          if (m) h.setAttribute('data-motion', m);
+        } catch (e) {}
+        h.classList.add('at-js');
+        if (!h.getAttribute('data-motion') && matchMedia('(prefers-reduced-motion: reduce)').matches)
+          h.setAttribute('data-motion', 'reduce');
+      })(document.documentElement);
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,0..100,0..1;1,9..144,300..600,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap"
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

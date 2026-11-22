@@ -1,0 +1,13 @@
+/* Esqueleto (brilho de cetim) — extraído de atelier.css (valores sem alteração). */
+
+/* Esqueleto: brilho de cetim (luz que atravessa o tecido na diagonal) */
+.at-skeleton { position: relative; overflow: hidden; background: var(--at-color-manteiga); }
+.at-skeleton::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgb(253 247 231 / .65) 48%, rgb(253 247 231 / .2) 56%, transparent 70%);
+  transform: translateX(-100%); animation: at-cetim 2.4s var(--at-ease-cortina) infinite;
+}
+@keyframes at-cetim { to { transform: translateX(100%); } }
+
+/* Movimento reduzido (seção 19 de atelier.css) */
+[data-motion="reduce"] .at-skeleton::after { animation: none !important; }

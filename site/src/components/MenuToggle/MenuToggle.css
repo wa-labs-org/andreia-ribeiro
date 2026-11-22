@@ -1,0 +1,22 @@
+/* Alternador de menu — extraído de atelier.css (valores sem alteração). */
+
+/* Alternador de menu: duas linhas (uma em pesponto) que se cruzam como alfinetes */
+.at-menu-toggle {
+  display: inline-flex; align-items: center; gap: var(--at-space-3); min-height: 2.75rem; padding: 0;
+  background: none; border: 0; cursor: pointer;
+  font: 600 var(--at-text-label)/1 var(--at-font-text); font-stretch: 80%; letter-spacing: var(--at-tracking-label); text-transform: uppercase;
+}
+.at-menu-toggle__icon { position: relative; width: 1.5rem; height: .75rem; }
+.at-menu-toggle__icon i {
+  position: absolute; left: 0; width: 100%; height: 1px; background: currentColor;
+  transition: transform var(--at-dur-alinhavo) var(--at-ease-cortina), top var(--at-dur-alinhavo) var(--at-ease-cortina);
+}
+.at-menu-toggle__icon i:first-child { top: 0; background: repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 5px); }
+.at-menu-toggle__icon i:last-child { top: 100%; }
+.at-menu-toggle[aria-expanded="true"] .at-menu-toggle__icon i:first-child { top: 50%; transform: rotate(35deg); }
+.at-menu-toggle[aria-expanded="true"] .at-menu-toggle__icon i:last-child { top: 50%; transform: rotate(-35deg); }
+.at-menu-toggle__label { position: relative; display: inline-grid; overflow: hidden; height: 1.2em; }
+.at-menu-toggle__label span { grid-area: 1 / 1; transition: transform var(--at-dur-alinhavo) var(--at-ease-cortina); line-height: 1.2; }
+.at-menu-toggle__label span:last-child { transform: translateY(110%); }
+.at-menu-toggle[aria-expanded="true"] .at-menu-toggle__label span:first-child { transform: translateY(-110%); }
+.at-menu-toggle[aria-expanded="true"] .at-menu-toggle__label span:last-child { transform: none; }

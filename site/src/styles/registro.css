@@ -1,0 +1,11 @@
+/* ==========================================================================
+   ALINHAVO — registro.css
+   Registro Casimira (alfaiataria): troca o tecido, mantém o ofício.
+   Os tokens (SOFT, curva, duração, foco) mudam em tokens.css; aqui só o tecido.
+   ========================================================================== */
+
+[data-registro="casimira"] {
+  background-color: var(--at-color-cafe);
+  color: var(--at-color-marfim);
+}
+[data-registro="casimira"] .at-muted { color: var(--at-color-dourado-claro); }

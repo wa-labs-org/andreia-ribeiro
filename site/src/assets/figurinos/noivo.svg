@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Croqui: paletó de noivo com lapela entalhada, sobre manequim">
+  <g stroke="#3D3226" stroke-width="1.2">
+    <path d="M113 14h14M120 14v18"/>
+    <path d="M78 54c18-8 30-12 36-14M126 40c6 2 18 6 36 14"/>
+    <path d="M114 40l6 30 6-30"/>
+    <path d="M114 40l-10 34 8 6 8 40M126 40l10 34-8 6-8 40"/>
+    <path d="M78 54c-4 48 0 98 6 146M162 54c4 48 0 98-6 146"/>
+    <path d="M84 200c14 6 28 8 36-2 8 10 22 8 36 2"/>
+    <circle cx="120" cy="144" r="2.6"/><circle cx="120" cy="168" r="2.6"/>
+    <path d="M90 172h22M128 172h22M134 96h16"/>
+    <path d="M120 206v128M98 340h44"/>
+  </g>
+  <g stroke="#3D3226" stroke-width=".7" opacity=".55"><path d="M98 80c-2 40 0 80 4 116M142 80c2 40 0 80-4 116"/></g>
+  <g stroke="#B99847" stroke-width=".9" stroke-dasharray="6 5"><path d="M60 54h120M64 128h112"/></g>
+  <g stroke="#7A6230" stroke-width=".9"><path d="M104 86v100M99 92l5-6 5 6M99 180l5 6 5-6"/></g>
+  <g fill="#7A6230" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing=".5">
+    <text x="168" y="57">OMBRO 46</text><text x="168" y="131">TÓRAX</text>
+  </g>
+</svg>
