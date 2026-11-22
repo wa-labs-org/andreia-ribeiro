@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Button, Hero, HERO_ALINHAVO, Photo, type PhotoSource } from '../../components';
+import { Button, Hero, Photo, type PhotoSource } from '../../components';
 import {
   HERO_IMAGEM,
   heroDimensoes,
@@ -49,12 +49,22 @@ export function HeroHome() {
   const { titulo, eyebrow, lead, leadCurto, acoes } = heroHome;
   const desktop = heroDimensoes('desktop');
   const fallbackWidth = HERO_IMAGEM.desktop.larguras[1] ?? desktop.width;
+  // posição vertical da foto cobrindo (Hero.css): proporção do recorte e topo da cabeça na largura dele
+  const rec = HERO_IMAGEM.desktop.recorte ?? {
+    left: 0,
+    top: 0,
+    width: HERO_IMAGEM.original.largura,
+    height: HERO_IMAGEM.original.altura,
+  };
+  const razao = rec.height / rec.width;
+  const cabeca = (HERO_IMAGEM.cabeca * HERO_IMAGEM.original.altura - rec.top) / rec.width;
 
   return (
     <Hero
       mediaMode="tela-cheia"
       style={cssVars({
-        '--hero-pos-desktop': HERO_IMAGEM.desktop.posicao,
+        '--hero-razao': razao.toFixed(4),
+        '--hero-cabeca': cabeca.toFixed(4),
         '--hero-pos-mobile': HERO_IMAGEM.mobile.posicao,
       })}
       titulo={titulo.map(renderLinha)}
@@ -78,7 +88,7 @@ export function HeroHome() {
         </>
       }
       cue={false /* sem cue na tela cheia: cairia sobre áreas claras da foto */}
-      alinhavo={HERO_ALINHAVO}
+      alinhavo={false /* fora da tela cheia: cruzaria o texto ou a noiva */}
       intro
       cursorThread
       media={

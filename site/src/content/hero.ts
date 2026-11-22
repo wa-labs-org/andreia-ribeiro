@@ -50,7 +50,8 @@ export const HERO_IMAGEM = {
     larguras: [1280, 1920, 2064],
     /** 0–75% da largura (2064 × 1536): a noiva vai para ~63% da tela e a área escura à esquerda cresce de ~22% para ~29% */
     recorte: { left: 0, top: 0, width: 2064, height: 1536 },
-    posicao: '0% 100%',
+    /** x: 0% (noiva entre ~55% e 63% da tela). O y é calculado no CSS pela proporção da tela. */
+    posicao: '0%',
   } satisfies HeroVersao as HeroVersao,
   mobile: {
     larguras: [828, 1229],
@@ -59,14 +60,20 @@ export const HERO_IMAGEM = {
     posicao: '50% 100%',
   } satisfies HeroVersao as HeroVersao,
   /**
-   * Recorte mobile: celular e tablet em retrato (texto em cima, foto embaixo) e celular deitado
-   * (texto à esquerda, foto à direita). Mesmas queries do Hero.css.
+   * Recorte mobile (foto inteira em contain): telas em pé (texto em cima, foto embaixo) e paisagem
+   * baixa (≤ 480px), estreita (< 768px) ou larga (≥ 2,28:1), com texto à esquerda e foto à direita.
+   * Mesmas queries do Hero.css.
    */
   mobileQuery:
-    '(max-width: 767.98px), (max-width: 1023.98px) and (orientation: portrait), (orientation: landscape) and (max-height: 480px)',
-  /** complemento exato de mobileQuery: foto em tela cheia, texto à esquerda */
+    '(orientation: portrait), (orientation: landscape) and (max-height: 480px), (orientation: landscape) and (max-width: 767.98px), (orientation: landscape) and (min-aspect-ratio: 228/100)',
+  /** complemento de mobileQuery: a foto cobre a seção, texto à esquerda */
   desktopQuery:
-    '(min-width: 1024px) and (orientation: portrait), (min-width: 768px) and (orientation: landscape) and (min-height: 480.02px)',
+    '(orientation: landscape) and (min-width: 768px) and (min-height: 480.02px) and (max-aspect-ratio: 22799/10000)',
+  /**
+   * Topo da cabeça da noiva (cabelo), em fração da altura do original. No desktop, o object-position
+   * vertical é calculado para ele ficar sempre abaixo do header + --at-space-5 (ver Hero.css).
+   */
+  cabeca: 0.38,
 } as const;
 
 const MIME: Record<HeroFormato, string> = { avif: 'image/avif', webp: 'image/webp' };
