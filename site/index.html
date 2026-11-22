@@ -19,6 +19,11 @@
           if (m) h.setAttribute('data-motion', m);
         } catch (e) {}
         h.classList.add('at-js');
+        // html.at-fontes quando a Fraunces carrega; antes disso (ou offline) o hero usa os cortes do fallback
+        if (document.fonts)
+          document.fonts.ready.then(function () {
+            if (document.fonts.check('300 1em Fraunces')) h.classList.add('at-fontes');
+          });
         if (!h.getAttribute('data-motion') && matchMedia('(prefers-reduced-motion: reduce)').matches)
           h.setAttribute('data-motion', 'reduce');
       })(document.documentElement);

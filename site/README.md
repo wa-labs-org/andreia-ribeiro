@@ -14,7 +14,7 @@ npm run build          # tsc -b + vite build
 npm run lint           # ESLint (typescript-eslint strict, react-hooks, jsx-a11y), zero avisos
 npm run format         # Prettier (TS/TSX/JSON/MD; o CSS mantém o formato do atelier.css)
 npm run tokens:check   # garante que src/styles/tokens.css é idêntico ao do design system
-npm run hero:frames    # regera os frames placeholder do hero em public/hero/{desktop,mobile}/
+npm run hero:image     # gera as versões da foto do hero (AVIF + WebP) em public/hero/
 ```
 
 ## Estrutura
@@ -22,8 +22,9 @@ npm run hero:frames    # regera os frames placeholder do hero em public/hero/{de
 ```
 site/
 ├── index.html               # script antes do 1º paint: at-js, data-motion, at-loading/at-arriving; fontes
-├── public/hero/             # frames do HeroSequence: desktop/ (16:9) e mobile/ (9:16)
-├── scripts/                 # check-tokens.mjs, make-hero-frames.mjs
+├── assets-src/hero/         # original da foto do hero (fora do deploy)
+├── public/hero/             # versões geradas da foto (npm run hero:image)
+├── scripts/                 # check-tokens.mjs, make-hero-image.mjs
 └── src/
     ├── main.tsx · App.tsx
     ├── styles/
@@ -118,26 +119,33 @@ Algumas regras de desempenho que valem para toda a biblioteca:
 
 - **Menu sobre o header.** No vanilla o menu (`z 95`) cobre o header (`z 90`) e o botão "Fechar" fica invisível. Aqui o header sobe acima do menu enquanto ele está aberto (`Header.css`, só com tokens de camada).
 - **Cursor.** A regra `.at-has-cursor [data-cursor-label] { cursor: none }` não foi portada: o ponteiro nativo nunca some (DECISOES.md, 08-acessibilidade).
-- **Hero em tela cheia** (`mediaMode="tela-cheia"`, o padrão). O texto fica em café, a cor padrão da página, sobre um degradê de `--at-veil-tule` só atrás da área do texto:
-  - **desktop:** sai das colunas 1–5 (véu cheio até 42% da largura) e some em 49%;
-  - **mobile e tablet:** sobe da base, com véu cheio nos 39rem de baixo e sumindo em 48rem.
+- **Hero em tela cheia** (`mediaMode="tela-cheia"`, o padrão). A seção tem **exatamente a altura da tela** (`height: 100svh`, com `100vh` de fallback, e `overflow: hidden`). O espaço de cima vem da altura do header mais `--at-space-4`, e o de baixo é `--at-space-5` (folga mínima de 24 px). Ela veste "noite": texto marfim, e header e cursor escuros sobre ela. São três arranjos, com as mesmas media queries de `HERO_IMAGEM` em `content/hero.ts`:
+  - **paisagem** (desktop e tablet deitado): a foto cobre a seção, o título fica em cima e o aside embaixo à esquerda (colunas 1–3), sobre `--at-veil-organza-lateral`. A paralaxe só tem sobra em cima (`inset: -8% 0 0`), porque o deslocamento é sempre para baixo; a cauda nunca é cortada;
+  - **retrato** (celular e tablet em pé): texto em cima sobre café e foto inteira embaixo (`contain`), com degradê do café no topo da foto e laterais fundidas. Sem paralaxe, que cortaria a cauda;
+  - **celular deitado** (`max-height: 480px`): texto à esquerda sobre café, foto à direita, título em `--at-text-h2`, sem eyebrow.
 
-  Sob o véu cheio, o café passa AA mesmo sobre preto puro (5,88:1). O header e o cursor ficam no tema padrão. Abaixo de 480 px o título usa `--at-text-display-l`, para "primeira prova." caber na linha manual. `mediaMode="coluna"` reproduz o layout do doc 06.
+  Regras de altura (só tokens):
+  - `max-height: 820px`: título em `--at-text-display-l`, e no desktop só o CTA primário;
+  - retrato até 700 px: só o CTA primário;
+  - retrato até 680 px: lead curto (em paisagem ele é sempre o curto).
 
-- **HeroSequence.** Não repete por padrão (o sistema evita loops decorativos) e para no último frame. No modo completo toca do frame 0; `frameEstatico` é o frame do modo reduzido, e nesse modo é o único baixado. Dentro do Hero, só começa quando a entrada é liberada, junto com o tule. Se repetir ou passar de 5 s, mostra um controle de pausa (WCAG 2.2.2), renderizado no espaço `.at-hero__controls` do Hero, acima do véu.
+  Outras regras:
+  - Abaixo de 480 px de largura, o título usa `--at-text-display-l`.
+  - O cue "Fio do tecido" não entra na tela cheia.
+  - Enquanto a Fraunces não carrega (`html` sem `.at-fontes`), no desktop com mais de 820 px de altura saem eyebrow e lead, porque o título na fonte de fallback quebraria uma linha e vazaria da tela.
+
+  `mediaMode="coluna"` reproduz o layout do doc 06.
+
+- **HeroSequence** (na biblioteca, fora da home por ora). Não repete por padrão (o sistema evita loops decorativos) e para no último frame. No modo completo toca do frame 0; `frameEstatico` é o frame do modo reduzido, e nesse modo é o único baixado. Dentro do Hero, só começa quando a entrada é liberada, junto com o tule. Se repetir ou passar de 5 s, mostra um controle de pausa (WCAG 2.2.2), renderizado no espaço `.at-hero__controls` do Hero, acima do véu.
 - **Assinatura do rodapé.** O nome completo fica em `.at-sr` em vez de `aria-label` num `<p>`.
 - **Arara.** A faixa no mobile tem um listener `scroll` próprio, coalescido por quadro, porque é a rolagem horizontal do elemento e não a da página. No desktop fixado, o foco e as setas levam a página até a peça.
 
-## Frames do hero
+## Foto do hero
 
-Tudo fica em `src/content/hero.ts` (`HERO_FRAMES`): pasta, quantidade, extensão, fps, resoluções e media queries. O frame estático é o último (`HERO_FRAME_ESTATICO`), porque é onde a cena para.
+Tudo fica em `src/content/hero.ts` (`HERO_IMAGEM`): arquivo de origem, recortes, larguras, qualidade, `object-position`, alt e media queries. A foto atual está marcada como **provisória** (`provisoria: true`).
 
-- **Resoluções:**
-  - `public/hero/desktop/` (1600 × 900, 16:9);
-  - `public/hero/mobile/` (828 × 1472, 9:16), usada no celular e no tablet em retrato.
-
-  A pasta é escolhida uma vez, na montagem do `HeroHome`, e não muda no meio da reprodução.
-
-- **Preload:** um plugin no `vite.config.ts` lê `HERO_FRAMES` e injeta no `index.html` o preload (`fetchpriority="high"`) do primeiro frame de cada resolução, com `media`. No modo reduzido, o preload é do frame estático.
-- **Placeholders:** `npm run hero:frames` gera SVGs (croqui da noiva com a luz da janela entrando e assentando).
-- **Frames reais:** coloque `frame-0001.webp…` nas duas pastas e troque `extensao: 'svg'` por `'webp'`. Ajuste `quantidade` e `fps` se a cena mudar. Orçamento: 40 frames de 1600 px em q≈60 (≈3,6 MB) e 40 de 828 px (≈1,8 MB).
+- **Trocar a foto:** substitua o arquivo em `assets-src/hero/` (fora do `public/`, não vai para o deploy) e rode `npm run hero:image`. O script precisa do Node ≥ 22.18, porque importa o `.ts` direto. Se o enquadramento mudar, revise `recorte` e `posicao`.
+- **Desktop:** recorte de 0–75% da largura (2064 × 1536), em 1280, 1920 e 2064 px, com `object-fit: cover` e `object-position: 0% 100%`. A noiva fica entre ~55% e 63% da tela, livre do texto, e a cauda nunca é cortada.
+- **Mobile:** recorte de 1229 × 1024, da cabeça à ponta da cauda, em 828 e 1229 px (sem ampliar), com `contain` e `50% 100%`.
+- **Entrega:** `<picture>` com AVIF e WebP, `sizes="100vw"`, `fetchpriority="high"`, sem lazy e com `width`/`height`. O plugin do `vite.config.ts` injeta o preload só do AVIF (`imagesrcset` + `media`) por resolução.
+- As versões não levam metadados (EXIF/GPS) do original.

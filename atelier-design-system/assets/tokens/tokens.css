@@ -26,6 +26,7 @@
   --at-veil-tule-noite:  rgb(61 50 38 / .72);
   --at-veil-sombra:      rgb(61 50 38 / .28);    /* escurecimento sobre fotografia */
   --at-veil-organza:     linear-gradient(180deg, rgb(61 50 38 / 0) 40%, rgb(61 50 38 / .45) 100%);
+  --at-veil-organza-lateral: linear-gradient(90deg, rgb(61 50 38 / .45) 0%, rgb(61 50 38 / .45) 42%, rgb(61 50 38 / 0) 46%); /* texto claro à esquerda sobre fotografia: café sólido na faixa do texto, 0 antes da metade */
 
   /* Estados (derivados, não usar soltos) */
   --at-state-hover-surface:  var(--at-color-manteiga);
