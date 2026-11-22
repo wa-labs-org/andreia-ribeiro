@@ -1,7 +1,8 @@
-import { useId, useState, type HTMLAttributes, type ReactNode } from 'react';
+import { useId, useRef, useState, type HTMLAttributes, type ReactNode } from 'react';
 import { cx } from '../../lib/cx';
 import { IntroContext } from '../../motion/context';
 import { Reveal } from '../Reveal';
+import { useRegistro } from '../Registro';
 import { Stitch } from '../Stitch';
 import { HeroControlsContext } from './heroControls';
 import './Hero.css';
@@ -14,13 +15,17 @@ export interface HeroProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   titulo: readonly ReactNode[];
   eyebrow?: ReactNode;
   lead?: ReactNode;
+  /** versão curta do lead, mostrada no lugar dele em telas baixas e em paisagem (tela cheia) */
+  leadCurto?: ReactNode;
   /** CTAs: um Button primário + um linha */
   acoes?: ReactNode;
   /** <Photo reveal="tule" …> com imagem ou <HeroSequence> dentro */
   media: ReactNode;
   /**
-   * tela-cheia (padrão): a mídia cobre a seção; texto em café sobre um degradê de tule
-   * (--at-veil-tule) só atrás da área do texto. Header e cursor seguem no tema padrão.
+   * tela-cheia (padrão): a seção tem exatamente a altura da tela (100svh) e veste "noite":
+   * texto marfim; header e cursor escuros sobre ela. Paisagem: a foto cobre a seção e o texto fica
+   * à esquerda, na área escura. Retrato: texto em cima sobre café, foto inteira embaixo. Celular
+   * deitado: texto à esquerda sobre café, foto à direita.
    * coluna: layout do doc 06 — título sobre a imagem nas colunas 8–12 (3:4; 4:5 no mobile).
    */
   mediaMode?: 'tela-cheia' | 'coluna';
@@ -41,6 +46,7 @@ export function Hero({
   titulo,
   eyebrow,
   lead,
+  leadCurto,
   acoes,
   media,
   mediaMode = 'tela-cheia',
@@ -53,6 +59,9 @@ export function Hero({
 }: HeroProps) {
   const titleId = `hero-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const cheia = mediaMode === 'tela-cheia';
+  const ref = useRef<HTMLElement>(null);
+  // sobre a foto escura, header e cursor vestem "noite", como sobre Casimira
+  useRegistro(ref, cheia ? 'casimira' : undefined);
   const [controls, setControls] = useState<HTMLDivElement | null>(null);
 
   return (
@@ -60,6 +69,7 @@ export function Hero({
       <HeroControlsContext.Provider value={controls}>
         <section
           {...rest}
+          ref={ref}
           className={cx('at-hero', cheia && 'at-hero--tela-cheia', className)}
           data-intro={intro ? '' : undefined}
           data-cursor-thread={cursorThread ? '' : undefined}
@@ -94,8 +104,23 @@ export function Hero({
                   </Reveal>
                 ) : null}
                 {lead ? (
-                  <Reveal as="p" tipo="linhas" className="at-lead at-measure-narrow" delay={600}>
+                  <Reveal
+                    as="p"
+                    tipo="linhas"
+                    className={cx('at-lead at-measure-narrow', leadCurto ? 'at-hero__lead' : undefined)}
+                    delay={600}
+                  >
                     {lead}
+                  </Reveal>
+                ) : null}
+                {leadCurto ? (
+                  <Reveal
+                    as="p"
+                    tipo="linhas"
+                    className="at-lead at-measure-narrow at-hero__lead--curto"
+                    delay={600}
+                  >
+                    {leadCurto}
                   </Reveal>
                 ) : null}
                 {acoes ? (

@@ -1,1 +1,1 @@
-export { Photo, type PhotoProps } from './Photo';
+export { Photo, type PhotoProps, type PhotoSource } from './Photo';

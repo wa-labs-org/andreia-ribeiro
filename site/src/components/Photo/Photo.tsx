@@ -26,8 +26,23 @@ export interface PhotoProps extends Omit<HTMLAttributes<HTMLDivElement>, 'childr
   imgProps?: Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt' | 'className'>;
   /** imagem do primeiro viewport: carrega já, com fetchpriority="high" */
   priority?: boolean;
+  /**
+   * Fontes alternativas (<picture>): formatos (AVIF/WebP) e direção de arte por `media`.
+   * A primeira que casar vence; o <img> (src/srcSet de imgProps) é o fallback.
+   */
+  sources?: readonly PhotoSource[];
   /** camadas extras dentro da moldura (ex.: HeroSequence) */
   children?: ReactNode;
+}
+
+export interface PhotoSource {
+  srcSet: string;
+  type?: string;
+  media?: string;
+  sizes?: string;
+  /** dimensões intrínsecas desta fonte (evitam layout shift com direção de arte) */
+  width?: number;
+  height?: number;
 }
 
 export function Photo({
@@ -42,6 +57,7 @@ export function Photo({
   reveal,
   delay,
   imgProps,
+  sources,
   priority = false,
   className,
   style,
@@ -57,9 +73,28 @@ export function Photo({
     ? { loading: 'eager' as const, decoding: 'async' as const, ...{ fetchpriority: 'high' } }
     : { loading: 'lazy' as const, decoding: 'async' as const };
 
-  const img = src ? (
+  const tag = src ? (
     <img {...loadingAttrs} {...imgProps} className={`at-photo__${modo}`} src={src} alt={alt} />
   ) : null;
+  const img =
+    tag && sources?.length ? (
+      <picture>
+        {sources.map((s) => (
+          <source
+            key={`${s.media ?? ''}${s.type ?? ''}`}
+            srcSet={s.srcSet}
+            type={s.type}
+            media={s.media}
+            sizes={s.sizes}
+            width={s.width}
+            height={s.height}
+          />
+        ))}
+        {tag}
+      </picture>
+    ) : (
+      tag
+    );
 
   const media =
     parallax !== undefined && parallax !== false ? (
