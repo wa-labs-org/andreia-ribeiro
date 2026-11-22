@@ -64,6 +64,7 @@ Proporção de área típica numa tela: **~70% cremes · ~15% café/bronze (text
 | `--at-veil-tule-noite` | Café a 72% | Header sobre seções Casimira |
 | `--at-veil-sombra` | Café a 28% | Escurecer foto sob texto claro |
 | `--at-veil-organza` | gradiente café 0 → 45% | Base de imagem com legenda |
+| `--at-veil-organza-lateral` | gradiente horizontal: café 45% até 42% da largura, 0 em 46% | Texto claro à esquerda sobre fotografia (o assunto da foto fica da metade para a direita) |
 
 ## Estados
 

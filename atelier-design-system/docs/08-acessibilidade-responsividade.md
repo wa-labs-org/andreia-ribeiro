@@ -6,7 +6,7 @@ Meta: **WCAG 2.2 AA** em todo o site. A ansiedade de quem está escolhendo a rou
 - Todas as combinações de texto previstas passam AA (ver tabela em [02-cores](02-cores.md)). Texto principal passa AAA (14.55:1).
 - Feltro (3.27:1) só para texto ≥ 24px ou decorativo. Entretela (1.49:1) nunca para texto ou borda funcional.
 - Bordas de campo em bronze (5.43:1 > 3:1 não-textual). O pesponto da borda tem traço de 3px e vão de 3px, ainda legível como linha.
-- Texto sobre fotografia: sempre com `--at-veil-sombra` ou `--at-veil-organza` por baixo, verificado no pior ponto da imagem.
+- Texto sobre fotografia: sempre com `--at-veil-sombra`, `--at-veil-organza` ou `--at-veil-organza-lateral` (texto à esquerda) por baixo, verificado no pior ponto da imagem.
 
 ## Teclado e foco
 - **Foco sempre visível:** `outline: 2px solid` bronze + `offset 3px` (dourado claro em Casimira). Nunca `outline: none` sem substituto. Campos substituem o anel pela linha giz de 1.5px **mais** a mudança de cor da borda.
