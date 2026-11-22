@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 360" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Croqui limpo de vestido de noiva no manequim, para receber marcações de prova">
+  <!-- Versão sem anotações: as marcas de prova (.at-prova__mark) são sobrepostas pelo componente. -->
+  <g stroke="#3D3226" stroke-width="1.2">
+    <path d="M113 14h14M120 14v12"/>
+    <path d="M92 40c12 6 44 6 56 0"/>
+    <path d="M92 40c-2 22 4 46 12 64M148 40c2 22-4 46-12 64"/>
+    <path d="M98 54c6 8 16 8 22 2 6 6 16 6 22-2"/>
+    <path d="M104 104c8 4 24 4 32 0"/>
+    <path d="M104 104C88 170 62 252 32 328M136 104c16 66 44 148 76 224"/>
+    <path d="M32 328c50 16 126 18 180 0 12 6 20 14 14 22-48 8-158 6-200-2-6-6-2-14 6-20z"/>
+  </g>
+  <g stroke="#3D3226" stroke-width=".7" opacity=".55">
+    <path d="M114 110c-4 70-16 150-26 226M126 110c6 74 20 150 38 228M108 110C96 180 76 260 58 334M132 110c12 70 34 150 58 222"/>
+  </g>
+  <g stroke="#7A6230" stroke-width=".9" opacity=".7"><path d="M120 132v168M115 138l5-6 5 6M115 294l5 6 5-6"/></g>
+</svg>
