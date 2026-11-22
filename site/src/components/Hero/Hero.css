@@ -1,0 +1,38 @@
+/* Hero — extraído de atelier.css (valores sem alteração). */
+
+/* ------------------------------------------------------------------ 8. HERO */
+.at-hero { position: relative; min-height: 100svh; padding-top: 6rem; padding-bottom: var(--at-space-7); display: grid; align-items: end; overflow: clip; }
+.at-hero__grid { align-items: end; }
+.at-hero__title { grid-column: 1 / -1; position: relative; z-index: 2; }
+.at-hero__media { grid-column: 1 / -1; position: relative; }
+.at-hero__media .at-photo { --at-ratio: 4 / 5; }
+.at-hero__aside { grid-column: 1 / -1; display: grid; gap: var(--at-space-5); }
+.at-hero__actions { display: flex; flex-wrap: wrap; gap: var(--at-space-3) var(--at-space-5); align-items: center; }
+.at-hero__thread { position: absolute; z-index: 3; pointer-events: none; }
+.at-hero__cue { display: none; }
+@media (min-width: 1024px) {
+  .at-hero { padding-top: 8rem; }
+  .at-hero__title { grid-column: 1 / span 8; grid-row: 1; align-self: end; margin-bottom: var(--at-space-8); }
+  .at-hero__media { grid-column: 8 / span 5; grid-row: 1 / span 2; }
+  .at-hero__media .at-photo { --at-ratio: 3 / 4; }
+  .at-hero__aside { grid-column: 1 / span 5; grid-row: 2; }
+  .at-hero__cue { display: inline-flex; position: absolute; left: 50%; bottom: var(--at-space-6); transform: translateX(-50%); }
+}
+
+/* Mídia em tela cheia (HeroSequence ou foto cobrindo a seção).
+   Texto sobre fotografia: véu de sombra + organza por baixo (08-acessibilidade), cores do par
+   café/marfim e dourado claro já validados para o registro Casimira. */
+.at-hero--tela-cheia { color: var(--at-color-marfim); --at-focus-ring: 2px solid var(--at-color-dourado-claro); }
+.at-hero--tela-cheia :focus-visible { outline-color: var(--at-color-dourado-claro); }
+.at-hero__backdrop { position: absolute; inset: 0; z-index: 0; }
+.at-hero__backdrop .at-photo { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; }
+.at-hero__backdrop::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: var(--at-veil-organza), linear-gradient(var(--at-veil-sombra), var(--at-veil-sombra));
+}
+.at-hero--tela-cheia .at-container { position: relative; z-index: 2; }
+.at-hero--tela-cheia .at-hero__cue { z-index: 2; }
+.at-hero--tela-cheia .at-note, .at-hero--tela-cheia .at-muted { color: var(--at-color-dourado-claro); }
+.at-hero--tela-cheia .at-btn { --btn-bg: var(--at-color-marfim); --btn-fg: var(--at-color-cafe); --btn-fill: var(--at-color-dourado-claro); --btn-fill-fg: var(--at-color-cafe); }
+.at-hero--tela-cheia .at-btn--linha { --btn-bg: transparent; --btn-fg: currentColor; --btn-fill: transparent; --btn-fill-fg: currentColor; }
+.at-hero--tela-cheia .at-btn--pesponto { --btn-bg: transparent; --btn-fg: var(--at-color-marfim); --btn-fill: rgb(253 247 231 / .08); --btn-fill-fg: var(--at-color-marfim); }

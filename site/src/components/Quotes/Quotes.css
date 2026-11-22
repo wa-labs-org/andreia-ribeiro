@@ -1,0 +1,21 @@
+/* Depoimentos — extraído de atelier.css (valores sem alteração). */
+
+/* ------------------------------------------------------------------ 13. DEPOIMENTOS */
+.at-quotes { position: relative; display: grid; gap: var(--at-space-7); }
+.at-quote { font-size: var(--at-text-h2); line-height: 1.12; letter-spacing: var(--at-tracking-title); font-style: normal; }
+.at-quote::before { content: "“"; display: block; font: italic 300 1.6em/0.6 var(--at-font-display); color: var(--at-color-dourado); margin-bottom: .1em; }
+.at-quotes__slide[hidden] { display: none; }
+.at-quotes__slide .at-quote .at-line > span { transition-duration: var(--at-dur-caimento); }
+/* Etiqueta tecida (assinatura do depoimento) */
+.at-label-woven {
+  display: inline-grid; gap: 2px; padding: var(--at-space-3) var(--at-space-5);
+  background: var(--at-color-manteiga); box-shadow: inset 0 0 0 1px rgb(61 50 38 / .14), var(--at-shadow-repouso);
+  position: relative;
+}
+.at-label-woven::before, .at-label-woven::after { /* pontos que prendem a etiqueta */
+  content: ""; position: absolute; top: 6px; bottom: 6px; width: 1px;
+  background: repeating-linear-gradient(180deg, var(--at-color-dourado) 0 3px, transparent 3px 6px);
+}
+.at-label-woven::before { left: 6px; } .at-label-woven::after { right: 6px; }
+.at-quotes__nav { display: flex; align-items: center; gap: var(--at-space-4); }
+.at-quotes__count { min-width: 4rem; text-align: center; }

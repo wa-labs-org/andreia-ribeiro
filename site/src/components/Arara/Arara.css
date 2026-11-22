@@ -1,0 +1,32 @@
+/* Arara — extraído de atelier.css (valores sem alteração). */
+
+/* ------------------------------------------------------------------ 10. ARARA (galeria horizontal) */
+.at-arara { position: relative; }
+.at-arara__rail { /* barra da arara */
+  position: absolute; left: 0; right: 0; top: 0; height: 1px; background: currentColor; opacity: .3;
+}
+.at-arara__track {
+  display: flex; gap: var(--at-grid-gutter); padding-inline: var(--at-grid-margin); padding-top: var(--at-space-5);
+  overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.at-arara__track::-webkit-scrollbar { display: none; }
+.at-arara__item { flex: 0 0 72vw; scroll-snap-align: start; transform-origin: 50% -1.25rem; will-change: auto; }
+.at-arara__item::before { /* gancho do cabide */
+  content: ""; display: block; width: 1px; height: 1.25rem; margin: -1.25rem auto 0; background: currentColor; opacity: .4;
+}
+@media (min-width: 768px) { .at-arara__item { flex-basis: 38vw; } }
+@media (min-width: 1024px) {
+  .at-arara[data-pin] { height: var(--arara-h, 300vh); }
+  .at-arara[data-pin] .at-arara__sticky { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+  .at-arara[data-pin] .at-arara__track { overflow: visible; scroll-snap-type: none; width: max-content; }
+  .at-arara__item { flex-basis: 24rem; }
+}
+.at-arara__head { display: flex; justify-content: space-between; align-items: end; gap: var(--at-space-5); padding-inline: var(--at-grid-margin); margin-bottom: var(--at-space-7); }
+.at-arara__count { font-variant-numeric: tabular-nums; }
+
+/* Movimento reduzido (seção 19 de atelier.css) */
+@media (min-width: 1024px) {
+  [data-motion="reduce"] .at-arara[data-pin] { height: auto; }
+  [data-motion="reduce"] .at-arara[data-pin] .at-arara__sticky { position: static; height: auto; }
+  [data-motion="reduce"] .at-arara[data-pin] .at-arara__track { overflow-x: auto; width: auto; scroll-snap-type: x mandatory; }
+}

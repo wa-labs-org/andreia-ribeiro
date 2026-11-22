@@ -1,0 +1,21 @@
+/* Rodapé — extraído de atelier.css (valores sem alteração). */
+
+/* ------------------------------------------------------------------ 15. RODAPÉ */
+.at-footer { position: relative; padding-top: var(--at-section-y-s); padding-bottom: var(--at-space-6); overflow: hidden; }
+.at-footer__top { display: grid; gap: var(--at-space-7); }
+@media (min-width: 1024px) { .at-footer__top { grid-template-columns: 5fr 2fr 2fr 3fr; gap: var(--at-grid-gutter); } }
+.at-footer__col { display: grid; align-content: start; gap: var(--at-space-3); }
+.at-footer__col ul { display: grid; gap: var(--at-space-1); }
+.at-footer__col a { text-decoration: none; }
+.at-footer__mark {
+  display: flex; justify-content: space-between; margin-top: var(--at-space-9);
+  font: 300 clamp(3rem, 11.5vw, 15rem)/.85 var(--at-font-display); letter-spacing: -.03em; font-variation-settings: "SOFT" 100;
+  white-space: nowrap; overflow: hidden; padding-bottom: .06em;
+}
+.at-footer__mark .at-char { display: inline-block; }
+.at-js .at-footer__mark .at-char { transform: translateY(105%); transition: transform var(--at-dur-cerimonia) var(--at-ease-caimento); transition-delay: calc(var(--i, 0) * 40ms); }
+.at-js .at-footer__mark.is-in .at-char { transform: none; }
+.at-footer__legal { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--at-space-3); margin-top: var(--at-space-6); padding-top: var(--at-space-5); }
+
+/* Movimento reduzido (seção 19 de atelier.css) */
+[data-motion="reduce"] .at-js .at-footer__mark .at-char, .at-js[data-motion="reduce"] .at-footer__mark .at-char { transform: none; }

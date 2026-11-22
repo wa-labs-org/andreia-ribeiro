@@ -1,0 +1,24 @@
+/* Portas de coleção — extraído de atelier.css (valores sem alteração). */
+
+/* Porta de coleção (split Seda / Casimira) */
+.at-doors { display: grid; gap: var(--at-grid-gutter); }
+@media (min-width: 1024px) {
+  .at-doors { display: flex; height: min(88vh, 54rem); }
+  .at-door { flex: 1 1 0; transition: flex-grow var(--at-dur-cerimonia) var(--at-ease-cortina); min-width: 0; }
+  .at-doors:hover .at-door { flex-grow: .8; }
+  .at-doors .at-door:hover, .at-doors .at-door:focus-within { flex-grow: 1.35; }
+}
+.at-door { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: var(--at-space-7); padding: var(--at-space-6); overflow: hidden; text-decoration: none; color: inherit; min-height: 34rem; }
+.at-door--seda { background: var(--at-color-rose); }
+.at-door--casimira { background: var(--at-color-cafe); color: var(--at-color-marfim); }
+.at-door__fig { position: absolute; right: -6%; bottom: -4%; width: 62%; height: 92%; object-fit: contain; object-position: bottom right; opacity: .9; transition: transform var(--at-dur-cerimonia) var(--at-ease-caimento); transform-origin: 50% 0; }
+.at-door--casimira .at-door__fig { filter: invert(.9) hue-rotate(180deg); opacity: .8; }
+.at-door:hover .at-door__fig { transform: translateY(-2%) scale(1.03, 1.05); }
+.at-door__top, .at-door__bottom { position: relative; z-index: 2; }
+.at-door__bottom { display: grid; justify-items: start; gap: var(--at-space-4); max-width: 26rem; }
+.at-door__fig { width: 52%; right: -4%; }
+@media (max-width: 1023px) { .at-door__fig { width: 46%; height: 70%; opacity: .3; } .at-door--casimira .at-door__fig { opacity: .3; } }
+
+/* Movimento reduzido (seção 19 de atelier.css) */
+[data-motion="reduce"] .at-door:hover .at-door__fig { transform: none !important; }
+[data-motion="reduce"] .at-doors .at-door { transition: none; }
