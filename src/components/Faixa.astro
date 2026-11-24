@@ -31,6 +31,13 @@ const ocasioes = [
 </div>
 
 <style>
+	/* faixa mais discreta que a do design system (3rem–7.5rem): cerca de metade da altura */
+	.faixa {
+		padding: 1.1rem 0;
+	}
+	.faixa .marquee-track {
+		font-size: clamp(2rem, 4.5vw, 4rem);
+	}
 	.sr-only {
 		position: absolute;
 		width: 1px;
