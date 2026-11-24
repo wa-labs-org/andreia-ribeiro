@@ -1,0 +1,107 @@
+---
+// "A locação — em números": quatro números que contam de 0 até o valor ao
+// entrar na tela (ØDE count-up). Os valores são os de exemplo do design system
+// e precisam ser confirmados com o ateliê.
+const numeros = [
+	{ valor: 3, rotulo: 'Provas no ateliê' },
+	{ valor: 4, sufixo: 'dias', rotulo: 'Com o traje em mãos' },
+	{ valor: 100, sufixo: '%', rotulo: 'Ajustes feitos à mão' },
+	{ valor: 6, rotulo: 'Coleções por ocasião' },
+];
+---
+
+<section class="section section-alt numeros" aria-labelledby="numeros-title">
+	<div class="wrap">
+		<h2 class="eyebrow" id="numeros-title">
+			<span class="t-caps">A locação</span><span class="t-mono">— em números</span>
+		</h2>
+		<ul class="numbers" role="list">
+			{
+				numeros.map((n) => (
+					<li>
+						<p class="t-num">
+							{/* o valor final fica no HTML (sem JS ou com movimento reduzido, ele aparece direto) */}
+							<span data-count={n.valor}>{n.valor}</span>
+							{n.sufixo && <sup>{n.sufixo}</sup>}
+						</p>
+						<p class="t-mono">{n.rotulo}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.numeros {
+		padding-block: clamp(5rem, 9vw, 8rem);
+	}
+	.eyebrow {
+		margin: 0;
+		font-weight: inherit;
+		font-size: inherit;
+	}
+	.numbers {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 2rem;
+		margin: 3rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.numbers > li {
+		border-top: 1px solid var(--line);
+		padding-top: 1.25rem;
+	}
+	.numbers .t-num {
+		margin: 0;
+		font-size: clamp(3.2rem, 6vw, 5.5rem);
+		color: var(--ink);
+	}
+	.numbers .t-num sup {
+		font-size: 0.35em;
+		color: var(--ouro);
+		vertical-align: top;
+		margin-left: 0.2rem;
+	}
+	.numbers .t-mono {
+		margin: 0.8rem 0 0;
+	}
+	@media (max-width: 860px) {
+		.numbers {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, reduceMotion, CONFIG } from '../scripts/motion.js';
+
+	if (!reduceMotion) {
+		/* contagem de 0 até o valor, uma vez, ao entrar na tela */
+		document.querySelectorAll<HTMLElement>('.numeros [data-count]').forEach((el) => {
+			const alvo = Number(el.dataset.count);
+			const render = (n: number) => (el.textContent = Math.round(n).toLocaleString('pt-BR'));
+			const o = { v: 0 };
+			render(0);
+			ScrollTrigger.create({
+				trigger: el,
+				start: 'top 88%',
+				once: true,
+				onEnter: () => gsap.to(o, { v: alvo, duration: 1.8, ease: 'power2.out', onUpdate: () => render(o.v) }),
+			});
+		});
+
+		/* cada número sobe ao entrar */
+		gsap.utils.toArray<HTMLElement>('.numeros .numbers > li').forEach((el) =>
+			gsap.from(el.children, {
+				y: 36,
+				autoAlpha: 0,
+				duration: 1.1,
+				stagger: 0.1,
+				ease: CONFIG.ease,
+				scrollTrigger: { trigger: el, start: 'top 82%' },
+			}),
+		);
+	}
+</script>
