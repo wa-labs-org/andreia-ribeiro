@@ -1,0 +1,188 @@
+---
+// Hero: atmosfera de seda (WebGL), a tipografia conduz.
+// Intro: o lótus do loader se desenha com o contador, o loader sobe, as letras
+// do título sobem uma a uma e o lótus da hero se desenha junto.
+---
+
+<section class="hero" id="top">
+	<div class="hero-bg"><canvas id="hero-silk"></canvas></div>
+	<div class="hero-veil"></div>
+	<div class="rules" aria-hidden="true"><i></i><i></i><i></i></div>
+	<div class="hero-inner">
+		<span class="hero-mark hero-sub" data-lotus></span>
+		<p class="eyebrow hero-sub">
+			<span class="t-caps">Ateliê de alta-costura</span><span class="t-mono">— locação de trajes</span>
+		</p>
+		<h1 class="t-display-xl">
+			<span class="hero-line">Alta-costura</span>
+			<span class="hero-line is-italic">para uma noite.</span>
+		</h1>
+		<div class="hero-foot hero-sub">
+			<p class="t-body-l">
+				Vestidos de noiva, de festa e trajes de gala para locar — provados com calma e ajustados à mão no ateliê até vestirem
+				como se tivessem sido feitos para você.
+			</p>
+			<div class="hero-ctas">
+				<a href="#colecoes" class="btn btn-gold">Ver o acervo <ar-icon name="arrow-right"></ar-icon></a>
+				<a href="#contato" class="link">Agendar prova</a>
+			</div>
+			<a href="#maison" class="t-mono hero-scroll">
+				Role <span class="arrow-round"><ar-icon name="arrow-down"></ar-icon></span> 001
+			</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		position: relative;
+		min-height: 100svh;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		overflow: hidden;
+	}
+	.hero-bg {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+	.hero-bg canvas {
+		width: 100%;
+		height: 100%;
+	}
+	.hero-veil {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: linear-gradient(
+			180deg,
+			rgba(253, 247, 231, 0.55) 0%,
+			rgba(253, 247, 231, 0) 35%,
+			rgba(253, 247, 231, 0.2) 60%,
+			var(--marfim) 100%
+		);
+	}
+	.hero-inner {
+		position: relative;
+		z-index: 2;
+		padding: 8rem var(--gutter) clamp(2.5rem, 5vw, 4rem);
+	}
+	.hero-mark {
+		display: block;
+		width: clamp(64px, 7vw, 92px);
+		aspect-ratio: 1;
+		margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+	}
+	.eyebrow {
+		margin: 0;
+	}
+	h1 {
+		margin: clamp(1.25rem, 2.5vw, 2rem) 0 0;
+	}
+	.hero-line {
+		display: block;
+	}
+	.hero-line.is-italic {
+		font-style: italic;
+		color: var(--ouro);
+		padding-left: clamp(2rem, 11vw, 12rem);
+	}
+	.hero-foot {
+		margin-top: clamp(2rem, 4vw, 3.5rem);
+		padding-top: 1.75rem;
+		border-top: 1px solid var(--line);
+		display: grid;
+		grid-template-columns: minmax(0, 30rem) 1fr auto;
+		gap: 2rem;
+		align-items: end;
+	}
+	.hero-foot .t-body-l {
+		margin: 0;
+	}
+	.hero-ctas {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 1.75rem;
+		align-items: center;
+		justify-content: center;
+	}
+	.hero-scroll {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.hero-scroll .arrow-round {
+		width: 2rem;
+		height: 2rem;
+	}
+	@media (max-width: 860px) {
+		.hero-foot {
+			grid-template-columns: 1fr;
+		}
+		.hero-ctas {
+			justify-content: flex-start;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, SplitText, lenis, reduceMotion, CONFIG } from '../scripts/motion.js';
+
+	/* atmosfera de seda */
+	(window as any).ARSilk(document.getElementById('hero-silk'), {
+		colors: ['#FDF7E7', '#F9F1D8', '#C6AF6C', '#B19F6E'],
+		sheen: 0.55,
+		scale: 1.25,
+		speed: 0.9,
+	});
+
+	/* loader → hero */
+	const counter = { v: 0 };
+	const counterEl = document.getElementById('counter')!;
+	const loader = document.getElementById('loader')!;
+	gsap.set('.lp', { strokeDasharray: 100, strokeDashoffset: 0 });
+	if (!reduceMotion) {
+		lenis.stop();
+		document.body.style.overflow = 'hidden';
+	}
+
+	document.fonts.ready.then(() => {
+		/* palavras + letras: as letras animam, mas a quebra de linha respeita a palavra */
+		const split = new SplitText('.hero-line', { type: 'words,chars', wordsClass: 'word', charsClass: 'char' });
+		gsap.set('.hero-line', { overflow: 'hidden', paddingBottom: '.08em', paddingRight: '.12em' });
+		const done = () => {
+			document.body.style.overflow = '';
+			lenis.start();
+			(window as any).__arIntroDone = true;
+			ScrollTrigger.refresh();
+		};
+		if (reduceMotion) {
+			loader.style.display = 'none';
+			done();
+			return;
+		}
+		gsap.set('#loader .lp, .hero-mark .lp', { strokeDashoffset: 100 });
+		gsap.set('#loader .lp-core, .hero-mark .lp-core', { fillOpacity: 0 });
+		gsap
+			.timeline({ defaults: { ease: CONFIG.ease }, onComplete: done })
+			.to(counter, {
+				v: 100,
+				duration: CONFIG.loaderDuration,
+				ease: 'power2.inOut',
+				onUpdate: () => (counterEl.textContent = String(Math.round(counter.v)).padStart(3, '0')),
+			}, 0)
+			.to('#loader .lp-outer', { strokeDashoffset: 0, duration: 1.1, stagger: 0.07, ease: 'power2.inOut' }, 0)
+			.to('#loader .lp-mid', { strokeDashoffset: 0, duration: 1, stagger: 0.06, ease: 'power2.inOut' }, 0.45)
+			.to('#loader .lp-inner', { strokeDashoffset: 0, duration: 0.9, stagger: 0.05, ease: 'power2.inOut' }, 0.8)
+			.to('#loader .lp-core, #loader .lp-core-inner', { strokeDashoffset: 0, fillOpacity: 1, duration: 0.8 }, 1.4)
+			.fromTo('#loader [data-lotus]', { rotate: -22.5, scale: 0.9 }, { rotate: 0, scale: 1, duration: CONFIG.loaderDuration, ease: 'power2.inOut' }, 0)
+			.to('#loader', { yPercent: -100, duration: 1, ease: 'power3.inOut' }, '+=0.2')
+			.from(split.chars, { yPercent: 115, duration: 1.15, stagger: 0.03 }, '-=0.5')
+			.to('.hero-mark .lp', { strokeDashoffset: 0, duration: 1.2, stagger: 0.015, ease: 'power2.inOut' }, '<')
+			.to('.hero-mark .lp-core', { fillOpacity: 1, duration: 0.6 }, '<+0.8')
+			.from('.hero-sub', { y: 24, autoAlpha: 0, duration: 1, stagger: 0.12 }, '<');
+		/* o lótus da hero continua respirando, devagar */
+		gsap.to('.hero-mark .lotus-svg', { scale: 1.06, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+	});
+</script>
