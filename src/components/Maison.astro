@@ -1,7 +1,11 @@
 ---
 // Maison (segunda dobra): a filosofia do ateliê em duas linhas alternadas,
 // imagem 4:5 + texto, com "Atelier" vazado ao fundo.
-// As imagens são painéis de tecido com croqui (marcam o lugar das fotos reais).
+// Linhas com `foto` mostram a fotografia (otimizada pelo Astro em AVIF/WebP);
+// as demais ainda são painéis de tecido com croqui, marcando o lugar da foto real.
+import { Picture } from 'astro:assets';
+import noivaRenda from '../assets/maison/noiva-renda.jpg';
+
 const linhas = [
 	{
 		indice: '01',
@@ -12,9 +16,11 @@ const linhas = [
 			'Cada traje do acervo passa pelas mãos do ateliê antes de chegar até você. Bainhas, cinturas e alças são ajustadas em provas com hora marcada, sem pressa.',
 			'A locação é sob medida; o atendimento também.',
 		],
-		tecido: 'champagne',
-		croqui: 'noiva',
-		foto: 'Foto · noiva no ateliê · 4:5',
+		foto: {
+			src: noivaRenda,
+			alt: 'Noiva em vestido de renda branca com mangas longas, decote em V recortado, faixa de cetim na cintura e saia ampla, posando em estúdio.',
+			posicao: '50% 85%',
+		},
 		assinatura: true,
 	},
 	{
@@ -27,7 +33,7 @@ const linhas = [
 		],
 		tecido: 'rose',
 		croqui: 'princesa',
-		foto: 'Foto · detalhe de bordado · 4:5',
+		vaga: 'Foto · detalhe de bordado · 4:5',
 		assinatura: false,
 	},
 ];
@@ -41,10 +47,23 @@ const linhas = [
 				<div class:list={['maison-row', { rev: i % 2 === 1 }]}>
 					<div class="maison-media reveal-wrap">
 						<div class="reveal-inner">
-							<div class={`fabric fabric--${l.tecido}`}>
-								<span data-croqui={l.croqui} />
-								<span class="slot-tag">{l.foto}</span>
-							</div>
+							{l.foto ? (
+								<Picture
+									src={l.foto.src}
+									alt={l.foto.alt}
+									formats={['avif', 'webp']}
+									width={960}
+									widths={[480, 720, 960, 1280]}
+									sizes="(max-width: 860px) calc(100vw - 3rem), 44vw"
+									class="maison-foto"
+									style={`object-position: ${l.foto.posicao}`}
+								/>
+							) : (
+								<div class={`fabric fabric--${l.tecido}`}>
+									<span data-croqui={l.croqui} />
+									<span class="slot-tag">{l.vaga}</span>
+								</div>
+							)}
 						</div>
 					</div>
 					<div class="maison-copy">
@@ -109,6 +128,17 @@ const linhas = [
 	}
 	.maison-media .fabric {
 		height: 100%;
+	}
+	.maison-media :global(picture) {
+		display: block;
+		height: 100%;
+	}
+	/* a foto 2:3 preenche a moldura 4:5; o enquadramento fica no vestido inteiro */
+	.maison-media :global(.maison-foto) {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 	.maison-copy {
 		max-width: 32rem;
