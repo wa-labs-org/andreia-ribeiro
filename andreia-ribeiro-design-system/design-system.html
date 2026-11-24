@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andréia Ribeiro Atelier — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/ar.css">
+<script src="assets/icons.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<style>
+  /* ── catalog shell ── */
+  html, body { height: 100%; }
+  body { display: flex; flex-direction: column; overflow: hidden; }
+  .site-header.ds-header { position: relative; flex: none; background: rgba(253, 247, 231, .92); border-bottom-color: var(--line-soft); height: 4.5rem; }
+  .ds-header .site-nav { display: flex; }
+  .ds-view { position: relative; flex: 1 1 auto; min-height: 0; }
+  .ds-view[hidden] { display: none; }
+  #overview iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+  /* ── components view ── */
+  #components > canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ds-scroll { position: absolute; inset: 0; overflow: auto; }
+  .ds-layout { display: grid; grid-template-columns: 15rem 1fr; gap: clamp(1.5rem, 3vw, 3rem); padding: 2.5rem var(--gutter) 6rem; max-width: 1560px; margin: 0 auto; }
+  .ds-side { position: sticky; top: 2rem; align-self: start; padding: 1.5rem 0; }
+  .ds-side a { display: flex; justify-content: space-between; padding: .45rem 0 .45rem 1rem; border-left: 1px solid var(--line); font-size: .74rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); transition: color .3s ease, border-color .3s ease; }
+  .ds-side a span { font-family: var(--f-mono); font-size: .6rem; color: var(--ink-mute); }
+  .ds-side a:hover, .ds-side a.is-active { color: var(--ink); border-color: var(--ouro); }
+  .ds-main { display: grid; gap: 1.75rem; min-width: 0; }
+  .ds-group { background: rgba(253, 247, 231, .86); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(198, 175, 108, .25); padding: clamp(1.75rem, 3.5vw, 3.25rem); scroll-margin-top: 1.5rem; }
+  .ds-group > header { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-bottom: 1.5rem; margin-bottom: 2.25rem; border-bottom: 1px solid var(--line); }
+  .ds-group > header h2 { margin: 0; }
+  .ds-sub { margin: 2.75rem 0 1.25rem; display: flex; align-items: baseline; gap: 1rem; }
+  .ds-sub:first-of-type { margin-top: 0; }
+  .ds-sub h3 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 1.6rem; }
+  .ds-code { display: inline-block; font-family: var(--f-mono); font-size: .64rem; letter-spacing: .04em; color: var(--bronze); background: rgba(198, 175, 108, .13); padding: .2rem .5rem; border-radius: 2px; white-space: nowrap; }
+  .ds-note { font-size: .85rem; color: var(--ink-soft); max-width: 46rem; margin: 0 0 1.25rem; }
+  .ds-row { display: flex; flex-wrap: wrap; gap: 1.25rem 1.5rem; align-items: center; }
+  .ds-spec { display: grid; gap: .7rem; align-content: start; }
+  .ds-spec > .ds-code, .ds-spec > .t-mono { justify-self: start; }
+  .ds-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+  .ds-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+  .ds-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+  @media (max-width: 1100px) { .ds-layout { grid-template-columns: 1fr; } .ds-side { display: none; } .ds-grid-3, .ds-grid-4 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .ds-grid-2, .ds-grid-3, .ds-grid-4 { grid-template-columns: 1fr; } }
+
+  /* brand */
+  .brand-tile { display: grid; place-items: center; min-height: 340px; padding: 2.5rem; border-radius: var(--radius-card); }
+  .brand-tile.on-cafe { background: var(--cafe); }
+  .brand-tile.on-cafe .logo-lockup { color: var(--ouro-claro); }
+  .brand-tile.on-rose { background: var(--rose); }
+  .brand-tile.on-rose .logo-lockup { color: var(--bronze); }
+  .lotus-sizes { display: flex; align-items: flex-end; gap: 2rem; }
+  .lotus-sizes > div { display: grid; justify-items: center; gap: .6rem; }
+
+  /* colors */
+  .sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1rem; }
+  .sw { border: 1px solid var(--line-soft); background: var(--marfim); }
+  .sw-chip { height: 96px; position: relative; }
+  .sw-chip.on-cafe { background: var(--cafe); }
+  .sw-chip.on-marfim { background: var(--marfim); }
+  .sw-chip .ink { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-display); font-size: 2.6rem; }
+  .sw-body { padding: .9rem 1rem 1rem; display: grid; gap: .3rem; }
+  .sw-body b { font-weight: 400; font-size: .92rem; }
+  .sw-body .t-mono { font-size: .6rem; letter-spacing: .12em; }
+
+  /* type rows */
+  .type-row { display: grid; grid-template-columns: 13rem minmax(0, 1fr) 9rem; gap: 2rem; align-items: center; padding: 1.75rem 0; border-bottom: 1px solid var(--line-soft); }
+  .type-row:first-child { padding-top: 0; }
+  .type-row .tr-role b { display: block; font-weight: 400; font-size: .95rem; }
+  .type-row .tr-role span { display: block; margin-top: .3rem; }
+  .type-row .tr-size { text-align: right; font-family: var(--f-mono); font-size: .66rem; color: var(--ink-soft); line-height: 1.7; }
+  .type-row .tr-sample { min-width: 0; overflow: hidden; }
+  @media (max-width: 900px) { .type-row { grid-template-columns: 1fr; gap: .6rem; } .type-row .tr-size { text-align: left; } }
+
+  /* backgrounds */
+  .bg-spec { position: relative; height: 320px; overflow: hidden; border-radius: var(--radius-card); border: 1px solid var(--line-soft); }
+  .bg-spec canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .bg-spec .cap { position: absolute; left: 1rem; bottom: 1rem; z-index: 3; }
+  .bg-spec.fab { height: 260px; }
+
+  /* icons */
+  .icon-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2rem 1rem; }
+  .icon-grid > div { display: grid; justify-items: center; gap: .8rem; text-align: center; }
+  .icon-grid ar-icon { font-size: 1.9rem; color: var(--ink); }
+  .icon-grid [data-croqui] { width: 54px; height: 130px; color: var(--ouro-antigo); }
+  .icon-grid [data-lotus] { width: 48px; height: 48px; }
+  @media (max-width: 700px) { .icon-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .dark-stage { background: var(--cafe); color: var(--marfim); padding: 2.25rem; border-radius: var(--radius-card); }
+  .light-stage { background: var(--marfim); padding: 2.25rem; border: 1px solid var(--line-soft); border-radius: var(--radius-card); }
+  .plates-mini { height: 460px; }
+  .plates-mini .plates-label, .plates-mini .plates-count { top: 1.5rem; }
+  .plates-mini .plates-caps { bottom: 2rem; }
+  .plates-mini .plate-cap-title { font-size: 3rem; }
+  .loader-mini { position: relative; height: 360px; overflow: hidden; border: 1px solid var(--line-soft); }
+  .loader-mini .loader { position: absolute; }
+  .motion-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .motion-table th, .motion-table td { text-align: left; padding: .9rem .6rem; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  .motion-table th { font-family: var(--f-mono); font-weight: 400; font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute); }
+  .demo { display: grid; gap: 1rem; justify-items: start; align-content: start; }
+  .demo-stage { width: 100%; min-height: 220px; display: grid; place-items: center; overflow: hidden; }
+</style>
+</head>
+<body>
+
+<!-- HEADER — the site's own header markup, catalog routes in place of anchors -->
+<header class="site-header ds-header" id="site-header">
+  <a href="#overview" class="wordmark" aria-label="Andréia Ribeiro Atelier">
+    <span data-lotus></span>
+    <span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Design system">
+    <a href="#overview" data-view="overview">Overview</a>
+    <a href="#components" data-view="components">Components</a>
+  </nav>
+  <span class="t-mono">Design System · v1.0</span>
+</header>
+
+<main id="overview" class="ds-view">
+  <iframe src="assets/overview/index.html?embed" title="Andréia Ribeiro — Overview"></iframe>
+</main>
+
+<main id="components" class="ds-view" hidden>
+  <canvas id="ds-silk"></canvas>
+  <div class="ds-scroll" id="ds-scroll">
+  <div class="ds-layout">
+    <aside class="ds-side" id="ds-side"></aside>
+    <div class="ds-main">
+
+    <!-- ═════════ MARCA ═════════ -->
+    <section class="ds-group" id="g-marca" data-title="Marca">
+      <header><h2 class="t-display-m">Marca</h2><span class="t-mono">Fundação 01</span></header>
+      <p class="ds-note">O lótus foi redesenhado em vetor a partir do logo enviado: oito pétalas pontiagudas, cada uma em três contornos, com uma chama rosé no centro. Todos os traços usam <span class="ds-code">pathLength="100"</span>, então o lótus pode ser desenhado na tela.</p>
+      <div class="ds-grid-3">
+        <div class="ds-spec"><div class="brand-tile surface"><div class="logo-lockup"><span data-lotus></span><span class="ll-name">Andréia Ribeiro</span><span class="ll-sub">Atelier</span></div></div><span class="ds-code">.logo-lockup</span><span class="t-mono">Sobre marfim · cor da marca</span></div>
+        <div class="ds-spec"><div class="brand-tile on-cafe"><div class="logo-lockup"><span data-lotus></span><span class="ll-name">Andréia Ribeiro</span><span class="ll-sub">Atelier</span></div></div><span class="ds-code">.logo-lockup on café</span><span class="t-mono">Sobre café · ouro claro</span></div>
+        <div class="ds-spec"><div class="brand-tile on-rose"><div class="logo-lockup"><span data-lotus></span><span class="ll-name">Andréia Ribeiro</span><span class="ll-sub">Atelier</span></div></div><span class="ds-code">.logo-lockup on rosé</span><span class="t-mono">Sobre rosé · bronze</span></div>
+      </div>
+      <div class="ds-sub"><h3>Assinatura horizontal &amp; marca</h3></div>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><div class="light-stage" style="display:flex;gap:3rem;align-items:center;flex-wrap:wrap"><a class="wordmark"><span data-lotus></span><span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span></a>
+          <span class="wordmark" style="color:var(--marfim);background:var(--cafe);padding:1rem 1.25rem"><span data-lotus></span><span class="wordmark-text"><span class="wordmark-name" style="color:var(--ouro-claro)">Andréia Ribeiro</span><span class="wordmark-sub" style="color:var(--ouro-claro)">Atelier</span></span></span></div><span class="ds-code">.wordmark</span><span class="t-mono">Header · rodapé · menu</span></div>
+        <div class="ds-spec"><div class="light-stage lotus-sizes">
+          <div><span data-lotus="solid" style="width:16px;height:16px"></span><span class="t-mono">16 · sólido</span></div>
+          <div><span data-lotus="solid" style="width:24px;height:24px"></span><span class="t-mono">24 · sólido</span></div>
+          <div><span data-lotus style="width:48px;height:48px"></span><span class="t-mono">48</span></div>
+          <div><span data-lotus style="width:96px;height:96px"></span><span class="t-mono">96</span></div>
+          <div><span data-lotus style="width:150px;height:150px"></span><span class="t-mono">150 · hero</span></div>
+        </div><span class="ds-code">[data-lotus] · [data-lotus="solid"]</span><span class="t-mono">Abaixo de 32 px, use a versão sólida</span></div>
+      </div>
+      <div class="ds-sub"><h3>Referências enviadas</h3></div>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><img src="assets/brand/logo-original.jpg" alt="Logo original Andréia Ribeiro Atelier" style="width:100%;border:1px solid var(--line-soft)"><span class="ds-code">assets/brand/logo-original.jpg</span></div>
+        <div class="ds-spec"><img src="assets/brand/paleta.png" alt="Paleta de cores oficial" style="width:100%;border:1px solid var(--line-soft);background:#fff"><span class="ds-code">assets/brand/paleta.png</span></div>
+      </div>
+    </section>
+
+    <!-- ═════════ CORES ═════════ -->
+    <section class="ds-group" id="g-cores" data-title="Cores">
+      <header><h2 class="t-display-m">Cores</h2><span class="t-mono">Fundação 02</span></header>
+      <p class="ds-note">Paleta oficial organizada por função. Ouro sobre marfim fica bom em títulos grandes e em itálico; em texto pequeno sobre fundo claro, use <b>bronze</b>, que tem contraste suficiente.</p>
+      <div id="swatches"></div>
+    </section>
+
+    <!-- ═════════ TIPOGRAFIA ═════════ -->
+    <section class="ds-group" id="g-tipo" data-title="Tipografia">
+      <header><h2 class="t-display-m">Tipografia</h2><span class="t-mono">Fundação 03</span></header>
+      <p class="ds-note"><b>Cormorant Garamond</b> faz o papel do serifado do Soma, com o itálico dourado como assinatura. <b>Jost</b>, em caixa-alta espaçada, ecoa o lettering do logo. <b>IBM Plex Mono</b> vem do ØDE e cuida de índices, referências e metadados, como numa etiqueta de ateliê.</p>
+      <div>
+        <div class="type-row"><div class="tr-role"><b>Display XL</b><span class="t-mono">Cormorant 300</span></div><div class="tr-sample"><p class="t-display-xl" style="font-size:clamp(3rem,7vw,6.5rem)">Alta-costura <span class="t-italic">para uma noite.</span></p></div><div class="tr-size">clamp(4.2rem, 13vw, 12.5rem)<br><span class="ds-code">.t-display-xl</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Display L</b><span class="t-mono">Cormorant 300</span></div><div class="tr-sample"><p class="t-display-l">O acervo, <span class="t-italic">por ocasião.</span></p></div><div class="tr-size">clamp(2.9rem, 6.4vw, 6rem)<br><span class="ds-code">.t-display-l</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Display M</b><span class="t-mono">Cormorant 300</span></div><div class="tr-sample"><p class="t-display-m">Noites que <span class="t-italic">vestimos.</span></p></div><div class="tr-size">clamp(2rem, 3.6vw, 3.25rem)<br><span class="ds-code">.t-display-m</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Display S</b><span class="t-mono">Cormorant 400</span></div><div class="tr-sample"><p class="t-display-s">Vestido <em class="t-italic">Aurora</em></p></div><div class="tr-size">clamp(1.5rem, 2.2vw, 2rem)<br><span class="ds-code">.t-display-s</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Folha de ouro</b><span class="t-mono">Cormorant itálico</span></div><div class="tr-sample"><p class="t-display-l"><span class="t-foil" style="font-style:italic">sua prova.</span></p></div><div class="tr-size">herda o tamanho<br><span class="ds-code">.t-foil</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Contorno</b><span class="t-mono">Cormorant 300</span></div><div class="tr-sample"><p class="t-display-l t-outline">Haute Couture</p></div><div class="tr-size">fundo decorativo<br><span class="ds-code">.t-outline</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Body L</b><span class="t-mono">Jost 300</span></div><div class="tr-sample"><p class="t-body-l" style="margin:0;max-width:40rem">Vestidos de noiva, de festa e trajes de gala para locar — provados com calma e ajustados à mão no ateliê.</p></div><div class="tr-size">1.125rem / 1.75<br><span class="ds-code">.t-body-l</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Body</b><span class="t-mono">Jost 300</span></div><div class="tr-sample"><p class="t-body" style="margin:0;max-width:40rem">Depois de cada noite, o traje retorna ao ateliê para higienização e revisão de costuras.</p></div><div class="tr-size">1rem / 1.7<br><span class="ds-code">.t-body</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Small</b><span class="t-mono">Jost 300</span></div><div class="tr-sample"><p class="t-small" style="margin:0">Barra, cintura, alças e busto acertados à mão.</p></div><div class="tr-size">.875rem / 1.6<br><span class="ds-code">.t-small</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Caixa-alta</b><span class="t-mono">Jost 400 · .32em</span></div><div class="tr-sample"><p class="t-caps" style="margin:0">Ateliê de alta-costura</p></div><div class="tr-size">.72rem<br><span class="ds-code">.t-caps</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Etiqueta</b><span class="t-mono">Plex Mono 400 · .22em</span></div><div class="tr-sample"><p class="t-mono" style="margin:0">Ref. AR-014 · Madrinha · crepe</p></div><div class="tr-size">.68rem<br><span class="ds-code">.t-mono</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Numeral</b><span class="t-mono">Jost 200 · tabular</span></div><div class="tr-sample"><p class="t-num" style="font-size:5rem;margin:0">100<sup style="font-size:.35em;color:var(--ouro)">%</sup></p></div><div class="tr-size">clamp(3.2rem, 6vw, 5.5rem)<br><span class="ds-code">.t-num</span></div></div>
+        <div class="type-row"><div class="tr-role"><b>Sobretítulo</b><span class="t-mono">caps + mono</span></div><div class="tr-sample"><p class="eyebrow" style="margin:0"><span class="t-caps">Coleções</span><span class="t-mono">06</span></p></div><div class="tr-size">.72rem + .68rem<br><span class="ds-code">.eyebrow</span></div></div>
+      </div>
+    </section>
+
+    <!-- ═════════ FUNDOS ═════════ -->
+    <section class="ds-group" id="g-fundos" data-title="Fundos">
+      <header><h2 class="t-display-m">Fundos</h2><span class="t-mono">Fundação 04</span></header>
+      <p class="ds-note">O fundo principal é a <b>seda</b>: um shader WebGL de tecido drapeado, com dobras de cetim que refletem o ouro. É só atmosfera e nunca leva conteúdo. Os painéis de tecido em CSS marcam o lugar das fotos e usam croquis como ilustração até a fotografia real chegar.</p>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><div class="bg-spec"><canvas data-silk='{"colors":["#FDF7E7","#F9F1D8","#C6AF6C","#B19F6E"],"sheen":0.55,"scale":1.25,"speed":0.9}'></canvas></div><span class="ds-code">ARSilk(canvas, { colors: [marfim, manteiga, ouro-claro, ouro-antigo] })</span><span class="t-mono">Seda marfim · hero · fundo desta página</span></div>
+        <div class="ds-spec"><div class="bg-spec"><canvas data-silk='{"colors":["#3D3226","#4a3d2c","#C6AF6C","#1f1913"],"sheen":0.38,"scale":1.1,"shadow":0.5,"speed":0.7}'></canvas></div><span class="ds-code">ARSilk(canvas, { colors: [café, …, ouro-claro, sombra] })</span><span class="t-mono">Seda café · manifesto</span></div>
+      </div>
+      <div class="ds-sub"><h3>Tecidos &amp; espaços para foto</h3></div>
+      <div class="ds-grid-3">
+        <div class="ds-spec"><div class="bg-spec fab fabric fabric--marfim"><span data-croqui="noiva"></span><span class="slot-tag">Foto · 3:4</span></div><span class="ds-code">.fabric--marfim</span></div>
+        <div class="ds-spec"><div class="bg-spec fab fabric"><span data-croqui="princesa"></span><span class="slot-tag">Foto · 3:4</span></div><span class="ds-code">.fabric (manteiga)</span></div>
+        <div class="ds-spec"><div class="bg-spec fab fabric fabric--rose"><span data-croqui="sereia"></span><span class="slot-tag">Foto · 3:4</span></div><span class="ds-code">.fabric--rose</span></div>
+        <div class="ds-spec"><div class="bg-spec fab fabric fabric--champagne"><span data-croqui="coluna"></span><span class="slot-tag">Foto · 3:4</span></div><span class="ds-code">.fabric--champagne</span></div>
+        <div class="ds-spec"><div class="bg-spec fab fabric fabric--ouro"><span data-croqui="smoking"></span><span class="slot-tag">Foto · 3:4</span></div><span class="ds-code">.fabric--ouro</span></div>
+        <div class="ds-spec"><div class="bg-spec fab fabric fabric--cafe"><span data-croqui="sereia"></span><span class="slot-tag">Foto · 3:4</span></div><span class="ds-code">.fabric--cafe</span></div>
+      </div>
+      <div class="ds-sub"><h3>Textura &amp; estrutura</h3></div>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><div class="bg-spec" style="background:var(--marfim)"><div class="rules"><i></i><i></i><i></i></div><p class="t-display-m" style="position:absolute;left:var(--gutter);bottom:2rem;margin:0">Linhas <span class="t-italic">estruturais</span></p></div><span class="ds-code">.rules › i ×3</span><span class="t-mono">Linhas finas do ØDE, em ouro antigo</span></div>
+        <div class="ds-spec"><div class="bg-spec" style="background:var(--cafe)"><div class="grain" style="position:absolute;opacity:.18;mix-blend-mode:screen"></div><p class="t-display-m" style="position:absolute;left:2rem;bottom:2rem;margin:0;color:var(--marfim)">Grão de <span class="t-italic" style="color:var(--ouro-claro)">papel</span></p></div><span class="ds-code">.grain</span><span class="t-mono">Fixo na página inteira, 5% em multiply</span></div>
+      </div>
+    </section>
+
+    <!-- ═════════ SUPERFÍCIES ═════════ -->
+    <section class="ds-group" id="g-superficies" data-title="Superfícies">
+      <header><h2 class="t-display-m">Superfícies</h2><span class="t-mono">Fundação 05</span></header>
+      <div style="position:relative;padding:2rem;overflow:hidden;border-radius:var(--radius-card)">
+        <canvas data-silk='{"colors":["#FDF7E7","#F9F1D8","#C6AF6C","#B19F6E"],"sheen":0.7,"scale":1.6}' style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <div class="ds-grid-3" style="position:relative">
+          <div class="ds-spec"><div class="surface" style="padding:1.75rem;min-height:150px"><p class="t-display-s" style="margin:0">Marfim</p><p class="t-small">Superfície padrão</p></div><span class="ds-code">.surface</span></div>
+          <div class="ds-spec"><div class="surface-alt" style="padding:1.75rem;min-height:150px"><p class="t-display-s" style="margin:0">Manteiga</p><p class="t-small">Seções alternadas</p></div><span class="ds-code">.surface-alt</span></div>
+          <div class="ds-spec"><div class="surface-rose" style="padding:1.75rem;min-height:150px"><p class="t-display-s" style="margin:0">Rosé</p><p class="t-small">Destaque delicado</p></div><span class="ds-code">.surface-rose</span></div>
+          <div class="ds-spec"><div class="surface-glass" style="padding:1.75rem;min-height:150px"><p class="t-display-s" style="margin:0">Vidro</p><p class="t-small">Sobre a seda · header ao rolar</p></div><span class="ds-code">.surface-glass</span></div>
+          <div class="ds-spec"><div class="surface-dark" style="padding:1.75rem;min-height:150px"><p class="t-display-s" style="margin:0">Café</p><p class="t-small" style="color:var(--on-dark-soft)">Destaque · rodapé</p></div><span class="ds-code">.surface-dark</span></div>
+          <div class="ds-spec"><div class="surface glow" style="padding:1.75rem;min-height:150px"><p class="t-display-s" style="margin:0">Brilho</p><p class="t-small">Passe o cursor</p></div><span class="ds-code">.glow</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ ÍCONES ═════════ -->
+    <section class="ds-group" id="g-icones" data-title="Ícones">
+      <header><h2 class="t-display-m">Ícones &amp; ilustração</h2><span class="t-mono">Fundação 06</span></header>
+      <p class="ds-note">Os ícones são do um conjunto próprio em linha, no estilo <b>Solar Linear</b> das referências (grade 24, traço 1.5), servido localmente por <span class="ds-code">assets/icons.js</span>. A ilustração da marca são croquis de silhueta, desenhados à linha como num caderno de moda.</p>
+      <div class="icon-grid">
+        <div><ar-icon name="arrow-right"></ar-icon><span class="ds-code">arrow-right</span></div>
+        <div><ar-icon name="arrow-left"></ar-icon><span class="ds-code">arrow-left</span></div>
+        <div><ar-icon name="arrow-down"></ar-icon><span class="ds-code">arrow-down</span></div>
+        <div><ar-icon name="arrow-right-up"></ar-icon><span class="ds-code">arrow-right-up</span></div>
+        <div><ar-icon name="alt-arrow-down"></ar-icon><span class="ds-code">alt-arrow-down</span></div>
+        <div><ar-icon name="hamburger-menu"></ar-icon><span class="ds-code">hamburger-menu</span></div>
+        <div><ar-icon name="close-circle"></ar-icon><span class="ds-code">close-circle</span></div>
+        <div><span data-lotus></span><span class="ds-code">[data-lotus]</span></div>
+        <div><span data-lotus="solid"></span><span class="ds-code">[data-lotus=solid]</span></div>
+        <div><ar-icon name="calendar"></ar-icon><span class="ds-code">calendar</span></div>
+        <div><ar-icon name="needle"></ar-icon><span class="ds-code">needle</span></div>
+        <div><ar-icon name="hanger"></ar-icon><span class="ds-code">hanger</span></div>
+        <div></div><div></div><div></div><div></div>
+        <div><span data-croqui="noiva"></span><span class="ds-code">croqui noiva</span></div>
+        <div><span data-croqui="princesa"></span><span class="ds-code">croqui princesa</span></div>
+        <div><span data-croqui="sereia"></span><span class="ds-code">croqui sereia</span></div>
+        <div><span data-croqui="coluna"></span><span class="ds-code">croqui coluna</span></div>
+        <div><span data-croqui="smoking"></span><span class="ds-code">croqui smoking</span></div>
+      </div>
+    </section>
+
+    <!-- ═════════ AÇÕES ═════════ -->
+    <section class="ds-group" id="g-acoes" data-title="Ações">
+      <header><h2 class="t-display-m">Ações</h2><span class="t-mono">Componentes</span></header>
+      <div class="ds-sub"><h3>Botões</h3><span class="t-mono">pílula · caixa-alta .26em</span></div>
+      <div class="light-stage ds-row">
+        <a class="btn btn-gold">Ver o acervo <ar-icon name="arrow-right"></ar-icon></a>
+        <a class="btn btn-breathing">Agendar prova</a>
+        <a class="btn btn-dark">Reservar</a>
+        <a class="btn btn-sm btn-breathing">Pequeno</a>
+        <a class="btn btn-lg btn-gold">Grande <ar-icon name="arrow-right"></ar-icon></a>
+      </div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.btn.btn-gold</span><span class="ds-code">.btn.btn-breathing</span><span class="ds-code">.btn.btn-dark</span><span class="ds-code">.btn-sm</span><span class="ds-code">.btn-lg</span><span class="t-mono">Hover: folha de ouro desliza · halo respira · seta avança 3px</span></div>
+      <div class="dark-stage ds-row" style="margin-top:1.5rem">
+        <a class="btn btn-gold">Enviar pedido <ar-icon name="arrow-right"></ar-icon></a>
+        <a class="btn btn-on-dark btn-breathing">Sobre café</a>
+        <a class="magnet" id="ds-magnet">Falar com o ateliê <ar-icon name="arrow-right-up"></ar-icon></a>
+      </div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.btn-on-dark</span><span class="ds-code">.magnet</span><span class="t-mono">Magnético: atração de 35% em direção ao cursor</span></div>
+      <div class="ds-sub"><h3>Links</h3></div>
+      <div class="light-stage ds-row" style="gap:3rem">
+        <a class="link">Agendar prova</a><a class="link is-active">Ativo</a>
+        <span style="display:flex;align-items:center;gap:.75rem" class="t-mono">Role <span class="arrow-round"><ar-icon name="arrow-down"></ar-icon></span></span>
+      </div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.link</span><span class="ds-code">.link.is-active</span><span class="ds-code">.arrow-round</span></div>
+    </section>
+
+    <!-- ═════════ NAVEGAÇÃO ═════════ -->
+    <section class="ds-group" id="g-nav" data-title="Navegação">
+      <header><h2 class="t-display-m">Navegação</h2><span class="t-mono">Componentes</span></header>
+      <div class="ds-sub"><h3>Header</h3><span class="t-mono">transparente → vidro depois de 40px de rolagem</span></div>
+      <div style="position:relative;height:5.25rem;overflow:hidden;border:1px solid var(--line-soft)"><header class="site-header" style="position:absolute;background:var(--marfim)">
+        <a class="wordmark"><span data-lotus></span><span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span></a>
+        <nav class="site-nav"><a>Coleções</a><a class="nav-active">Como funciona</a><a>Provas</a><a>Locação</a><a>Contato</a></nav>
+        <a class="btn btn-sm btn-breathing">Agendar prova</a></header></div>
+      <div style="position:relative;height:4.25rem;overflow:hidden;margin-top:1rem"><canvas data-silk='{"sheen":0.7}' style="position:absolute;inset:0;width:100%;height:100%"></canvas><header class="site-header is-scrolled" style="position:absolute">
+        <a class="wordmark"><span data-lotus></span><span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span></a>
+        <nav class="site-nav"><a>Coleções</a><a>Como funciona</a><a class="nav-active">Provas</a><a>Locação</a><a>Contato</a></nav>
+        <a class="btn btn-sm btn-breathing">Agendar prova</a></header></div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.site-header</span><span class="ds-code">.site-header.is-scrolled</span><span class="ds-code">.site-nav a.nav-active</span><span class="t-mono">Ativo: losango de ouro abaixo do link</span></div>
+      <div class="ds-grid-2" style="margin-top:2.5rem">
+        <div class="ds-spec"><div class="light-stage"><div class="tabs" id="ds-tabs"><button class="tab is-active">Seg</button><button class="tab">Ter</button><button class="tab">Qua</button><button class="tab">Qui</button><button class="tab">Sex</button><button class="tab">Sáb</button></div></div><span class="ds-code">.tabs › .tab.is-active</span><span class="t-mono">Agenda de provas</span></div>
+        <div class="ds-spec"><div class="light-stage"><div class="plans-nav" id="ds-pnav"><button class="is-active">01 — Essencial</button><button>02 — Atelier</button><button>03 — Estreia</button></div></div><span class="ds-code">.plans-nav</span><span class="t-mono">Índice fixo que acompanha o card visível</span></div>
+      </div>
+      <div class="ds-grid-2" style="margin-top:1.5rem">
+        <div class="ds-spec"><div class="light-stage" style="display:flex;justify-content:space-between;align-items:center"><span class="t-mono"><b style="color:var(--ink);font-weight:400">01</b> / 03</span><div class="testi-nav"><button aria-label="Anterior"><ar-icon name="arrow-left"></ar-icon></button><button aria-label="Próximo"><ar-icon name="arrow-right"></ar-icon></button></div></div><span class="ds-code">.testi-nav</span></div>
+        <div class="ds-spec"><div class="light-stage" style="position:relative;height:6rem;overflow:hidden"><div class="progress" style="position:absolute;transform:scaleX(.62)"></div><span class="t-mono">62% da página</span></div><span class="ds-code">.progress</span><span class="t-mono">Fio de ouro no topo, ligado ao Lenis</span></div>
+      </div>
+    </section>
+
+    <!-- ═════════ FORMULÁRIOS ═════════ -->
+    <section class="ds-group" id="g-forms" data-title="Formulários">
+      <header><h2 class="t-display-m">Formulários</h2><span class="t-mono">Componentes</span></header>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><div class="dark-stage" style="display:grid;gap:1.6rem">
+          <div class="field"><input type="text" placeholder=" "><label>Seu nome</label></div>
+          <div class="field"><input type="text" placeholder=" " value="Casamento — noiva"><label>Ocasião</label></div>
+          <div class="field"><select class="js-select"><option value="" disabled selected hidden></option><option>Sereia</option><option>Princesa</option></select><label>Estilo desejado</label><ar-icon class="chev" name="alt-arrow-down"></ar-icon></div>
+          <label class="check"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 12 10" fill="none" stroke="#FDF7E7" stroke-width="1.6"><path d="M1 5l3.5 3.5L11 1"/></svg></span><span>Aceito receber o retorno do ateliê pelo WhatsApp.</span></label>
+        </div><span class="ds-code">.field · .check</span><span class="t-mono">Rótulo flutua para caixa-alta ouro ao focar</span></div>
+        <div class="ds-spec"><div class="light-stage" style="display:grid;gap:1.6rem">
+          <div class="field field--light"><input type="text" placeholder=" "><label>E-mail</label></div>
+          <div class="field field--light"><input type="text" placeholder=" " value="(00) 00000-0000"><label>WhatsApp</label></div>
+          <div style="display:grid;place-items:center;text-align:center;padding:1rem 0"><span data-lotus style="width:64px;height:64px;margin-bottom:1rem"></span><p class="t-display-s" style="margin:0">Pedido <em class="t-italic">recebido.</em></p><p class="t-small" style="margin:.4rem 0 0">Estado de sucesso do formulário</p></div>
+        </div><span class="ds-code">.field.field--light · .form-success</span></div>
+      </div>
+    </section>
+
+    <!-- ═════════ STATUS ═════════ -->
+    <section class="ds-group" id="g-status" data-title="Status">
+      <header><h2 class="t-display-m">Status</h2><span class="t-mono">Componentes</span></header>
+      <div class="light-stage ds-row"><span class="badge badge-ok">Disponível</span><span class="badge badge-few">Último horário</span><span class="badge badge-off">Reservado</span><span class="badge">Neutro</span><span class="badge badge-gold">Mais escolhido</span></div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.badge-ok</span><span class="ds-code">.badge-few</span><span class="ds-code">.badge-off</span><span class="ds-code">.badge</span><span class="ds-code">.badge-gold</span></div>
+    </section>
+
+    <!-- ═════════ CARTÕES ═════════ -->
+    <section class="ds-group" id="g-cards" data-title="Cartões">
+      <header><h2 class="t-display-m">Cartões &amp; listas</h2><span class="t-mono">Componentes</span></header>
+      <div class="ds-sub"><h3>Índice de coleções</h3><span class="t-mono">passe o cursor: as outras linhas esmaecem e o tecido segue o cursor</span></div>
+      <ul class="cat-list" id="ds-cat">
+        <li><a class="cat-row" data-preview="0"><span class="cat-no">01</span><span class="cat-name">Noivas</span><span class="cat-meta">Renda · cauda · véu</span></a></li>
+        <li><a class="cat-row" data-preview="1"><span class="cat-no">02</span><span class="cat-name"><em>Madrinhas</em></span><span class="cat-meta">Longos · fluidos</span></a></li>
+        <li><a class="cat-row" data-preview="2"><span class="cat-no">03</span><span class="cat-name">Gala &amp; <em>black tie</em></span><span class="cat-meta">Sereia · bordado</span></a></li>
+      </ul>
+      <div class="cat-preview" id="ds-cat-preview" aria-hidden="true"><div class="fabric fabric--marfim"><span data-croqui="noiva"></span></div><div class="fabric fabric--rose"><span data-croqui="sereia"></span></div><div class="fabric fabric--cafe"><span data-croqui="sereia"></span></div></div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.cat-list › .cat-row</span><span class="ds-code">.cat-preview</span></div>
+
+      <div class="ds-sub"><h3>Peça &amp; etapa</h3></div>
+      <div class="ds-grid-4">
+        <div class="ds-spec"><a class="piece"><div class="piece-media"><div class="fabric fabric--rose"><span data-croqui="sereia"></span><span class="slot-tag">Ref. AR-014</span></div></div><div class="piece-body"><div><p class="piece-name" style="margin:0">Vestido <em>Lis</em></p><p class="t-mono" style="margin:.4rem 0 0">Madrinha · crepe</p></div><span class="badge badge-few">Poucas datas</span></div></a><span class="ds-code">.piece</span></div>
+        <div class="ds-spec"><a class="piece"><div class="piece-media"><div class="fabric fabric--marfim"><span data-croqui="noiva"></span><span class="slot-tag">Ref. AR-001</span></div></div><div class="piece-body"><div><p class="piece-name" style="margin:0">Vestido <em>Aurora</em></p><p class="t-mono" style="margin:.4rem 0 0">Noiva · renda</p></div><span class="badge badge-ok">Disponível</span></div></a><span class="ds-code">.piece</span></div>
+        <div class="ds-spec"><article class="step"><div class="step-media"><div class="fabric fabric--champagne"><span data-croqui="coluna"></span></div></div><div class="step-head"><span class="step-title">O <em>ajuste</em></span><span class="t-mono">03</span></div><p class="t-small" style="margin:0">Barra, cintura, alças e busto acertados à mão.</p></article><span class="ds-code">.step</span></div>
+        <div class="ds-spec tilt-stage"><article class="tilt-card"><div class="tilt-media"><div class="fabric fabric--rose"><span data-croqui="noiva"></span><span class="slot-tag">Retrato · 3:4</span></div></div><h3 class="tilt-name">Andréia Ribeiro</h3><p class="t-mono" style="margin:0">Fundadora &amp; estilista</p></article><span class="ds-code">.tilt-card</span><span class="t-mono">Inclina ±9° na direção do cursor</span></div>
+      </div>
+
+      <div class="ds-sub"><h3>Formatos de locação</h3></div>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><article class="plan glow"><p class="t-mono" style="margin:0 0 1rem">01</p><h3 class="plan-name">Locação <em class="t-italic">Essencial</em></h3><p class="t-small" style="margin:.6rem 0 0">Para quem já sabe o que quer vestir.</p><p class="plan-price">Sob consulta</p><p class="t-mono" style="margin:0">por peça · 4 dias</p><ul class="plan-list"><li>Uma prova no ateliê</li><li>Ajustes de barra e alça</li><li>Higienização inclusa</li></ul><a class="btn btn-breathing">Reservar <ar-icon name="arrow-right"></ar-icon></a></article><span class="ds-code">.plan.glow</span></div>
+        <div class="ds-spec"><article class="plan plan--featured glow"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><span class="t-mono" style="color:rgba(253,247,231,.45)">02</span><span class="badge badge-gold">Mais escolhido</span></div><h3 class="plan-name">Locação <em class="t-italic" style="color:var(--ouro-claro)">Atelier</em></h3><p class="t-small" style="margin:.6rem 0 0">O traje com as suas medidas.</p><p class="plan-price">Sob consulta</p><p class="t-mono" style="margin:0;color:rgba(253,247,231,.45)">por peça · 4 dias</p><ul class="plan-list"><li>Até três provas</li><li>Ajustes sob medida</li><li>Acessórios do acervo</li></ul><a class="btn btn-gold">Reservar <ar-icon name="arrow-right"></ar-icon></a></article><span class="ds-code">.plan.plan--featured</span></div>
+      </div>
+
+      <div class="ds-sub"><h3>Horário de prova &amp; depoimento</h3></div>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><div class="surface-alt"><div class="slot"><div class="slot-time">10<small>:00</small></div><div><div class="slot-title">Prova de noiva</div><div class="slot-meta"><span class="t-mono">90 min</span><span class="t-mono">Ateliê · sala única</span></div></div><span class="badge badge-ok">Disponível</span></div><div class="slot"><div class="slot-time">14<small>:30</small></div><div><div class="slot-title">Prova de madrinha</div><div class="slot-meta"><span class="t-mono">60 min</span></div></div><span class="badge badge-off">Reservado</span></div></div><span class="ds-code">.slot</span></div>
+        <div class="ds-spec"><div class="light-stage"><span class="quote-mark">“</span><blockquote class="quote" style="font-size:2rem">Espaço para o depoimento real de uma cliente sobre a prova e a noite.</blockquote><div class="testi-who" style="margin-top:1.25rem;display:flex;gap:1rem"><b style="font-weight:400">Nome da cliente</b><span class="t-mono">Noiva · 2026</span></div></div><span class="ds-code">.quote · .quote-mark</span></div>
+      </div>
+    </section>
+
+    <!-- ═════════ PADRÕES ═════════ -->
+    <section class="ds-group" id="g-padroes" data-title="Padrões">
+      <header><h2 class="t-display-m">Padrões de seção</h2><span class="t-mono">Componentes</span></header>
+      <div class="ds-sub"><h3>Marquee</h3><span class="t-mono">velocidade e direção seguem a rolagem</span></div>
+      <div class="marquee" style="background:var(--marfim)"><div class="marquee-row" id="ds-marquee">
+        <div class="marquee-track" style="font-size:4rem"><span>Noivas</span><span data-lotus></span><span><em>Madrinhas</em></span><span data-lotus></span><span>Debutantes</span><span data-lotus></span><span><em>Black tie</em></span><span data-lotus></span></div>
+        <div class="marquee-track" style="font-size:4rem"><span>Noivas</span><span data-lotus></span><span><em>Madrinhas</em></span><span data-lotus></span><span>Debutantes</span><span data-lotus></span><span><em>Black tie</em></span><span data-lotus></span></div>
+      </div></div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.marquee › .marquee-row › .marquee-track ×2</span></div>
+
+      <div class="ds-sub"><h3>Lâminas</h3><span class="t-mono">fusão cinematográfica; no site fica fixa durante a rolagem</span></div>
+      <section class="plates plates-mini" id="ds-plates">
+        <div aria-hidden="true">
+          <div class="plate-frame"><div class="plate-img fabric fabric--champagne"><span data-croqui="noiva"></span></div></div>
+          <div class="plate-frame"><div class="plate-img fabric fabric--rose"><span data-croqui="princesa"></span></div></div>
+          <div class="plate-frame"><div class="plate-img fabric fabric--cafe"><span data-croqui="sereia"></span></div></div>
+        </div>
+        <div class="plates-scrim"></div>
+        <span class="plates-label">O acervo — em movimento</span><span class="plates-count"><b class="pl-now">01</b> / 03</span>
+        <div class="plates-caps">
+          <p class="plate-cap is-on"><span class="plate-cap-title">Vestido <em>Aurora</em></span><span class="plate-cap-text">Renda francesa sobre tule, cauda capela.</span></p>
+          <p class="plate-cap"><span class="plate-cap-title">Vestido <em>Valsa</em></span><span class="plate-cap-text">Camadas de tule rosé, corpete estruturado.</span></p>
+          <p class="plate-cap"><span class="plate-cap-title">Vestido <em>Noite</em></span><span class="plate-cap-text">Sereia bordada à mão em fios dourados.</span></p>
+        </div>
+      </section>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.plates › .plate-frame › .plate-img</span><span class="ds-code">.plate-cap.is-on</span></div>
+
+      <div class="ds-sub"><h3>Números &amp; preenchimento de palavras</h3></div>
+      <div class="ds-grid-2">
+        <div class="ds-spec"><div class="light-stage numbers-demo" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div style="border-top:1px solid var(--line);padding-top:1rem"><p class="t-num" style="font-size:4rem;margin:0" data-ds-count="3">3</p><p class="t-mono" style="margin:.6rem 0 0">Provas no ateliê</p></div>
+          <div style="border-top:1px solid var(--line);padding-top:1rem"><p class="t-num" style="font-size:4rem;margin:0"><span data-ds-count="100">100</span><sup style="font-size:.35em;color:var(--ouro)">%</sup></p><p class="t-mono" style="margin:.6rem 0 0">Ajustes à mão</p></div>
+        </div><span class="ds-code">[data-count]</span><span class="t-mono">Conta até o valor ao entrar na tela</span></div>
+        <div class="ds-spec"><div class="light-stage"><p class="fill-text" id="ds-fill" style="font-family:var(--f-display);font-weight:300;font-size:2.1rem;line-height:1.15;margin:0">Um traje de alta-costura não pertence a uma pessoa — pertence a uma noite.</p></div><span class="ds-code">.fill-text</span><span class="t-mono">Palavras vão de 14% a 100% conforme a rolagem</span></div>
+      </div>
+
+      <div class="ds-sub"><h3>Abertura</h3><span class="t-mono">o lótus se desenha enquanto o contador sobe, depois a tela corta para cima</span></div>
+      <div class="loader-mini" id="ds-loader-wrap"><div class="loader" id="ds-loader"><span data-lotus></span><div class="loader-base"><p class="t-mono" style="margin:0">Andréia Ribeiro — Atelier</p><p class="loader-count" id="ds-counter" style="margin:0">000</p></div></div></div>
+      <div class="ds-row" style="margin-top:.8rem;gap:.6rem"><span class="ds-code">.loader · .loader-count</span><button class="btn btn-sm btn-breathing" id="ds-replay-loader">Repetir abertura</button></div>
+    </section>
+
+    <!-- ═════════ MOVIMENTO ═════════ -->
+    <section class="ds-group" id="g-mov" data-title="Movimento">
+      <header><h2 class="t-display-m">Movimento</h2><span class="t-mono">Fundação 07</span></header>
+      <p class="ds-note">A regra é a mesma do ØDE: <i>uma personalidade de easing para tudo</i>. Aqui ela é um pouco mais lenta, como seda que assenta, e nada pula ou quica. Com <span class="ds-code">prefers-reduced-motion</span>, tudo aparece já no estado final.</p>
+      <table class="motion-table">
+        <tr><th>Token</th><th>Valor</th><th>Uso</th></tr>
+        <tr><td><span class="ds-code">--ease-out</span></td><td class="t-mono">cubic-bezier(.16, 1, .3, 1)</td><td>Hover, links, cards, halo</td></tr>
+        <tr><td><span class="ds-code">--ease-inout</span></td><td class="t-mono">cubic-bezier(.65, 0, .35, 1)</td><td>Folha de ouro, cortes de tela</td></tr>
+        <tr><td><span class="ds-code">--ease-weight</span></td><td class="t-mono">cubic-bezier(.33, 1, .68, 1)</td><td>Nome da coleção ao passar o cursor</td></tr>
+        <tr><td><span class="ds-code">GSAP</span></td><td class="t-mono">power3.out · power2.inOut</td><td>Entradas, letras, revelações, desenho de traço</td></tr>
+        <tr><td><span class="ds-code">--dur-fast / --dur / --dur-slow</span></td><td class="t-mono">.35s / .6s / 1.2s</td><td>Estados · transições · entradas</td></tr>
+        <tr><td><span class="ds-code">Lenis</span></td><td class="t-mono">lerp .1 · inclinação máx. 1.6°</td><td>Rolagem suave, marquee, barra de progresso</td></tr>
+      </table>
+      <div class="ds-grid-3" style="margin-top:2rem">
+        <div class="demo"><div class="demo-stage light-stage"><span data-lotus id="demo-lotus" style="width:150px;height:150px"></span></div><button class="btn btn-sm btn-breathing" data-demo="lotus">Desenhar o lótus</button><span class="ds-code">stroke-dashoffset 100 → 0 · pétalas em cascata</span></div>
+        <div class="demo"><div class="demo-stage light-stage"><p class="t-display-l" id="demo-chars" style="margin:0;overflow:hidden">Alta-<span class="t-italic">costura</span></p></div><button class="btn btn-sm btn-breathing" data-demo="chars">Subir letras</button><span class="ds-code">SplitText chars · yPercent 115 → 0 · stagger .03</span></div>
+        <div class="demo"><div class="demo-stage light-stage" style="padding:1.25rem"><div class="reveal-wrap" id="demo-reveal" style="width:150px;aspect-ratio:3/4;clip-path:inset(0)"><div class="reveal-inner" style="transform:none"><div class="fabric fabric--rose" style="height:100%"><span data-croqui="princesa"></span></div></div></div></div><button class="btn btn-sm btn-breathing" data-demo="reveal">Revelar &amp; croqui</button><span class="ds-code">clip-path inset(100% 0 0 0) → 0 · croqui se desenha</span></div>
+      </div>
+    </section>
+
+    </div>
+  </div>
+  </div>
+</main>
+
+<script src="assets/lotus.js"></script>
+<script src="assets/croquis.js"></script>
+<script src="assets/silk.js"></script>
+<script>
+  /* ── router ── */
+  (function () {
+    var views = ['overview', 'components'];
+    function link(v) { return document.querySelector('.ds-header .site-nav a[data-view="' + v + '"]'); }
+    function route() {
+      var v = location.hash.replace('#', '');
+      if (views.indexOf(v) === -1) v = 'overview';
+      views.forEach(function (id) {
+        document.getElementById(id).hidden = id !== v;
+        link(id).classList.toggle('nav-active', id === v);
+        if (id === v) link(id).setAttribute('aria-current', 'page'); else link(id).removeAttribute('aria-current');
+      });
+      if (v === 'components') window.dispatchEvent(new Event('resize'));
+    }
+    window.addEventListener('hashchange', route);
+    if (!location.hash) history.replaceState(null, '', '#overview');
+    route();
+  })();
+
+  /* ── components: live background ── */
+  ARSilk(document.getElementById('ds-silk'), { colors: ['#FDF7E7', '#F9F1D8', '#C6AF6C', '#B19F6E'], sheen: .55, scale: 1.25, speed: .8 });
+
+  /* ── sidebar from groups + scroll-spy ── */
+  (function () {
+    var side = document.getElementById('ds-side'), scroller = document.getElementById('ds-scroll');
+    var groups = [].slice.call(document.querySelectorAll('.ds-group'));
+    side.innerHTML = '<p class="t-mono" style="margin:0 0 1rem">Grupos</p>' + groups.map(function (g, i) {
+      return '<a href="#components" data-target="' + g.id + '">' + g.dataset.title + '<span>' + String(i + 1).padStart(2, '0') + '</span></a>';
+    }).join('');
+    side.addEventListener('click', function (e) {
+      var a = e.target.closest('a'); if (!a) return; e.preventDefault();
+      document.getElementById(a.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    var links = [].slice.call(side.querySelectorAll('a'));
+    scroller.addEventListener('scroll', function () {
+      var y = scroller.scrollTop + 160, cur = 0;
+      groups.forEach(function (g, i) { if (g.offsetTop <= y) cur = i; });
+      links.forEach(function (l, i) { l.classList.toggle('is-active', i === cur); });
+    }, { passive: true });
+  })();
+
+  /* ── swatches (by function) ── */
+  (function () {
+    var G = [
+      ['Marca &amp; destaque', [
+        ['#B99847', 'Dourado principal', '--ouro', 'Marca, itálicos, botão ouro'],
+        ['#C6AF6C', 'Dourado claro', '--ouro-claro', 'Brilho, ouro sobre café'],
+        ['#B19F6E', 'Dourado antigo', '--ouro-antigo', 'Traços, linhas, croquis'],
+        ['#7A6230', 'Bronze', '--bronze', 'Texto dourado sobre claro'],
+        ['foil', 'Folha de ouro', '--gold-foil', 'Botão ouro, barra de progresso']]],
+      ['Superfícies', [
+        ['#FDF7E7', 'Creme marfim', '--marfim · --bg', 'Fundo principal'],
+        ['#F9F1D8', 'Creme manteiga', '--manteiga · --bg-alt', 'Seções alternadas'],
+        ['#F3DFD2', 'Rosé blush', '--rose', 'Detalhe, seleção, tecidos'],
+        ['#3D3226', 'Café', '--cafe · --bg-dark', 'Seções escuras, rodapé']]],
+      ['Texto', [
+        ['ink:#3D3226', 'Texto principal', '--ink', 'Títulos e corpo'],
+        ['ink:rgba(61,50,38,.68)', 'Texto suave', '--ink-soft', 'Parágrafos'],
+        ['ink:rgba(61,50,38,.45)', 'Texto apagado', '--ink-mute', 'Etiquetas mono'],
+        ['dark:#FDF7E7', 'Texto sobre café', '--on-dark', 'Títulos no escuro'],
+        ['dark:rgba(253,247,231,.62)', 'Suave sobre café', '--on-dark-soft', 'Corpo no escuro']]],
+      ['Linhas', [
+        ['line:rgba(177,159,110,.38)', 'Linha', '--line', 'Divisores, bordas de cards'],
+        ['line:rgba(177,159,110,.18)', 'Linha suave', '--line-soft', 'Linhas estruturais'],
+        ['dline:rgba(198,175,108,.22)', 'Linha sobre café', '--line-dark', 'Divisores no escuro']]]
+    ];
+    var html = '';
+    G.forEach(function (g) {
+      html += '<div class="ds-sub"><h3>' + g[0] + '</h3></div><div class="sw-grid">';
+      g[1].forEach(function (c) {
+        var v = c[0], chip;
+        if (v === 'foil') chip = '<div class="sw-chip" style="background:var(--gold-foil)"></div>', v = 'linear-gradient(115deg …)';
+        else if (v.indexOf('ink:') === 0) { v = v.slice(4); chip = '<div class="sw-chip on-marfim"><span class="ink" style="color:' + v + '">Aa</span></div>'; }
+        else if (v.indexOf('dark:') === 0) { v = v.slice(5); chip = '<div class="sw-chip on-cafe"><span class="ink" style="color:' + v + '">Aa</span></div>'; }
+        else if (v.indexOf('dline:') === 0) { v = v.slice(6); chip = '<div class="sw-chip on-cafe" style="background-image:linear-gradient(' + v + ',' + v + ');background-size:100% 1px;background-repeat:no-repeat;background-position:0 50%"></div>'; }
+        else if (v.indexOf('line:') === 0) { v = v.slice(5); chip = '<div class="sw-chip on-marfim" style="background-image:linear-gradient(' + v + ',' + v + ');background-size:100% 1px;background-repeat:no-repeat;background-position:0 50%"></div>'; }
+        else chip = '<div class="sw-chip" style="background:' + v + '"></div>';
+        html += '<div class="sw">' + chip + '<div class="sw-body"><b>' + c[1] + '</b><span class="ds-code">' + c[2] + '</span><span class="t-mono">' + v + '</span><span class="t-small">' + c[3] + '</span></div></div>';
+      });
+      html += '</div>';
+    });
+    document.getElementById('swatches').innerHTML = html;
+  })();
+
+  /* ── interactions reused from the Overview ── */
+  document.querySelectorAll('.glow').forEach(function (el) { el.addEventListener('mousemove', function (e) { var r = el.getBoundingClientRect(); el.style.setProperty('--x', (e.clientX - r.left) + 'px'); el.style.setProperty('--y', (e.clientY - r.top) + 'px'); }); });
+  document.querySelectorAll('.js-select').forEach(function (s) { s.addEventListener('change', function () { s.classList.toggle('has-value', !!s.value); }); });
+  document.getElementById('ds-pnav').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; this.querySelectorAll('button').forEach(function (t) { t.classList.toggle('is-active', t === b); }); });
+  document.getElementById('ds-tabs').addEventListener('click', function (e) { var b = e.target.closest('.tab'); if (!b) return; this.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('is-active', t === b); }); });
+
+  if (window.gsap) {
+    var fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+    /* catalogue preview */
+    (function () {
+      var list = document.getElementById('ds-cat'), pv = document.getElementById('ds-cat-preview'), frames = pv.children;
+      if (!fine) return;
+      gsap.set(pv, { xPercent: -50, yPercent: -50, scale: .88, autoAlpha: 0, rotate: -3 });
+      var px = gsap.quickTo(pv, 'x', { duration: .6, ease: 'power3' }), py = gsap.quickTo(pv, 'y', { duration: .6, ease: 'power3' });
+      list.addEventListener('mouseenter', function (e) { gsap.set(pv, { x: e.clientX, y: e.clientY }); });
+      list.addEventListener('mousemove', function (e) { px(e.clientX); py(e.clientY); });
+      list.querySelectorAll('.cat-row').forEach(function (row) { row.addEventListener('mouseenter', function () { [].forEach.call(frames, function (f, i) { f.classList.toggle('is-on', i === +row.dataset.preview); }); gsap.to(pv, { autoAlpha: 1, scale: 1, rotate: 0, duration: .55, ease: 'power3' }); }); });
+      list.addEventListener('mouseleave', function () { gsap.to(pv, { autoAlpha: 0, scale: .88, rotate: -3, duration: .4, ease: 'power3' }); });
+    })();
+    /* tilt */
+    if (fine) document.querySelectorAll('.tilt-card').forEach(function (card) {
+      var rx = gsap.quickTo(card, 'rotationX', { duration: .5, ease: 'power3' }), ry = gsap.quickTo(card, 'rotationY', { duration: .5, ease: 'power3' });
+      card.addEventListener('mousemove', function (e) { var r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; ry(x * 9); rx(-y * 9); card.style.setProperty('--mx', (x + .5) * 100 + '%'); card.style.setProperty('--my', (y + .5) * 100 + '%'); });
+      card.addEventListener('mouseleave', function () { rx(0); ry(0); });
+    });
+    /* magnet */
+    (function () { var m = document.getElementById('ds-magnet'); if (!fine) return;
+      m.addEventListener('mousemove', function (e) { var r = m.getBoundingClientRect(); gsap.to(m, { x: (e.clientX - r.left - r.width / 2) * .35, y: (e.clientY - r.top - r.height / 2) * .35, duration: .6, ease: 'power3.out' }); });
+      m.addEventListener('mouseleave', function () { gsap.to(m, { x: 0, y: 0, duration: .9, ease: 'elastic.out(1,.5)' }); }); })();
+    /* marquee */
+    gsap.to('#ds-marquee .marquee-track', { xPercent: -100, repeat: -1, duration: 26, ease: 'none' });
+    /* plates — auto cross-dissolve in the catalog */
+    (function () {
+      var frames = gsap.utils.toArray('#ds-plates .plate-frame'), caps = gsap.utils.toArray('#ds-plates .plate-cap'), now = document.querySelector('#ds-plates .pl-now'), i = 0;
+      gsap.set(frames, { opacity: function (k) { return k ? 0 : 1; } });
+      setInterval(function () {
+        var n = (i + 1) % frames.length;
+        gsap.to(frames[i], { opacity: 0, duration: 1.6, ease: 'power2.inOut' }); gsap.to(frames[n], { opacity: 1, duration: 1.6, ease: 'power2.inOut' });
+        gsap.fromTo(frames[n].querySelector('.plate-img'), { scale: 1.12 }, { scale: 1, duration: 4.5, ease: 'none' });
+        caps.forEach(function (c, k) { c.classList.toggle('is-on', k === n); }); now.textContent = String(n + 1).padStart(2, '0'); i = n;
+      }, 4000);
+    })();
+    /* fill text — loops slowly so the effect is visible without scroll */
+    (function () { if (!window.SplitText) return; var s = new SplitText('#ds-fill', { type: 'words' });
+      gsap.fromTo(s.words, { opacity: .14 }, { opacity: 1, stagger: .18, duration: .6, ease: 'none', repeat: -1, repeatDelay: 1.5, yoyo: true }); })();
+    /* loader replay */
+    function playLoader() {
+      var L = document.getElementById('ds-loader'), c = { v: 0 }, el = document.getElementById('ds-counter');
+      gsap.set(L, { yPercent: 0 }); gsap.set('#ds-loader .lp', { strokeDasharray: 100, strokeDashoffset: 100 }); gsap.set('#ds-loader .lp-core', { fillOpacity: 0 });
+      gsap.timeline()
+        .to(c, { v: 100, duration: 2.2, ease: 'power2.inOut', onUpdate: function () { el.textContent = String(Math.round(c.v)).padStart(3, '0'); } }, 0)
+        .to('#ds-loader .lp-outer', { strokeDashoffset: 0, duration: 1.1, stagger: .07, ease: 'power2.inOut' }, 0)
+        .to('#ds-loader .lp-mid', { strokeDashoffset: 0, duration: 1, stagger: .06, ease: 'power2.inOut' }, .45)
+        .to('#ds-loader .lp-inner', { strokeDashoffset: 0, duration: .9, stagger: .05, ease: 'power2.inOut' }, .8)
+        .to('#ds-loader .lp-core, #ds-loader .lp-core-inner', { strokeDashoffset: 0, fillOpacity: 1, duration: .8 }, 1.4)
+        .to(L, { yPercent: -100, duration: 1, ease: 'power3.inOut' }, '+=0.5')
+        .set(L, { yPercent: 0 }, '+=1.2');
+    }
+    document.getElementById('ds-replay-loader').addEventListener('click', playLoader);
+    /* motion demos */
+    document.querySelectorAll('[data-demo]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.dataset.demo;
+        if (k === 'lotus') {
+          gsap.fromTo('#demo-lotus .lp', { strokeDasharray: 100, strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 1.4, stagger: .03, ease: 'power2.inOut' });
+          gsap.fromTo('#demo-lotus .lp-core', { fillOpacity: 0 }, { fillOpacity: 1, duration: .6, delay: 1.2 });
+        }
+        if (k === 'chars' && window.SplitText) {
+          var el = document.getElementById('demo-chars');
+          if (!el._split) el._split = new SplitText(el, { type: 'chars', charsClass: 'char' });
+          gsap.fromTo(el._split.chars, { yPercent: 115 }, { yPercent: 0, duration: 1.1, stagger: .03, ease: 'power3.out' });
+        }
+        if (k === 'reveal') {
+          var w = document.getElementById('demo-reveal');
+          gsap.fromTo(w, { clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0% 0 0 0)', duration: 1.3, ease: 'power3.out' });
+          gsap.fromTo(w.querySelector('.reveal-inner'), { scale: 1.15 }, { scale: 1, duration: 1.3, ease: 'power3.out' });
+          gsap.fromTo(w.querySelectorAll('[data-croqui] path'), { strokeDasharray: 100, strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 2, stagger: .06, ease: 'power2.inOut', delay: .3 });
+        }
+      });
+    });
+  }
+</script>
+</body>
+</html>

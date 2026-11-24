@@ -1,0 +1,23 @@
+---
+// Loader: o lótus se desenha enquanto o contador enche e depois sobe num corte
+// limpo. A animação é conduzida pela intro da hero (Hero.astro).
+---
+
+<div class="loader" id="loader">
+	<span data-lotus></span>
+	<div class="loader-base">
+		<p class="t-mono" style="margin:0">Andréia Ribeiro — Atelier · Alta-costura para locação</p>
+		<p class="loader-count" id="counter" style="margin:0">000</p>
+	</div>
+</div>
+<script is:inline>
+	/* segurança: se algo falhar, o loader nunca prende a página */
+	window.__arIntroDone = false;
+	setTimeout(function () {
+		if (!window.__arIntroDone) {
+			var l = document.getElementById('loader');
+			if (l) l.style.display = 'none';
+			document.body.style.overflow = '';
+		}
+	}, 6500);
+</script>

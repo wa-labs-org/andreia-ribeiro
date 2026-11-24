@@ -1,0 +1,133 @@
+---
+// Header fixo (moldura ØDE + CTA que respira) e menu mobile em café.
+// Os destinos são âncoras das próximas seções da home.
+const links = [
+	{ href: '#colecoes', label: 'Coleções', mobile: 'Coleções' },
+	{ href: '#processo', label: 'Como funciona', mobile: 'Como <em>funciona</em>' },
+	{ href: '#provas', label: 'Provas', mobile: 'Provas' },
+	{ href: '#planos', label: 'Locação', mobile: 'Locação' },
+	{ href: '#contato', label: 'Contato', mobile: '<em>Contato</em>' },
+];
+---
+
+<header class="site-header" id="site-header">
+	<a href="#top" class="wordmark" aria-label="Andréia Ribeiro Atelier — início">
+		<span data-lotus></span>
+		<span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span>
+	</a>
+	<nav class="site-nav" aria-label="Principal">
+		{links.map((l) => <a href={l.href}>{l.label}</a>)}
+	</nav>
+	<a href="#contato" class="btn btn-sm btn-breathing">Agendar prova</a>
+	<button class="menu-btn" id="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mmenu">
+		<ar-icon name="hamburger-menu"></ar-icon>
+	</button>
+</header>
+
+<div class="mmenu" id="mmenu">
+	<div class="mmenu-top">
+		<span class="wordmark mmenu-mark">
+			<span data-lotus></span>
+			<span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span>
+		</span>
+		<button id="menu-close" class="mmenu-close" aria-label="Fechar menu"><ar-icon name="close-circle"></ar-icon></button>
+	</div>
+	<nav aria-label="Menu">
+		{links.map((l) => <a href={l.href} class="m-link" set:html={l.mobile} />)}
+	</nav>
+	<p class="t-mono mmenu-foot">Atendimento com hora marcada</p>
+</div>
+
+<style>
+	.mmenu {
+		position: fixed;
+		inset: 0;
+		z-index: 98;
+		background: var(--cafe);
+		color: var(--marfim);
+		display: none;
+		flex-direction: column;
+		padding: 1.5rem var(--gutter);
+		visibility: hidden;
+	}
+	.mmenu.is-open {
+		display: flex;
+	}
+	.mmenu-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 2.75rem;
+	}
+	.mmenu-mark {
+		color: var(--marfim);
+	}
+	.mmenu-mark .wordmark-name,
+	.mmenu-mark .wordmark-sub,
+	.mmenu-close {
+		color: var(--ouro-claro);
+	}
+	.mmenu-close {
+		font-size: 1.8rem;
+	}
+	.mmenu nav {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.4rem;
+	}
+	.mmenu nav a {
+		font-family: var(--f-display);
+		font-size: 3rem;
+		font-weight: 300;
+		line-height: 1.1;
+	}
+	.mmenu nav a :global(em) {
+		color: var(--ouro-claro);
+	}
+	.mmenu-foot {
+		color: rgba(253, 247, 231, 0.45);
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, lenis } from '../scripts/motion.js';
+
+	/* menu mobile */
+	const menu = document.getElementById('mmenu')!;
+	const btn = document.getElementById('menu-btn')!;
+	const close = document.getElementById('menu-close')!;
+	const open = () => {
+		btn.setAttribute('aria-expanded', 'true');
+		menu.classList.add('is-open');
+		lenis.stop();
+		gsap.fromTo(menu, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 });
+		gsap.fromTo('#mmenu .m-link', { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.06, ease: 'power3.out' });
+		close.focus();
+	};
+	const shut = () => {
+		btn.setAttribute('aria-expanded', 'false');
+		lenis.start();
+		gsap.to(menu, { autoAlpha: 0, duration: 0.3, onComplete: () => menu.classList.remove('is-open') });
+		btn.focus();
+	};
+	btn.addEventListener('click', open);
+	close.addEventListener('click', shut);
+	menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && menu.classList.contains('is-open')) shut();
+	});
+
+	/* scroll-spy: marca o item da seção visível (quando a seção existir) */
+	document.querySelectorAll<HTMLAnchorElement>('.site-nav a').forEach((link) => {
+		const sec = document.querySelector(link.getAttribute('href')!);
+		if (!sec) return;
+		ScrollTrigger.create({
+			trigger: sec,
+			start: 'top center',
+			end: 'bottom center',
+			onToggle: (s) => link.classList.toggle('nav-active', s.isActive),
+		});
+	});
+</script>
