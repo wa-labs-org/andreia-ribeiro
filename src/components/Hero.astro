@@ -1,11 +1,11 @@
 ---
-// Hero: atmosfera de seda (WebGL), a tipografia conduz.
+// Hero: atmosfera de iridescência em cetim (WebGL2, paleta da seda), a tipografia conduz.
 // Intro: o lótus do loader se desenha com o contador, o loader sobe, as letras
 // do título sobem uma a uma e o lótus da hero se desenha junto.
 ---
 
 <section class="hero" id="top">
-	<div class="hero-bg"><canvas id="hero-silk"></canvas></div>
+	<div class="hero-bg" id="hero-iridescence"></div>
 	<div class="hero-veil"></div>
 	<div class="rules" aria-hidden="true"><i></i><i></i><i></i></div>
 	<div class="hero-inner">
@@ -46,10 +46,7 @@
 		position: absolute;
 		inset: 0;
 		z-index: 0;
-	}
-	.hero-bg canvas {
-		width: 100%;
-		height: 100%;
+		overflow: hidden;
 	}
 	.hero-veil {
 		position: absolute;
@@ -128,13 +125,23 @@
 
 <script>
 	import { gsap, ScrollTrigger, SplitText, lenis, reduceMotion, CONFIG } from '../scripts/motion.js';
+	import { createIridescence } from '../scripts/iridescence.js';
 
-	/* atmosfera de seda */
-	(window as any).ARSilk(document.getElementById('hero-silk'), {
-		colors: ['#FDF7E7', '#F9F1D8', '#C6AF6C', '#B19F6E'],
-		sheen: 0.55,
-		scale: 1.25,
-		speed: 0.9,
+	/* iridescência em cetim: mesmo desenho do componente original, cores da seda */
+	createIridescence(document.getElementById('hero-iridescence')!, {
+		colors: ['#FDF7E7', '#F9F1D8', '#C6AF6C', '#B19F6E'], // marfim, manteiga, ouro-claro, ouro-antigo
+		satin: 0.55,
+		shadow: 0.14,
+		speed: 1,
+		scale: 1.4,
+		detail: 8,
+		warp: 1,
+		rotation: 0,
+		mouseReact: true,
+		amplitude: 0.1,
+		stir: 0.5,
+		sheen: 0.3,
+		clickSwirl: true,
 	});
 
 	/* loader → hero */
