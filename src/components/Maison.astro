@@ -1,10 +1,15 @@
 ---
 // Maison (segunda dobra): a filosofia do ateliê em duas linhas alternadas,
 // imagem 4:5 + texto, com "Atelier" vazado ao fundo.
-// Linhas com `foto` mostram a fotografia (otimizada pelo Astro em AVIF/WebP);
-// as demais ainda são painéis de tecido com croqui, marcando o lugar da foto real.
+// Linhas com `galeria` mostram um monte de fotos em leque (arrastar manda a de cima
+// para o fim); com `foto`, uma fotografia; sem nenhuma, o painel de tecido com
+// croqui marca o lugar da foto real. Fotos otimizadas pelo Astro em AVIF/WebP.
 import { Picture } from 'astro:assets';
 import noivaRenda from '../assets/maison/noiva-renda.jpg';
+import noivaFrente from '../assets/maison/noiva-frente.jpg';
+import noivaCostas from '../assets/maison/noiva-costas.jpg';
+import noivaCostasPerfil from '../assets/maison/noiva-costas-perfil.jpg';
+import noivaCorpete from '../assets/maison/noiva-corpete.jpg';
 
 const linhas = [
 	{
@@ -16,11 +21,33 @@ const linhas = [
 			'Cada traje do acervo passa pelas mãos do ateliê antes de chegar até você. Bainhas, cinturas e alças são ajustadas em provas com hora marcada, sem pressa.',
 			'A locação é sob medida; o atendimento também.',
 		],
-		foto: {
-			src: noivaRenda,
-			alt: 'Noiva em vestido de renda branca com mangas longas, decote em V recortado, faixa de cetim na cintura e saia ampla, posando em estúdio.',
-			posicao: '50% 85%',
-		},
+		galeria: [
+			{
+				src: noivaRenda,
+				alt: 'Noiva em vestido de renda branca com mangas longas, decote em V recortado, faixa de cetim na cintura e saia ampla, posando em estúdio.',
+				posicao: '50% 85%',
+			},
+			{
+				src: noivaFrente,
+				alt: 'Noiva de frente, com a mão no ombro, mostrando o corpete de renda e a saia ampla do vestido.',
+				posicao: '50% 80%',
+			},
+			{
+				src: noivaCostas,
+				alt: 'Noiva de costas, olhando por cima do ombro, mostrando as costas em renda e o volume da saia.',
+				posicao: '50% 75%',
+			},
+			{
+				src: noivaCostasPerfil,
+				alt: 'Detalhe das costas e das mangas de renda do vestido, com a noiva de perfil e o cabelo preso.',
+				posicao: '50% 30%',
+			},
+			{
+				src: noivaCorpete,
+				alt: 'Detalhe do corpete de renda, das mangas longas e da faixa de cetim na cintura.',
+				posicao: '50% 30%',
+			},
+		],
 		assinatura: true,
 	},
 	{
@@ -45,6 +72,45 @@ const linhas = [
 		{
 			linhas.map((l, i) => (
 				<div class:list={['maison-row', { rev: i % 2 === 1 }]}>
+					{l.galeria ? (
+						<div class="maison-media maison-stack-slot">
+							<div
+								class="stack"
+								data-stack
+								tabindex="0"
+								role="group"
+								aria-roledescription="galeria"
+								aria-label={`Fotos do vestido, ${l.galeria.length} imagens. Arraste a foto de cima ou use Enter para ver a próxima.`}
+							>
+								{l.galeria.map((f, k) => (
+									<div class="stack-card" aria-hidden={k === 0 ? undefined : 'true'}>
+										<div class="stack-card-face">
+											<div class="stack-card-content">
+												<Picture
+													src={f.src}
+													alt={f.alt}
+													formats={['avif', 'webp']}
+													width={960}
+													widths={[480, 720, 960, 1280]}
+													sizes="(max-width: 860px) calc(86vw - 3rem), 38vw"
+													class="maison-foto"
+													style={`object-position: ${f.posicao}`}
+													draggable="false"
+												/>
+											</div>
+											<div class="stack-card-shade" />
+										</div>
+									</div>
+								))}
+							</div>
+							<p class="t-mono stack-hint">
+								<span>Arraste para o lado</span>
+								<span aria-live="polite">
+									<b data-stack-now>01</b> / {String(l.galeria.length).padStart(2, '0')}
+								</span>
+							</p>
+						</div>
+					) : (
 					<div class="maison-media reveal-wrap">
 						<div class="reveal-inner">
 							{l.foto ? (
@@ -66,6 +132,7 @@ const linhas = [
 							)}
 						</div>
 					</div>
+					)}
 					<div class="maison-copy">
 						<p class="eyebrow">
 							<span class="t-caps">{l.rotulo}</span>
@@ -142,6 +209,81 @@ const linhas = [
 		height: 100%;
 		object-fit: cover;
 	}
+	/* ── monte de fotos em leque ── */
+	.maison-stack-slot {
+		position: relative;
+		overflow: visible;
+		border-radius: 0;
+		isolation: auto;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	}
+	/* as cartas de trás se abrem para cima e para a direita: o monte ocupa 86% da vaga */
+	.stack {
+		position: relative;
+		width: 86%;
+		aspect-ratio: 4 / 5;
+		outline: none;
+		touch-action: pan-y;
+	}
+	.stack:focus-visible .stack-card[data-top] .stack-card-face {
+		outline: 1px solid var(--ouro);
+		outline-offset: 6px;
+	}
+	.stack-card {
+		position: absolute;
+		inset: 0;
+		will-change: transform;
+		user-select: none;
+		-webkit-user-select: none;
+		-webkit-tap-highlight-color: transparent;
+	}
+	.stack-card-face {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		isolation: isolate;
+		border-radius: var(--radius-media);
+		box-shadow:
+			0 14px 34px -10px rgba(61, 50, 38, 0.45),
+			0 3px 8px -2px rgba(61, 50, 38, 0.18);
+		will-change: transform;
+	}
+	.stack-card-content {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		border-radius: inherit;
+	}
+	.stack-card-content :global(picture) {
+		display: block;
+		height: 100%;
+	}
+	.stack-card-content :global(img) {
+		pointer-events: none;
+		-webkit-user-drag: none;
+	}
+	.stack-card-shade {
+		position: absolute;
+		inset: 0;
+		background: var(--cafe);
+		border-radius: inherit;
+		pointer-events: none;
+		opacity: 0;
+	}
+	.stack-hint {
+		display: flex;
+		justify-content: space-between;
+		width: 86%;
+		margin: 1.25rem 0 0;
+	}
+	.stack-hint b {
+		font-weight: 400;
+		color: var(--ink);
+	}
+
 	.maison-copy {
 		max-width: 32rem;
 	}
@@ -182,7 +324,27 @@ const linhas = [
 </style>
 
 <script>
-	import { gsap, reduceMotion, CONFIG } from '../scripts/motion.js';
+	import { gsap, ScrollTrigger, reduceMotion, CONFIG } from '../scripts/motion.js';
+	import { createStack } from '../scripts/stack.js';
+
+	/* monte de fotos em leque: abre quando entra na tela */
+	document.querySelectorAll<HTMLElement>('.maison [data-stack]').forEach((root) => {
+		const now = root.parentElement?.querySelector('[data-stack-now]');
+		const stack = createStack(root, {
+			layout: 'fan',
+			visible: 4,
+			spread: 0.5,
+			depth: 0.5,
+			tilt: 30,
+			threshold: 90,
+			speed: 1,
+			sendToBackOnClick: false,
+			onChange: (top: number) => {
+				if (now) now.textContent = String(top + 1).padStart(2, '0');
+			},
+		});
+		ScrollTrigger.create({ trigger: root, start: 'top 80%', once: true, onEnter: () => stack.start() });
+	});
 
 	if (!reduceMotion) {
 		/* imagens: a cortina sobe (clip-path), a imagem assenta e o croqui se desenha */
