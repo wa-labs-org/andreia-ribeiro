@@ -1,0 +1,57 @@
+---
+// Layout base: carrega o design system Alinhavo direto de /atelier-design-system,
+// que é a fonte da verdade (tokens, CSS, motor de movimento e ícones).
+import '../../atelier-design-system/assets/tokens/tokens.css';
+import '../../atelier-design-system/assets/css/atelier.css';
+import monograma from '../../atelier-design-system/assets/images/svg/monograma.svg';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'Andreia Ribeiro · Atelier de trajes festivos',
+	description = 'Vestidos de noiva e madrinha, trajes de noivo e padrinho — sob medida e ajustes, prova a prova.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<!-- Estado de JS e de movimento antes do primeiro paint (ver README do design system) -->
+		<script is:inline>
+			(function (h) {
+				try {
+					if (sessionStorage.getItem('at-curtain')) h.classList.add('at-arriving');
+					var m = sessionStorage.getItem('at-motion');
+					if (m) h.setAttribute('data-motion', m);
+				} catch (e) {}
+				h.classList.add('at-js');
+				if (!h.getAttribute('data-motion') && matchMedia('(prefers-reduced-motion: reduce)').matches)
+					h.setAttribute('data-motion', 'reduce');
+			})(document.documentElement);
+		</script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,0..100,0..1;1,9..144,300..600,0..100,0..1&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap"
+		/>
+		<link rel="icon" type="image/svg+xml" href={monograma.src} />
+	</head>
+	<body>
+		<a class="at-skip" href="#conteudo">Pular para o conteúdo</a>
+		<div class="at-fita" aria-hidden="true"></div>
+		<slot />
+		<script>
+			import '../../atelier-design-system/assets/js/icons.js';
+			import '../../atelier-design-system/assets/js/atelier.js';
+		</script>
+	</body>
+</html>
