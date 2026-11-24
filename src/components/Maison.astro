@@ -1,0 +1,197 @@
+---
+// Maison (segunda dobra): a filosofia do ateliê em duas linhas alternadas,
+// imagem 4:5 + texto, com "Haute Couture" vazado ao fundo.
+// As imagens são painéis de tecido com croqui (marcam o lugar das fotos reais).
+const linhas = [
+	{
+		indice: '01',
+		rotulo: 'O ateliê',
+		titulo: 'Feito à mão,',
+		destaque: 'ajustado a você.',
+		textos: [
+			'Cada traje do acervo passa pelas mãos do ateliê antes de chegar até você. Bainhas, cinturas e alças são ajustadas em provas com hora marcada, sem pressa.',
+			'A locação é de alta-costura; o atendimento também.',
+		],
+		tecido: 'champagne',
+		croqui: 'noiva',
+		foto: 'Foto · noiva no ateliê · 4:5',
+		assinatura: true,
+	},
+	{
+		indice: '02',
+		rotulo: 'O cuidado',
+		titulo: 'Cada peça',
+		destaque: 'volta a brilhar.',
+		textos: [
+			'Depois de cada noite, o traje retorna ao ateliê: higienização profissional, revisão de costuras, pedrarias e rendas — e só então volta à arara, pronto para a próxima história.',
+		],
+		tecido: 'rose',
+		croqui: 'princesa',
+		foto: 'Foto · detalhe de bordado · 4:5',
+		assinatura: false,
+	},
+];
+---
+
+<section class="section maison" id="maison" aria-labelledby="maison-title">
+	<div class="maison-ghost t-outline" aria-hidden="true">Haute Couture</div>
+	<div class="wrap">
+		{
+			linhas.map((l, i) => (
+				<div class:list={['maison-row', { rev: i % 2 === 1 }]}>
+					<div class="maison-media reveal-wrap">
+						<div class="reveal-inner">
+							<div class={`fabric fabric--${l.tecido}`}>
+								<span data-croqui={l.croqui} />
+								<span class="slot-tag">{l.foto}</span>
+							</div>
+						</div>
+					</div>
+					<div class="maison-copy">
+						<p class="eyebrow">
+							<span class="t-caps">{l.rotulo}</span>
+							<span class="t-mono">{l.indice}</span>
+						</p>
+						<h2 class="t-display-l" id={i === 0 ? 'maison-title' : undefined}>
+							{l.titulo}
+							<br />
+							<span class="t-italic">{l.destaque}</span>
+						</h2>
+						{l.textos.map((t) => <p class="t-body-l">{t}</p>)}
+						{l.assinatura && (
+							<div class="maison-sign">
+								<span data-lotus />
+								Andréia Ribeiro
+							</div>
+						)}
+					</div>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.maison {
+		overflow: hidden;
+	}
+	.maison-ghost {
+		position: absolute;
+		top: 4rem;
+		left: 0;
+		right: 0;
+		text-align: center;
+		font-family: var(--f-display);
+		font-weight: 300;
+		font-size: 17vw;
+		line-height: 0.8;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0.55;
+	}
+	.maison-row {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: clamp(2rem, 7vw, 8rem);
+		align-items: center;
+	}
+	.maison-row + .maison-row {
+		margin-top: clamp(5rem, 12vw, 10rem);
+	}
+	.maison-row.rev .maison-media {
+		order: 2;
+	}
+	.maison-media {
+		aspect-ratio: 4 / 5;
+		border-radius: var(--radius-card);
+		overflow: hidden;
+	}
+	.maison-media .fabric {
+		height: 100%;
+	}
+	.maison-copy {
+		max-width: 32rem;
+	}
+	.eyebrow {
+		margin: 0;
+	}
+	.maison-copy h2 {
+		margin: 1.75rem 0;
+	}
+	.maison-copy .t-body-l {
+		margin: 0;
+	}
+	.maison-copy .t-body-l + .t-body-l {
+		margin-top: 1.1rem;
+	}
+	.maison-sign {
+		margin-top: 2.5rem;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-family: var(--f-display);
+		font-style: italic;
+		font-size: 1.6rem;
+		color: var(--bronze);
+	}
+	.maison-sign [data-lotus] {
+		width: 30px;
+		height: 30px;
+	}
+	@media (max-width: 860px) {
+		.maison-row {
+			grid-template-columns: 1fr;
+		}
+		.maison-row.rev .maison-media {
+			order: 0;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, reduceMotion, CONFIG } from '../scripts/motion.js';
+
+	if (!reduceMotion) {
+		/* imagens: a cortina sobe (clip-path), a imagem assenta e o croqui se desenha */
+		document.querySelectorAll<HTMLElement>('.maison .reveal-wrap').forEach((wrap) => {
+			const inner = wrap.querySelector('.reveal-inner');
+			gsap
+				.timeline({ defaults: { ease: CONFIG.ease, duration: 1.3 }, scrollTrigger: { trigger: wrap, start: 'top 80%' } })
+				.to(wrap, { clipPath: 'inset(0% 0 0 0)' })
+				.to(inner, { scale: 1.04 }, 0)
+				.fromTo(
+					wrap.querySelectorAll('[data-croqui] path'),
+					{ strokeDasharray: 100, strokeDashoffset: 100 },
+					{ strokeDashoffset: 0, duration: 2.2, stagger: 0.06, ease: 'power2.inOut' },
+					0.3,
+				);
+			/* paralaxe leve dentro da moldura */
+			gsap.to(inner, {
+				yPercent: -5,
+				ease: 'none',
+				scrollTrigger: { trigger: wrap, start: 'top bottom', end: 'bottom top', scrub: true },
+			});
+		});
+
+		/* "Haute Couture" desce e esmaece com a rolagem */
+		gsap.to('.maison-ghost', {
+			yPercent: 30,
+			opacity: 0.2,
+			ease: 'none',
+			scrollTrigger: { trigger: '#maison', start: 'top bottom', end: 'bottom top', scrub: true },
+		});
+
+		/* textos sobem ao entrar */
+		gsap.utils.toArray<HTMLElement>('.maison-copy').forEach((el) =>
+			gsap.from(el.children, {
+				y: 36,
+				autoAlpha: 0,
+				duration: 1.1,
+				stagger: 0.1,
+				ease: CONFIG.ease,
+				scrollTrigger: { trigger: el, start: 'top 82%' },
+			}),
+		);
+	}
+</script>

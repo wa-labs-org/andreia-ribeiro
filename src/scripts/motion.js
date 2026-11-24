@@ -4,6 +4,7 @@
 import '../../andreia-ribeiro-design-system/assets/icons.js';
 import '../../andreia-ribeiro-design-system/assets/lotus.js';
 import '../../andreia-ribeiro-design-system/assets/silk.js';
+import '../../andreia-ribeiro-design-system/assets/croquis.js';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
