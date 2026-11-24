@@ -34,9 +34,11 @@
 </section>
 
 <style>
+	/* A hero ocupa exatamente a altura da tela (nunca mais que isso).
+	   Espaços, lótus e título encolhem com a altura (svh) além da largura. */
 	.hero {
 		position: relative;
-		min-height: 100svh;
+		height: 100svh;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-end;
@@ -63,19 +65,21 @@
 	.hero-inner {
 		position: relative;
 		z-index: 2;
-		padding: 8rem var(--gutter) clamp(2.5rem, 5vw, 4rem);
+		/* o topo nunca fica sob o header fixo (5.25rem) */
+		padding: clamp(5.75rem, 14svh, 8rem) var(--gutter) clamp(1.25rem, min(5vw, 5svh), 4rem);
 	}
 	.hero-mark {
 		display: block;
-		width: clamp(64px, 7vw, 92px);
+		width: clamp(40px, min(7vw, 9svh), 92px);
 		aspect-ratio: 1;
-		margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+		margin-bottom: clamp(0.75rem, min(3vw, 3svh), 2.5rem);
 	}
 	.eyebrow {
 		margin: 0;
 	}
 	h1 {
-		margin: clamp(1.25rem, 2.5vw, 2rem) 0 0;
+		margin: clamp(0.75rem, min(2.5vw, 2.5svh), 2rem) 0 0;
+		font-size: min(var(--t-display-xl), 16svh, 17vw);
 	}
 	.hero-line {
 		display: block;
@@ -86,12 +90,12 @@
 		padding-left: clamp(2rem, 11vw, 12rem);
 	}
 	.hero-foot {
-		margin-top: clamp(2rem, 4vw, 3.5rem);
-		padding-top: 1.75rem;
+		margin-top: clamp(1rem, min(4vw, 4svh), 3.5rem);
+		padding-top: clamp(1rem, 2.5svh, 1.75rem);
 		border-top: 1px solid var(--line);
 		display: grid;
 		grid-template-columns: minmax(0, 30rem) 1fr auto;
-		gap: 2rem;
+		gap: clamp(1rem, 3svh, 2rem) 2rem;
 		align-items: end;
 	}
 	.hero-foot .t-body-l {
@@ -119,6 +123,44 @@
 		}
 		.hero-ctas {
 			justify-content: flex-start;
+		}
+	}
+	/* celular: texto de apoio um pouco menor */
+	@media (max-width: 600px) {
+		.hero-foot .t-body-l {
+			font-size: 1rem;
+			line-height: 1.6;
+		}
+	}
+	/* telas baixas: o indicador "Role" sai (a rolagem é óbvia) */
+	@media (max-height: 760px) and (max-width: 860px), (max-height: 600px) {
+		.hero-scroll {
+			display: none;
+		}
+	}
+	/* telas baixas: o lótus grande sai (a marca continua no header) */
+	@media (max-height: 620px) {
+		.hero-mark {
+			display: none;
+		}
+	}
+	/* celular deitado e telas muito baixas: texto e botões lado a lado */
+	@media (max-height: 500px) {
+		h1 {
+			font-size: min(var(--t-display-xl), 14svh, 17vw);
+		}
+		.hero-foot {
+			grid-template-columns: minmax(0, 1fr) auto;
+			align-items: center;
+		}
+		.hero-foot .t-body-l {
+			font-size: 0.9rem;
+			line-height: 1.5;
+		}
+		.hero-ctas {
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 0.75rem;
 		}
 	}
 </style>
