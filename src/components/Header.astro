@@ -16,7 +16,7 @@ const links = [
 		<span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span>
 	</a>
 	<nav class="site-nav" aria-label="Principal">
-		{links.map((l) => <a href={l.href} class="btn-breathing">{l.label}</a>)}
+		{links.map((l) => <a href={l.href}>{l.label}</a>)}
 	</nav>
 	<a href="#contato" class="btn btn-sm btn-breathing">Agendar prova</a>
 	<button class="menu-btn" id="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mmenu">
@@ -39,31 +39,24 @@ const links = [
 </div>
 
 <style>
-	/* Itens do menu com o mesmo hover do botão "Agendar prova":
-	   pílula com borda dourada e o halo que respira (.btn-breathing do design system).
-	   Em repouso a borda é invisível, então o menu continua leve. */
-	.site-nav {
-		gap: 0.4rem;
-	}
-	.site-nav a {
-		isolation: isolate;
-		overflow: hidden;
-		display: inline-flex;
-		align-items: center;
-		height: 2.6rem;
-		padding: 0 1.1rem;
-		border: 1px solid transparent;
-		border-radius: var(--radius-pill);
-		transition:
-			color 0.4s ease,
-			border-color var(--dur) var(--ease-out);
-	}
-	.site-nav a:hover {
-		border-color: var(--ouro);
-	}
-	/* o losango do item ativo (scroll-spy) fica dentro da pílula */
+	/* Itens do menu com o mesmo hover do link "Agendar prova" da hero (.link do
+	   design system): uma linha dourada cresce da esquerda embaixo do texto.
+	   O item da seção visível (scroll-spy) fica com a linha inteira. */
 	.site-nav a::after {
-		bottom: 0.3rem;
+		left: 0;
+		right: auto;
+		bottom: -6px;
+		width: 0;
+		height: 1px;
+		margin-left: 0;
+		background: var(--ouro);
+		transform: none;
+		transition: width var(--dur) var(--ease-out);
+	}
+	.site-nav a:hover::after,
+	.site-nav a.nav-active::after {
+		width: 100%;
+		transform: none;
 	}
 	/* nenhum item quebra linha */
 	.site-nav a,
@@ -77,10 +70,9 @@ const links = [
 			gap: 1.25rem;
 		}
 		.site-nav {
-			gap: 0;
+			gap: 1.5rem;
 		}
 		.site-nav a {
-			padding: 0 0.75rem;
 			letter-spacing: 0.2em;
 		}
 	}
