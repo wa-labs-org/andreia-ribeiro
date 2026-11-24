@@ -1,0 +1,56 @@
+---
+// Faixa de ocasiões (ØDE velocity marquee): as palavras correm na horizontal
+// e aceleram com a velocidade da rolagem, mudando de sentido quando a página
+// sobe. Decorativa: a lista também existe como texto para leitores de tela.
+const ocasioes = [
+	{ nome: 'Noivas' },
+	{ nome: 'Madrinhas', italico: true },
+	{ nome: 'Debutantes' },
+	{ nome: 'Formaturas', italico: true },
+	{ nome: 'Gala' },
+	{ nome: 'Black tie', italico: true },
+];
+---
+
+<div class="marquee faixa">
+	<p class="sr-only">Ocasiões: {ocasioes.map((o) => o.nome).join(', ')}.</p>
+	<div class="marquee-row" aria-hidden="true">
+		{
+			[0, 1].map(() => (
+				<div class="marquee-track">
+					{ocasioes.map((o) => (
+						<Fragment>
+							<span>{o.italico ? <em>{o.nome}</em> : o.nome}</span>
+							<span data-lotus />
+						</Fragment>
+					))}
+				</div>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+</style>
+
+<script>
+	import { gsap, lenis, reduceMotion } from '../scripts/motion.js';
+
+	const DURACAO = 30; // segundos para uma volta completa
+	if (!reduceMotion && document.querySelector('.faixa .marquee-track')) {
+		const volta = gsap.to('.faixa .marquee-track', { xPercent: -100, repeat: -1, duration: DURACAO, ease: 'none' });
+		/* a faixa acelera com a velocidade da rolagem e inverte quando a página sobe */
+		lenis.on('scroll', (e: { direction: number; velocity: number }) => {
+			volta.timeScale((e.direction || 1) * (1 + Math.min(Math.abs(e.velocity || 0) * 0.05, 3.5)));
+		});
+	}
+</script>
