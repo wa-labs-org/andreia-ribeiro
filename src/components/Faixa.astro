@@ -31,12 +31,17 @@ const ocasioes = [
 </div>
 
 <style>
-	/* faixa mais discreta que a do design system (3rem–7.5rem): cerca de metade da altura */
+	/* faixa discreta (o design system usa 3rem–7.5rem), com todas as palavras em café;
+	   os itálicos alternam o ritmo e só o lótus fica dourado */
 	.faixa {
-		padding: 1.1rem 0;
+		padding: 0.9rem 0;
 	}
 	.faixa .marquee-track {
-		font-size: clamp(2rem, 4.5vw, 4rem);
+		font-size: clamp(1.6rem, 3.4vw, 3rem);
+		color: var(--cafe);
+	}
+	.faixa .marquee-track :global(em) {
+		color: var(--cafe);
 	}
 	.sr-only {
 		position: absolute;
