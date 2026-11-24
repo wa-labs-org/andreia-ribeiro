@@ -16,7 +16,7 @@ const links = [
 		<span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span>
 	</a>
 	<nav class="site-nav" aria-label="Principal">
-		{links.map((l) => <a href={l.href}>{l.label}</a>)}
+		{links.map((l) => <a href={l.href} class="btn-breathing">{l.label}</a>)}
 	</nav>
 	<a href="#contato" class="btn btn-sm btn-breathing">Agendar prova</a>
 	<button class="menu-btn" id="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mmenu">
@@ -39,6 +39,62 @@ const links = [
 </div>
 
 <style>
+	/* Itens do menu com o mesmo hover do botão "Agendar prova":
+	   pílula com borda dourada e o halo que respira (.btn-breathing do design system).
+	   Em repouso a borda é invisível, então o menu continua leve. */
+	.site-nav {
+		gap: 0.4rem;
+	}
+	.site-nav a {
+		isolation: isolate;
+		overflow: hidden;
+		display: inline-flex;
+		align-items: center;
+		height: 2.6rem;
+		padding: 0 1.1rem;
+		border: 1px solid transparent;
+		border-radius: var(--radius-pill);
+		transition:
+			color 0.4s ease,
+			border-color var(--dur) var(--ease-out);
+	}
+	.site-nav a:hover {
+		border-color: var(--ouro);
+	}
+	/* o losango do item ativo (scroll-spy) fica dentro da pílula */
+	.site-nav a::after {
+		bottom: 0.3rem;
+	}
+	/* nenhum item quebra linha */
+	.site-nav a,
+	.site-header :global(.btn) {
+		white-space: nowrap;
+		flex: none;
+	}
+	/* telas médias: itens mais compactos para tudo caber numa linha */
+	@media (max-width: 1240px) {
+		.site-header {
+			gap: 1.25rem;
+		}
+		.site-nav {
+			gap: 0;
+		}
+		.site-nav a {
+			padding: 0 0.75rem;
+			letter-spacing: 0.2em;
+		}
+	}
+	/* abaixo disso os itens não cabem numa linha: entra o menu (☰), como no celular */
+	@media (max-width: 1080px) {
+		.site-nav,
+		.site-header :global(.btn) {
+			display: none;
+		}
+		.site-header :global(.menu-btn) {
+			display: inline-flex;
+		}
+	}
+
 	.mmenu {
 		position: fixed;
 		inset: 0;
