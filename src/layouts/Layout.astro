@@ -45,9 +45,19 @@ const {
 			const progressEl = document.getElementById('progress')!;
 			const headerEl = document.getElementById('site-header');
 
-			lenis.on('scroll', (e: { progress: number; scroll: number }) => {
+			/* inclinação leve das seções conforme a velocidade da rolagem (ØDE) */
+			const SKEW_MAX = 1.6;
+			const SKEW_FACTOR = 0.1;
+			gsap.utils.toArray<HTMLElement>('.section .wrap').forEach((w) => w.classList.add('skewable'));
+			const setSkew = reduceMotion || !document.querySelector('.skewable')
+				? null
+				: gsap.quickTo('.skewable', 'skewY', { duration: 0.8, ease: 'power3.out' });
+			const clampSkew = gsap.utils.clamp(-SKEW_MAX, SKEW_MAX);
+
+			lenis.on('scroll', (e: { progress: number; scroll: number; velocity: number }) => {
 				progressEl.style.transform = `scaleX(${e.progress || 0})`;
 				headerEl?.classList.toggle('is-scrolled', (e.scroll || 0) > 40);
+				if (setSkew) setSkew(clampSkew((e.velocity || 0) * SKEW_FACTOR));
 			});
 
 			/* âncoras da página deslizam com o Lenis */
