@@ -123,7 +123,9 @@ const linhas = [
 	}
 	.maison-media {
 		aspect-ratio: 4 / 5;
-		border-radius: var(--radius-card);
+		border-radius: var(--radius-media);
+		/* mantém os cantos arredondados mesmo com a imagem em escala/paralaxe dentro */
+		isolation: isolate;
 		overflow: hidden;
 	}
 	.maison-media .fabric {

@@ -61,6 +61,7 @@
   --section: clamp(6rem, 14vw, 11rem);
   --radius-pill: 999px;
   --radius-card: 2px;
+  --radius-media: clamp(1rem, 2vw, 1.75rem);  /* fotos: cantos suaves, em sintonia com os botões em pílula */
   --shadow-lift: 0 24px 60px -24px rgba(61, 50, 38, .35);
 
   /* ── Motion ── */
@@ -369,7 +370,7 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
 /* ═════════ Cards ═════════ */
 /* collection piece card */
 .piece { display: block; }
-.piece-media { aspect-ratio: 3 / 4; overflow: hidden; border-radius: var(--radius-card); }
+.piece-media { aspect-ratio: 3 / 4; overflow: hidden; border-radius: var(--radius-media); }
 .piece-media .fabric { height: 100%; transition: transform 1.2s var(--ease-out); }
 .piece:hover .piece-media .fabric { transform: scale(1.04); }
 .piece-body { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1.1rem; border-top: 1px solid var(--line); margin-top: 1.1rem; }
@@ -396,7 +397,7 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
 
 /* step card (process) */
 .step { display: flex; flex-direction: column; gap: 1.6rem; }
-.step-media { aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius-card); }
+.step-media { aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius-media); }
 .step-media .fabric { height: 100%; }
 .step-head { display: flex; align-items: baseline; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 1rem; }
 .step-title { font-family: var(--f-display); font-size: 1.9rem; font-weight: 400; line-height: 1.05; }
@@ -405,7 +406,7 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
 /* team tilt card (ØDE) */
 .tilt-stage { perspective: 1100px; }
 .tilt-card { position: relative; transform-style: preserve-3d; will-change: transform; }
-.tilt-card .tilt-media { aspect-ratio: 3 / 4; overflow: hidden; border-radius: var(--radius-card); position: relative; }
+.tilt-card .tilt-media { aspect-ratio: 3 / 4; overflow: hidden; border-radius: var(--radius-media); position: relative; }
 .tilt-card .tilt-media::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(255, 250, 235, .45), transparent 45%);
