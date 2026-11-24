@@ -29,7 +29,8 @@ assets/brand/             logo e paleta originais enviados
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--marfim` | #FDF7E7 | fundo |
+| `--marfim` | #FDF7E7 | marca; texto sobre escuro |
+| `--marfim-claro` | #FFFDF8 | fundo do site (`--bg`) |
 | `--manteiga` | #F9F1D8 | fundo 2 |
 | `--rose` | #F3DFD2 | detalhe |
 | `--ouro-claro` | #C6AF6C | brilho |

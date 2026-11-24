@@ -16,7 +16,8 @@
 
 :root {
   /* ── Brand palette (source: paleta oficial) ── */
-  --marfim: #FDF7E7;        /* fundo */
+  --marfim: #FDF7E7;        /* marca: marfim */
+  --marfim-claro: #FFFDF8;  /* fundo do site: marfim quase branco */
   --manteiga: #F9F1D8;      /* fundo 2 */
   --rose: #F3DFD2;          /* detalhe */
   --ouro-claro: #C6AF6C;    /* brilho */
@@ -26,7 +27,7 @@
   --cafe: #3D3226;          /* complementar */
 
   /* ── Semantic roles ── */
-  --bg: var(--marfim);
+  --bg: var(--marfim-claro);
   --bg-alt: var(--manteiga);
   --bg-dark: var(--cafe);
   --ink: var(--cafe);
@@ -90,7 +91,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   outline: 1px solid var(--ouro); outline-offset: 4px;
 }
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--marfim); }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--ouro-antigo); border-radius: 8px; }
 
 /* ═════════ Typography ═════════ */
@@ -464,7 +465,7 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
   transition: background-color .6s ease, border-color .6s ease, height .6s var(--ease-out), backdrop-filter .6s ease;
 }
 .site-header.is-scrolled {
-  height: 4.25rem; background: rgba(253, 247, 231, .78);
+  height: 4.25rem; background: rgba(255, 253, 248, .8);
   backdrop-filter: blur(14px) saturate(1.1); -webkit-backdrop-filter: blur(14px) saturate(1.1);
   border-color: var(--line-soft);
 }
@@ -511,7 +512,7 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
 .testi-nav button:hover { border-color: var(--ouro); background: rgba(198, 175, 108, .12); }
 
 /* ═════════ Loader (ØDE counter · Soma lotus) ═════════ */
-.loader { position: fixed; inset: 0; z-index: 99; background: var(--marfim); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.loader { position: fixed; inset: 0; z-index: 99; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .loader [data-lotus] { width: clamp(120px, 18vw, 200px); aspect-ratio: 1; }
 .loader-base {
   position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(2rem, 5vw, 3.5rem);
