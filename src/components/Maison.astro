@@ -1,6 +1,6 @@
 ---
 // Maison (segunda dobra): a filosofia do ateliê em duas linhas alternadas,
-// imagem 4:5 + texto, com "Haute Couture" vazado ao fundo.
+// imagem 4:5 + texto, com "Atelier" vazado ao fundo.
 // As imagens são painéis de tecido com croqui (marcam o lugar das fotos reais).
 const linhas = [
 	{
@@ -10,7 +10,7 @@ const linhas = [
 		destaque: 'ajustado a você.',
 		textos: [
 			'Cada traje do acervo passa pelas mãos do ateliê antes de chegar até você. Bainhas, cinturas e alças são ajustadas em provas com hora marcada, sem pressa.',
-			'A locação é de alta-costura; o atendimento também.',
+			'A locação é sob medida; o atendimento também.',
 		],
 		tecido: 'champagne',
 		croqui: 'noiva',
@@ -34,7 +34,7 @@ const linhas = [
 ---
 
 <section class="section maison" id="maison" aria-labelledby="maison-title">
-	<div class="maison-ghost t-outline" aria-hidden="true">Haute Couture</div>
+	<div class="maison-ghost t-outline" aria-hidden="true">Atelier</div>
 	<div class="wrap">
 		{
 			linhas.map((l, i) => (
@@ -174,7 +174,7 @@ const linhas = [
 			});
 		});
 
-		/* "Haute Couture" desce e esmaece com a rolagem */
+		/* "Atelier" desce e esmaece com a rolagem */
 		gsap.to('.maison-ghost', {
 			yPercent: 30,
 			opacity: 0.2,
