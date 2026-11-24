@@ -1,6 +1,0 @@
-dist
-node_modules
-package-lock.json
-public/hero
-# CSS mantém o formato do atelier.css para comparação lado a lado
-**/*.css

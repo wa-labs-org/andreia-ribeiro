@@ -1,6 +1,0 @@
-/* HeroSequence — sequência de imagens em <canvas> (object-fit: cover feito no desenho). */
-.at-hero-seq { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.at-hero-seq__toggle {
-  position: absolute; right: var(--at-grid-margin); bottom: var(--at-space-5); z-index: 6;
-  font: 600 var(--at-text-label)/1.2 var(--at-font-text); font-stretch: 80%; letter-spacing: var(--at-tracking-label);
-}
