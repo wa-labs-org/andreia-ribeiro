@@ -1,6 +1,6 @@
 # Andréia Ribeiro Atelier — Design System
 
-Design system de alta-costura para locação de trajes, construído a partir de duas referências:
+Design system de trajes sob medida para locação, construído a partir de duas referências:
 
 - **ØDE**: fundo claro de pedra, linhas estruturais, índices em mono, contador de abertura, marquee guiado pela velocidade, índice de coleções com prévia no cursor, processo horizontal fixo, lâminas cinematográficas, preenchimento de palavras, cards com inclinação 3D, CTA magnético, cursor próprio e Lenis.
 - **Soma**: display serifado com itálico dourado, lótus que se desenha, botões com halo que "respira", superfícies com brilho, abas de agenda, preços com índice fixo, depoimentos, formulário de contato e textura de ruído.
