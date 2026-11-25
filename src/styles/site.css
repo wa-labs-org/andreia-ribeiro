@@ -1,0 +1,23 @@
+/* Padrões de layout do site que se repetem entre seções e não estão no ar.css
+   (no design system eles vivem no <style> do overview). */
+
+/* cabeçalho de seção: eyebrow + título à esquerda, nota ou CTA à direita */
+.head-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	gap: 2rem;
+	margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+	flex-wrap: wrap;
+}
+.head-row .eyebrow {
+	margin: 0;
+}
+.head-row h2 {
+	margin: 1.5rem 0 0;
+}
+.head-note {
+	max-width: 22rem;
+	margin: 0;
+	color: var(--ink-soft);
+}
