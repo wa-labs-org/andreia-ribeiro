@@ -10,6 +10,10 @@ import noivaFrente from '../assets/maison/noiva-frente.jpg';
 import noivaCostas from '../assets/maison/noiva-costas.jpg';
 import noivaCostasPerfil from '../assets/maison/noiva-costas-perfil.jpg';
 import noivaCorpete from '../assets/maison/noiva-corpete.jpg';
+import bordadoFolhasAzul from '../assets/maison/bordado-folhas-azul.jpg';
+import bordadoCorpeteDourado from '../assets/maison/bordado-corpete-dourado.jpg';
+import bordadoJacquardRosa from '../assets/maison/bordado-jacquard-rosa.jpg';
+import bordadoCapaDourada from '../assets/maison/bordado-capa-dourada.jpg';
 
 const linhas = [
 	{
@@ -58,9 +62,29 @@ const linhas = [
 		textos: [
 			'Depois de cada noite, o traje retorna ao ateliê: higienização profissional, revisão de costuras, pedrarias e rendas — e só então volta à arara, pronto para a próxima história.',
 		],
-		tecido: 'rose',
-		croqui: 'princesa',
-		vaga: 'Foto · detalhe de bordado · 4:5',
+		galeriaRotulo: 'Detalhes de bordado',
+		galeria: [
+			{
+				src: bordadoFolhasAzul,
+				alt: 'Detalhe do corpete de cetim azul tomara que caia, bordado à mão com ramos de folhas em canutilhos e pedrarias prateadas.',
+				posicao: '50% 45%',
+			},
+			{
+				src: bordadoCorpeteDourado,
+				alt: 'Detalhe do corpete dourado tomara que caia, coberto por linhas de pedrarias e brilhos em desenho geométrico.',
+				posicao: '50% 55%',
+			},
+			{
+				src: bordadoJacquardRosa,
+				alt: 'Vestido rosa tomara que caia em jacquard metalizado com rosas em relevo, saia ampla.',
+				posicao: '50% 68%',
+			},
+			{
+				src: bordadoCapaDourada,
+				alt: 'Detalhe da capa de tule dourado com gola alta, bordada com o mesmo desenho de pedrarias do vestido.',
+				posicao: '50% 50%',
+			},
+		],
 		assinatura: false,
 	},
 ];
@@ -80,7 +104,7 @@ const linhas = [
 								tabindex="0"
 								role="group"
 								aria-roledescription="galeria"
-								aria-label={`Fotos do vestido, ${l.galeria.length} imagens. Arraste a foto de cima ou use Enter para ver a próxima.`}
+								aria-label={`${l.galeriaRotulo ?? 'Fotos do vestido'}, ${l.galeria.length} imagens. Arraste a foto de cima ou use Enter para ver a próxima.`}
 							>
 								{l.galeria.map((f, k) => (
 									<div class="stack-card" aria-hidden={k === 0 ? undefined : 'true'}>
