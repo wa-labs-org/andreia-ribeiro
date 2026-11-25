@@ -7,6 +7,7 @@
 
    createDomeGallery(root, {
      fit, fitBasis, minRadius, maxRadius,   // raio a partir do tamanho da área
+     heightGuard,                           // teto do raio em múltiplos da altura
      segments,                              // colunas na volta completa
      maxVerticalRotationDeg,                // 0 = só gira na horizontal
      dragSensitivity, dragDampening,        // px por grau; 0–1 (mais = desliza mais)
@@ -30,6 +31,7 @@ export function createDomeGallery(root, options = {}) {
 		fitBasis: 'auto',
 		minRadius: 600,
 		maxRadius: Infinity,
+		heightGuard: 1.35, // raio máximo em múltiplos da altura (Infinity = sem limite)
 		segments: 34,
 		maxVerticalRotationDeg: 0,
 		dragSensitivity: 20,
@@ -69,7 +71,7 @@ export function createDomeGallery(root, options = {}) {
 		const minDim = Math.min(w, h);
 		const basis =
 			{ min: minDim, max: Math.max(w, h), width: w, height: h }[o.fitBasis] ?? (w / h >= 1.3 ? w : minDim);
-		const radius = Math.round(clamp(Math.min(basis * o.fit, h * 1.35), o.minRadius, o.maxRadius));
+		const radius = Math.round(clamp(Math.min(basis * o.fit, h * o.heightGuard), o.minRadius, o.maxRadius));
 		root.style.setProperty('--radius', `${radius}px`);
 		apply();
 	});

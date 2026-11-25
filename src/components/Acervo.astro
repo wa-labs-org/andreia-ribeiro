@@ -55,7 +55,7 @@ const fontes: { src: ImageMetadata; peca: number; alt: string; posicao?: string 
 const fotos = await Promise.all(
 	fontes.map(async (f) => ({
 		...f,
-		thumb: (await getImage({ src: f.src, width: 420, format: 'webp' })).src,
+		thumb: (await getImage({ src: f.src, width: 640, format: 'webp' })).src,
 		large: (await getImage({ src: f.src, width: 1200, format: 'webp' })).src,
 	})),
 );
@@ -176,7 +176,7 @@ const itens = coords.map((c, i) => {
 		--dg-bg: var(--bg-alt);
 		position: relative;
 		width: 100%;
-		height: clamp(540px, 86vh, 860px);
+		height: clamp(560px, 92vh, 940px);
 	}
 	.dg-main {
 		position: absolute;
@@ -441,7 +441,10 @@ const itens = coords.map((c, i) => {
 		const cursor = document.getElementById('cursor');
 
 		const dome = createDomeGallery(root, {
-			fit: 0.8,
+			/* sem o teto pela altura, a cúpula ocupa a largura toda (as bordas
+			   saem da tela) e as fotos ficam maiores, já que crescem com o raio */
+			fit: 0.82,
+			heightGuard: Infinity,
 			minRadius: 600,
 			maxVerticalRotationDeg: 0,
 			segments: 34,
