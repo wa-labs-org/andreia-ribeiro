@@ -1,11 +1,12 @@
 ---
-// Acervo em destaque: parede de fotos à deriva (DriftWall, ver scripts/driftwall.js).
-// Cinco colunas num plano inclinado deslizam em sentidos alternados; a coluna
-// sob o cursor freia, a foto sobe e ganha cor, e a legenda embaixo mostra a
-// peça: nome, ocasião e disponibilidade. Cada foto leva a #provas.
+// Acervo em destaque: cúpula de fotos (DomeGallery, ver scripts/domegallery.js).
+// As fotos forram o lado de dentro de uma esfera que gira ao arrastar, só na
+// horizontal. Ao passar o cursor a foto ganha cor e a legenda mostra a peça;
+// ao clicar, a foto amplia com nome, ocasião, disponibilidade e o convite
+// para a prova.
 // Nomes, referências e disponibilidade são de exemplo e precisam ser
 // confirmados com o ateliê.
-import { Picture } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import noivaRenda from '../assets/maison/noiva-renda.jpg';
 import noivaFrente from '../assets/maison/noiva-frente.jpg';
 import noivaCostas from '../assets/maison/noiva-costas.jpg';
@@ -32,30 +33,46 @@ const pecas: { tipo: string; nome: string; detalhe: string; ref: string; status:
 	{ tipo: 'Vestido', nome: 'Âmbar', detalhe: 'Formatura · tule e capa', ref: 'AR-040', status: 'off' },
 ];
 
-/* fotos na ordem em que entram na parede (a coluna é o índice % COLUNAS);
-   `peca` aponta para a lista acima */
-const fotos: { src: ImageMetadata; peca: number; alt: string; posicao?: string }[] = [
-	{ src: noivaRenda, peca: 0, alt: 'Noiva em vestido de renda com mangas longas e saia ampla.', posicao: '50% 70%' },
+/* `peca` aponta para a lista acima; a ordem alterna as cores na cúpula */
+const fontes: { src: ImageMetadata; peca: number; alt: string; posicao?: string }[] = [
+	{ src: noivaRenda, peca: 0, alt: 'Noiva em vestido de renda com mangas longas e saia ampla.', posicao: '50% 80%' },
 	{ src: bordadoFolhasAzul, peca: 1, alt: 'Corpete azul bordado com ramos de folhas em pedraria.' },
 	{ src: debutanteRosa, peca: 2, alt: 'Vestido rosa em jacquard metalizado com saia em camadas.', posicao: '50% 62%' },
-	{ src: bordadoCorpeteDourado, peca: 3, alt: 'Corpete dourado coberto de linhas de pedraria.' },
-	{ src: noivaCostas, peca: 0, alt: 'Noiva de costas mostrando as costas em renda e o volume da saia.', posicao: '50% 70%' },
+	{ src: bordadoCorpeteDourado, peca: 3, alt: 'Corpete dourado coberto de linhas de pedraria.', posicao: '50% 45%' },
+	{ src: noivaCostas, peca: 0, alt: 'Noiva de costas mostrando as costas em renda e o volume da saia.', posicao: '50% 75%' },
+	{ src: galaAzul, peca: 1, alt: 'Vestido azul de cetim com decote assimétrico e saia ampla.', posicao: '50% 55%' },
 	{ src: formaturaDouradoCapa, peca: 3, alt: 'Vestido dourado com capa de tule e gola alta.', posicao: '50% 45%' },
-	{ src: galaAzul, peca: 1, alt: 'Vestido azul de cetim com decote assimétrico e saia ampla.', posicao: '50% 60%' },
-	{ src: noivaCorpete, peca: 0, alt: 'Detalhe do corpete de renda e da faixa de cetim do vestido de noiva.' },
 	{ src: bordadoJacquardRosa, peca: 2, alt: 'Corpete rosa em jacquard metalizado com rosas em relevo.', posicao: '50% 65%' },
-	{ src: noivaFrente, peca: 0, alt: 'Noiva de frente com a mão no ombro, corpete de renda e saia ampla.', posicao: '50% 75%' },
-	{ src: debutanteRosaPerfil, peca: 2, alt: 'Vestido rosa em jacquard visto de perfil, saia em camadas.', posicao: '50% 65%' },
+	{ src: noivaCorpete, peca: 0, alt: 'Detalhe do corpete de renda e da faixa de cetim do vestido de noiva.', posicao: '50% 30%' },
+	{ src: galaAzulBordado, peca: 1, alt: 'Vestido azul bordado, com a mão na cintura, em estúdio.', posicao: '50% 65%' },
+	{ src: debutanteRosaPerfil, peca: 2, alt: 'Vestido rosa em jacquard visto de perfil, saia em camadas.', posicao: '50% 55%' },
 	{ src: formaturaDourado, peca: 3, alt: 'Vestido dourado tomara que caia com fenda, coberto de pedrarias.', posicao: '50% 55%' },
-	{ src: galaAzulBordado, peca: 1, alt: 'Vestido azul bordado, com a mão na cintura, em estúdio.', posicao: '50% 70%' },
-	{ src: noivaCostasPerfil, peca: 0, alt: 'Costas e mangas de renda do vestido de noiva, de perfil.', posicao: '50% 35%' },
+	{ src: noivaFrente, peca: 0, alt: 'Noiva de frente com a mão no ombro, corpete de renda e saia ampla.', posicao: '50% 70%' },
 	{ src: bordadoCapaDourada, peca: 3, alt: 'Detalhe da capa de tule dourado bordada com pedrarias.' },
+	{ src: noivaCostasPerfil, peca: 0, alt: 'Costas e mangas de renda do vestido de noiva, de perfil.', posicao: '50% 35%' },
 ];
 
-const COLUNAS = 5;
-const colunas = Array.from({ length: COLUNAS }, (_, c) =>
-	fotos.map((f, i) => ({ ...f, i })).filter((f) => f.i % COLUNAS === c),
+const fotos = await Promise.all(
+	fontes.map(async (f) => ({
+		...f,
+		thumb: (await getImage({ src: f.src, width: 420, format: 'webp' })).src,
+		large: (await getImage({ src: f.src, width: 1200, format: 'webp' })).src,
+	})),
 );
+
+/* grade da cúpula (como no original): colunas de 2 em 2 unidades e linhas
+   intercaladas; as fotos se repetem sem duas iguais lado a lado */
+const SEGMENTOS = 34;
+const coords = Array.from({ length: SEGMENTOS }, (_, c) => -37 + c * 2).flatMap((x, c) =>
+	(c % 2 === 0 ? [-4, -2, 0, 2, 4] : [-3, -1, 1, 3, 5]).map((y) => ({ x, y })),
+);
+const vistas = new Set<number>();
+const itens = coords.map((c, i) => {
+	const foto = (i * 7) % fotos.length; // passo 7 (primo com 15) espalha as repetições
+	const focavel = !vistas.has(foto);
+	vistas.add(foto);
+	return { ...c, foto, focavel };
+});
 ---
 
 <section class="section section-alt acervo" id="acervo" aria-labelledby="acervo-title">
@@ -69,59 +86,90 @@ const colunas = Array.from({ length: COLUNAS }, (_, c) =>
 		</div>
 	</div>
 
-	<div class="dw-stage">
-		<div class="dw-wall" data-driftwall role="group" aria-label="Fotos das peças em destaque">
-			<div class="dw-plane">
-				{
-					colunas.map((col, c) => (
-						<div class="dw-col">
-							<div class="dw-track">
-								{col.map((f) => {
-									const p = pecas[f.peca];
-									return (
-										<a href="#provas" class="dw-tile" data-col={c} data-item={f.peca} draggable="false">
-											<span class="dw-inner">
-												<Picture
-													src={f.src}
-													alt={f.alt}
-													formats={['avif', 'webp']}
-													width={480}
-													widths={[240, 480]}
-													sizes="220px"
-													loading="lazy"
-													draggable="false"
-													style={f.posicao ? `object-position: ${f.posicao}` : undefined}
-												/>
-												<span class="dw-overlay" aria-hidden="true" />
-											</span>
-											<span class="sr-only">
-												{p.tipo} {p.nome}, {p.detalhe}. {selo[p.status]}. Agendar prova.
-											</span>
-										</a>
-									);
-								})}
-							</div>
-						</div>
-					))
-				}
+	<div class="dg-root" data-dome style={`--segments: ${SEGMENTOS}`}>
+		<div class="dg-main" role="group" aria-label="Fotos das peças em destaque. Arraste para girar; Enter amplia a foto.">
+			<div class="dg-stage">
+				<div class="dg-sphere">
+					{
+						itens.map((it) => {
+							const f = fotos[it.foto];
+							const p = pecas[f.peca];
+							return (
+								<div class="dg-item" data-x={it.x} data-y={it.y} style={`--offset-x: ${it.x}; --offset-y: ${it.y}`}>
+									<button
+										type="button"
+										class="dg-tile"
+										data-item={f.peca}
+										data-photo={it.foto}
+										data-large={f.large}
+										tabindex={it.focavel ? undefined : '-1'}
+										aria-hidden={it.focavel ? undefined : 'true'}
+										aria-label={it.focavel ? `Ampliar: ${p.tipo} ${p.nome}, ${p.detalhe}` : undefined}
+									>
+										<img
+											src={f.thumb}
+											alt={f.alt}
+											loading="lazy"
+											decoding="async"
+											draggable="false"
+											style={f.posicao ? `object-position: ${f.posicao}` : undefined}
+										/>
+									</button>
+								</div>
+							);
+						})
+					}
+				</div>
 			</div>
+			<div class="dg-overlay" aria-hidden="true"></div>
+			<div class="dg-overlay dg-overlay--blur" aria-hidden="true"></div>
+			<div class="dg-edge dg-edge--top" aria-hidden="true"></div>
+			<div class="dg-edge dg-edge--bottom" aria-hidden="true"></div>
 		</div>
 
-		<div class="dw-legend" aria-live="polite">
-			<p class="dw-hint t-mono" data-legend="hint">Passe o cursor pelas peças</p>
+		<div class="dg-legend" aria-live="polite">
+			<p class="dg-hint t-mono" data-legend="hint">Arraste para girar · clique para ampliar</p>
 			{
 				pecas.map((p, i) => (
-					<div class="dw-info" data-legend={i} hidden>
+					<div class="dg-info" data-legend={i} hidden>
 						<p class="piece-name">
 							{p.tipo} <em>{p.nome}</em>
 						</p>
-						<p class="t-mono dw-meta">
-							{p.detalhe} · Ref. {p.ref}
-						</p>
+						<p class="t-mono dg-meta">{p.detalhe}</p>
 						<span class={`badge badge-${p.status}`}>{selo[p.status]}</span>
 					</div>
 				))
 			}
+		</div>
+
+		<div class="dg-viewer" role="dialog" aria-modal="true" aria-labelledby="dg-card-title">
+			<div class="dg-scrim"></div>
+			<figure class="dg-card">
+				<div class="dg-card-media"><img alt="" /></div>
+				<figcaption class="dg-card-cap">
+					{
+						pecas.map((p, i) => (
+							<div class="dg-card-info" data-card={i} hidden>
+								<p class="eyebrow">
+									<span class="t-caps">{p.detalhe.split(' · ')[0]}</span>
+									<span class="t-mono">Ref. {p.ref}</span>
+								</p>
+								<p class="piece-name" id={i === 0 ? 'dg-card-title' : undefined} data-card-title>
+									{p.tipo} <em>{p.nome}</em>
+								</p>
+								<p class="t-mono dg-meta">{p.detalhe.split(' · ')[1]}</p>
+								<span class={`badge badge-${p.status}`}>{selo[p.status]}</span>
+							</div>
+						))
+					}
+					<div class="dg-card-actions">
+						<a href="#provas" class="btn btn-gold btn-sm" data-dg-cta>
+							Agendar prova <ar-icon name="arrow-right"></ar-icon>
+						</a>
+						<button type="button" class="dg-close t-mono" data-dg-close>Fechar</button>
+					</div>
+				</figcaption>
+			</figure>
 		</div>
 	</div>
 </section>
@@ -130,131 +178,141 @@ const colunas = Array.from({ length: COLUNAS }, (_, c) =>
 	.acervo {
 		overflow: hidden;
 	}
-	.dw-stage {
-		position: relative;
-		margin-top: clamp(-1rem, -2vw, 0rem);
-	}
 
-	/* ── parede ─────────────────────────────────────────────── */
-	.dw-wall {
-		--dw-tile-w: 200px;
-		--dw-tile-h: 266px;
-		--dw-gap: 18px;
-		--dw-radius: clamp(0.75rem, 1.2vw, 1.1rem);
-		--dw-lift: 64px;
-		--dw-dim: 0.55;
-		--dw-overlay: var(--bg-alt);
-		--dw-edge: 40%;
+	/* ── cúpula (geometria do original) ─────────────────────── */
+	.dg-root {
+		--radius: 600px;
+		--circ: calc(var(--radius) * 3.14);
+		--rot-y: calc((360deg / var(--segments)) / 2);
+		--rot-x: calc((360deg / var(--segments)) / 2);
+		--item-width: calc(var(--circ) / var(--segments));
+		--item-height: calc(var(--circ) / var(--segments));
+		--tile-radius: clamp(0.9rem, 1.6vw, 1.5rem);
+		--dg-bg: var(--bg-alt);
 		position: relative;
 		width: 100%;
-		height: clamp(560px, 84vh, 820px);
+		height: clamp(540px, 86vh, 860px);
+	}
+	.dg-main {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
 		overflow: hidden;
-		perspective: 1200px;
+		touch-action: pan-y; /* só gira na horizontal: a rolagem vertical continua da página */
+		user-select: none;
+		-webkit-user-select: none;
+		cursor: grab;
+	}
+	.dg-root:global(.is-dragging) .dg-main {
+		cursor: grabbing;
+	}
+	.dg-stage {
+		width: 100%;
+		height: 100%;
+		display: grid;
+		place-items: center;
+		perspective: calc(var(--radius) * 2);
 		perspective-origin: 50% 50%;
-		-webkit-mask-image:
-			radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
-			linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
-		-webkit-mask-composite: source-in;
-		mask-image:
-			radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
-			linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
-		mask-composite: intersect;
+		contain: layout paint size;
 	}
-	.dw-plane {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		display: flex;
+	.dg-sphere,
+	.dg-item,
+	.dg-tile {
 		transform-style: preserve-3d;
+	}
+	.dg-sphere {
+		transform: translateZ(calc(var(--radius) * -1));
+		will-change: transform;
+	}
+	.dg-item {
+		position: absolute;
+		inset: -999px;
+		margin: auto;
+		width: calc(var(--item-width) * 2);
+		height: calc(var(--item-height) * 2);
 		transform-origin: 50% 50%;
-		transform: translate(-50%, -50%) scale(1.18) rotateX(16deg) rotateY(-14deg) translateZ(-120px);
-		will-change: transform;
+		backface-visibility: hidden;
+		transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + 0.5))) rotateX(calc(var(--rot-x) * (var(--offset-y) - 0.5)))
+			translateZ(var(--radius));
 	}
-	.dw-col {
-		position: relative;
-		width: calc(var(--dw-tile-w) + var(--dw-gap));
-		transform-style: preserve-3d;
-	}
-	.dw-track {
-		display: flex;
-		flex-direction: column;
-		transform-style: preserve-3d;
-		will-change: transform;
-	}
-	.dw-tile {
-		position: relative;
-		display: block;
-		width: 100%;
-		height: calc(var(--dw-tile-h) + var(--dw-gap));
-		flex: 0 0 auto;
-		outline: none;
-		transform-style: preserve-3d;
-		-webkit-user-drag: none;
-	}
-	/* as cópias são criadas depois do Layout ligar o cursor próprio */
-	@media (hover: hover) and (pointer: fine) {
-		.dw-tile {
-			cursor: none;
-		}
-	}
-	.dw-inner {
+	.dg-tile {
 		position: absolute;
-		inset: calc(var(--dw-gap) / 2);
+		inset: 10px;
 		display: block;
-		border-radius: var(--dw-radius);
-		overflow: hidden;
+		padding: 0;
+		border: 0;
+		border-radius: var(--tile-radius);
 		background: var(--manteiga);
-		opacity: var(--dw-dim);
+		overflow: hidden;
+		backface-visibility: hidden;
 		transform: translateZ(0);
-		pointer-events: none;
-		transition:
-			transform 0.42s var(--ease-out),
-			opacity 0.42s var(--ease-out),
-			box-shadow 0.42s var(--ease-out);
+		cursor: inherit;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
 	}
-	.dw-inner :global(img) {
+	.dg-tile img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		display: block;
-		filter: saturate(0.85);
-		user-select: none;
-		transition: filter 0.42s var(--ease-out);
+		pointer-events: none;
+		backface-visibility: hidden;
+		filter: grayscale(1) contrast(0.95);
+		transition: filter 0.5s var(--ease-out);
 	}
-	.dw-overlay {
+	@media (hover: hover) {
+		.dg-tile:hover img {
+			filter: none;
+		}
+	}
+	.dg-tile:focus-visible {
+		outline: none;
+		box-shadow: inset 0 0 0 2px var(--accent);
+	}
+	.dg-tile:focus-visible img {
+		filter: none;
+	}
+
+	/* véus: a cúpula se dissolve no fundo da seção */
+	.dg-overlay {
 		position: absolute;
 		inset: 0;
-		background: var(--dw-overlay);
-		opacity: 0.42;
+		z-index: 3;
 		pointer-events: none;
-		transition: opacity 0.42s var(--ease-out);
+		background-image: radial-gradient(transparent 65%, var(--dg-bg) 100%);
 	}
-	.dw-tile:global(.is-active) .dw-inner {
-		opacity: 1;
-		transform: translateZ(var(--dw-lift));
-		box-shadow: var(--shadow-lift);
+	.dg-overlay--blur {
+		background: none;
+		-webkit-mask-image: radial-gradient(transparent 70%, #000 90%);
+		mask-image: radial-gradient(transparent 70%, #000 90%);
+		backdrop-filter: blur(3px);
 	}
-	.dw-tile:global(.is-active) .dw-inner :global(img) {
-		filter: saturate(1.05);
+	.dg-edge {
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 120px;
+		z-index: 5;
+		pointer-events: none;
+		background: linear-gradient(to bottom, transparent, var(--dg-bg));
 	}
-	.dw-tile:global(.is-active) .dw-overlay {
-		opacity: 0;
+	.dg-edge--top {
+		top: 0;
+		transform: rotate(180deg);
 	}
-	/* foco de teclado: o anel vai na cópia trazida ao centro */
-	.dw-wall:global(.is-keyboard) .dw-tile:global(.is-active) .dw-inner {
-		box-shadow:
-			var(--shadow-lift),
-			0 0 0 2px var(--accent);
+	.dg-edge--bottom {
+		bottom: 0;
 	}
 
 	/* ── legenda ────────────────────────────────────────────── */
-	.dw-legend {
+	.dg-legend {
 		position: absolute;
 		left: 50%;
 		bottom: clamp(1rem, 3vw, 2.25rem);
 		transform: translateX(-50%);
-		z-index: 2;
-		min-width: min(26rem, calc(100% - 2rem));
+		z-index: 6;
+		min-width: min(24rem, calc(100% - 2rem));
 		max-width: calc(100% - 2rem);
 		padding: 0.9rem 1.4rem;
 		border: 1px solid var(--line);
@@ -265,81 +323,181 @@ const colunas = Array.from({ length: COLUNAS }, (_, c) =>
 		text-align: center;
 		pointer-events: none;
 	}
-	.dw-hint {
+	.dg-hint {
 		margin: 0;
 		color: var(--ink-mute);
 	}
-	.dw-info:not([hidden]) {
+	.dg-info:not([hidden]) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: 0.35rem 1rem;
 	}
-	.dw-info .piece-name {
+	.dg-info .piece-name {
 		margin: 0;
 		font-size: 1.45rem;
 	}
-	.dw-meta {
+	.dg-meta {
 		margin: 0;
 		color: var(--ink-soft);
 	}
 	@media (max-width: 560px) {
-		.dw-legend {
+		.dg-legend {
 			border-radius: var(--radius-media);
 			padding: 0.8rem 1rem;
 		}
 	}
-	/* sem mouse não há "passar o cursor": a legenda some e as fotos ficam acesas */
-	@media (hover: none) {
-		.dw-legend {
-			display: none;
-		}
-		.dw-wall {
-			--dw-dim: 0.9;
-		}
-		.dw-overlay {
-			opacity: 0.12;
-		}
-	}
 
-	.sr-only {
+	/* ── foto ampliada ──────────────────────────────────────── */
+	.dg-viewer {
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		padding: clamp(1rem, 4vw, 3rem);
+	}
+	.dg-root:global([data-open]) .dg-viewer {
+		display: flex;
+	}
+	.dg-scrim {
 		position: absolute;
-		width: 1px;
-		height: 1px;
-		margin: -1px;
+		inset: 0;
+		background: rgba(61, 50, 38, 0.42);
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		opacity: 0;
+		transition: opacity 0.5s ease;
+	}
+	.dg-card {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		display: flex;
+		align-items: stretch;
+		gap: clamp(1rem, 3vw, 2.5rem);
+		max-width: 100%;
+	}
+	.dg-card-media {
+		height: min(78vh, 720px);
+		aspect-ratio: 3 / 4;
+		border-radius: var(--radius-media);
 		overflow: hidden;
-		clip: rect(0 0 0 0);
-		white-space: nowrap;
+		box-shadow: var(--shadow-lift);
+		background: var(--manteiga);
+		transform-origin: top left;
+		will-change: transform;
+	}
+	.dg-card-media img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.dg-card-cap {
+		align-self: flex-end;
+		width: min(20rem, 30vw);
+		padding: 1.5rem;
+		border-radius: var(--radius-media);
+		background: var(--bg);
+		box-shadow: var(--shadow-lift);
+		opacity: 0;
+		transform: translateY(14px);
+		transition:
+			opacity 0.45s ease,
+			transform 0.6s var(--ease-out);
+	}
+	.dg-root:global([data-shown]) .dg-scrim {
+		opacity: 1;
+	}
+	.dg-root:global([data-shown]) .dg-card-cap {
+		opacity: 1;
+		transform: none;
+		transition-delay: 0.18s;
+	}
+	.dg-card-info .eyebrow {
+		margin: 0 0 0.9rem;
+	}
+	.dg-card-info .piece-name {
+		margin: 0;
+		font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+	}
+	.dg-card-info .dg-meta {
+		margin: 0.5rem 0 1rem;
+	}
+	.dg-card-actions {
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+		margin-top: 1.5rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--line);
+	}
+	.dg-close {
+		padding: 0.3rem 0;
+		border: 0;
+		background: none;
+		color: var(--ink-soft);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+	}
+	.dg-close:hover,
+	.dg-close:focus-visible {
+		color: var(--bronze);
+	}
+	@media (max-width: 760px) {
+		.dg-card {
+			flex-direction: column;
+			align-items: center;
+		}
+		.dg-card-media {
+			height: min(56vh, 520px);
+		}
+		.dg-card-cap {
+			align-self: center;
+			width: min(100%, 22rem);
+			padding: 1.1rem 1.25rem;
+		}
 	}
 </style>
 
 <script>
-	import { gsap, reduceMotion, CONFIG } from '../scripts/motion.js';
-	import { createDriftWall } from '../scripts/driftwall.js';
+	import { gsap, lenis, reduceMotion, CONFIG } from '../scripts/motion.js';
+	import { createDomeGallery } from '../scripts/domegallery.js';
 
-	const wall = document.querySelector<HTMLElement>('.acervo [data-driftwall]');
-	const legend = document.querySelector<HTMLElement>('.acervo .dw-legend');
+	const root = document.querySelector<HTMLElement>('.acervo [data-dome]');
 
-	if (wall && legend) {
-		const parts = [...legend.querySelectorAll<HTMLElement>('[data-legend]')];
+	if (root) {
+		const legend = [...root.querySelectorAll<HTMLElement>('.dg-legend [data-legend]')];
+		const cards = [...root.querySelectorAll<HTMLElement>('.dg-card-info')];
 		const cursor = document.getElementById('cursor');
-		createDriftWall(wall, {
-			tilt: 16,
-			turn: -14,
-			depth: 120,
-			speed: 42,
-			direction: 'up',
-			variance: 0.45,
-			parallax: 0.6,
-			gap: 18,
-			aspect: 4 / 3,
+
+		createDomeGallery(root, {
+			fit: 0.8,
+			minRadius: 600,
+			maxVerticalRotationDeg: 0,
+			segments: 34,
+			dragDampening: 2,
 			reduced: reduceMotion,
 			onActive: (item: number | null) => {
 				const key = item === null ? 'hint' : String(item);
-				parts.forEach((p) => (p.hidden = p.dataset.legend !== key));
+				legend.forEach((p) => (p.hidden = p.dataset.legend !== key));
 				cursor?.classList.toggle('is-link', item !== null);
 			},
+			onOpen: (tile: HTMLElement) => {
+				const item = tile.dataset.item;
+				cards.forEach((c) => {
+					const on = c.dataset.card === item;
+					c.hidden = !on;
+					/* o título do diálogo é sempre o da peça aberta */
+					const title = c.querySelector<HTMLElement>('[data-card-title]');
+					if (title) title.id = on ? 'dg-card-title' : '';
+				});
+				lenis.stop();
+			},
+			onClose: () => lenis.start(),
 		});
 
 		if (!reduceMotion) {
@@ -351,12 +509,12 @@ const colunas = Array.from({ length: COLUNAS }, (_, c) =>
 				ease: CONFIG.ease,
 				scrollTrigger: { trigger: '.acervo .head-row', start: 'top 82%' },
 			});
-			gsap.from(wall, {
+			/* só opacidade: um transform aqui prenderia o diálogo (position: fixed) */
+			gsap.from('.acervo .dg-main', {
 				autoAlpha: 0,
-				y: 60,
 				duration: 1.6,
 				ease: CONFIG.ease,
-				scrollTrigger: { trigger: wall, start: 'top 85%' },
+				scrollTrigger: { trigger: root, start: 'top 85%' },
 			});
 		}
 	}
