@@ -1,69 +1,61 @@
 ---
-// Acervo em destaque: quatro peças em cards 3:4 (as pares descem um degrau),
-// com nome, ocasião e tecido, e um selo de disponibilidade. A foto sobe numa
-// cortina (clip-path) ao entrar na tela e cresce de leve no hover.
+// Acervo em destaque: parede de fotos à deriva (DriftWall, ver scripts/driftwall.js).
+// Cinco colunas num plano inclinado deslizam em sentidos alternados; a coluna
+// sob o cursor freia, a foto sobe e ganha cor, e a legenda embaixo mostra a
+// peça: nome, ocasião e disponibilidade. Cada foto leva a #provas.
 // Nomes, referências e disponibilidade são de exemplo e precisam ser
 // confirmados com o ateliê.
 import { Picture } from 'astro:assets';
+import noivaRenda from '../assets/maison/noiva-renda.jpg';
 import noivaFrente from '../assets/maison/noiva-frente.jpg';
+import noivaCostas from '../assets/maison/noiva-costas.jpg';
+import noivaCostasPerfil from '../assets/maison/noiva-costas-perfil.jpg';
+import noivaCorpete from '../assets/maison/noiva-corpete.jpg';
+import bordadoFolhasAzul from '../assets/maison/bordado-folhas-azul.jpg';
+import galaAzul from '../assets/colecoes/gala-azul.jpg';
 import galaAzulBordado from '../assets/acervo/gala-azul-bordado.jpg';
+import bordadoJacquardRosa from '../assets/maison/bordado-jacquard-rosa.jpg';
+import debutanteRosa from '../assets/colecoes/debutante-rosa.jpg';
 import debutanteRosaPerfil from '../assets/acervo/debutante-rosa-perfil.jpg';
+import bordadoCorpeteDourado from '../assets/maison/bordado-corpete-dourado.jpg';
+import bordadoCapaDourada from '../assets/maison/bordado-capa-dourada.jpg';
+import formaturaDourado from '../assets/colecoes/formatura-dourado.jpg';
 import formaturaDouradoCapa from '../assets/acervo/formatura-dourado-capa.jpg';
 
 type Status = 'ok' | 'few' | 'off';
 const selo: Record<Status, string> = { ok: 'Disponível', few: 'Poucas datas', off: 'Reservado' };
 
-const pecas: {
-	tipo: string;
-	nome: string;
-	detalhe: string;
-	ref: string;
-	status: Status;
-	foto: ImageMetadata;
-	posicao: string;
-	alt: string;
-}[] = [
-	{
-		tipo: 'Vestido',
-		nome: 'Aurora',
-		detalhe: 'Noiva · renda e cetim',
-		ref: 'AR-001',
-		status: 'ok',
-		foto: noivaFrente,
-		posicao: '50% 78%',
-		alt: 'Noiva de frente em vestido de renda branca com mangas longas e saia ampla.',
-	},
-	{
-		tipo: 'Vestido',
-		nome: 'Celeste',
-		detalhe: 'Gala · cetim bordado',
-		ref: 'AR-014',
-		status: 'few',
-		foto: galaAzulBordado,
-		posicao: '50% 72%',
-		alt: 'Vestido azul de cetim com decote assimétrico e ramos de folhas bordados em pedraria.',
-	},
-	{
-		tipo: 'Vestido',
-		nome: 'Camélia',
-		detalhe: 'Debutante · jacquard',
-		ref: 'AR-027',
-		status: 'ok',
-		foto: debutanteRosaPerfil,
-		posicao: '50% 68%',
-		alt: 'Vestido rosa tomara que caia em jacquard metalizado com rosas, saia em camadas, visto de perfil.',
-	},
-	{
-		tipo: 'Vestido',
-		nome: 'Âmbar',
-		detalhe: 'Formatura · tule e capa',
-		ref: 'AR-040',
-		status: 'off',
-		foto: formaturaDouradoCapa,
-		posicao: '50% 48%',
-		alt: 'Vestido dourado coberto de pedrarias com capa de tule e gola alta.',
-	},
+const pecas: { tipo: string; nome: string; detalhe: string; ref: string; status: Status }[] = [
+	{ tipo: 'Vestido', nome: 'Aurora', detalhe: 'Noiva · renda e cetim', ref: 'AR-001', status: 'ok' },
+	{ tipo: 'Vestido', nome: 'Celeste', detalhe: 'Gala · cetim bordado', ref: 'AR-014', status: 'few' },
+	{ tipo: 'Vestido', nome: 'Camélia', detalhe: 'Debutante · jacquard', ref: 'AR-027', status: 'ok' },
+	{ tipo: 'Vestido', nome: 'Âmbar', detalhe: 'Formatura · tule e capa', ref: 'AR-040', status: 'off' },
 ];
+
+/* fotos na ordem em que entram na parede (a coluna é o índice % COLUNAS);
+   `peca` aponta para a lista acima */
+const fotos: { src: ImageMetadata; peca: number; alt: string; posicao?: string }[] = [
+	{ src: noivaRenda, peca: 0, alt: 'Noiva em vestido de renda com mangas longas e saia ampla.', posicao: '50% 70%' },
+	{ src: bordadoFolhasAzul, peca: 1, alt: 'Corpete azul bordado com ramos de folhas em pedraria.' },
+	{ src: debutanteRosa, peca: 2, alt: 'Vestido rosa em jacquard metalizado com saia em camadas.', posicao: '50% 62%' },
+	{ src: bordadoCorpeteDourado, peca: 3, alt: 'Corpete dourado coberto de linhas de pedraria.' },
+	{ src: noivaCostas, peca: 0, alt: 'Noiva de costas mostrando as costas em renda e o volume da saia.', posicao: '50% 70%' },
+	{ src: formaturaDouradoCapa, peca: 3, alt: 'Vestido dourado com capa de tule e gola alta.', posicao: '50% 45%' },
+	{ src: galaAzul, peca: 1, alt: 'Vestido azul de cetim com decote assimétrico e saia ampla.', posicao: '50% 60%' },
+	{ src: noivaCorpete, peca: 0, alt: 'Detalhe do corpete de renda e da faixa de cetim do vestido de noiva.' },
+	{ src: bordadoJacquardRosa, peca: 2, alt: 'Corpete rosa em jacquard metalizado com rosas em relevo.', posicao: '50% 65%' },
+	{ src: noivaFrente, peca: 0, alt: 'Noiva de frente com a mão no ombro, corpete de renda e saia ampla.', posicao: '50% 75%' },
+	{ src: debutanteRosaPerfil, peca: 2, alt: 'Vestido rosa em jacquard visto de perfil, saia em camadas.', posicao: '50% 65%' },
+	{ src: formaturaDourado, peca: 3, alt: 'Vestido dourado tomara que caia com fenda, coberto de pedrarias.', posicao: '50% 55%' },
+	{ src: galaAzulBordado, peca: 1, alt: 'Vestido azul bordado, com a mão na cintura, em estúdio.', posicao: '50% 70%' },
+	{ src: noivaCostasPerfil, peca: 0, alt: 'Costas e mangas de renda do vestido de noiva, de perfil.', posicao: '50% 35%' },
+	{ src: bordadoCapaDourada, peca: 3, alt: 'Detalhe da capa de tule dourado bordada com pedrarias.' },
+];
+
+const COLUNAS = 5;
+const colunas = Array.from({ length: COLUNAS }, (_, c) =>
+	fotos.map((f, i) => ({ ...f, i })).filter((f) => f.i % COLUNAS === c),
+);
 ---
 
 <section class="section section-alt acervo" id="acervo" aria-labelledby="acervo-title">
@@ -75,148 +67,297 @@ const pecas: {
 			</div>
 			<a href="#colecoes" class="btn btn-breathing">Ver todo o acervo <ar-icon name="arrow-right"></ar-icon></a>
 		</div>
-		<ul class="pieces" role="list">
+	</div>
+
+	<div class="dw-stage">
+		<div class="dw-wall" data-driftwall role="group" aria-label="Fotos das peças em destaque">
+			<div class="dw-plane">
+				{
+					colunas.map((col, c) => (
+						<div class="dw-col">
+							<div class="dw-track">
+								{col.map((f) => {
+									const p = pecas[f.peca];
+									return (
+										<a href="#provas" class="dw-tile" data-col={c} data-item={f.peca} draggable="false">
+											<span class="dw-inner">
+												<Picture
+													src={f.src}
+													alt={f.alt}
+													formats={['avif', 'webp']}
+													width={480}
+													widths={[240, 480]}
+													sizes="220px"
+													loading="lazy"
+													draggable="false"
+													style={f.posicao ? `object-position: ${f.posicao}` : undefined}
+												/>
+												<span class="dw-overlay" aria-hidden="true" />
+											</span>
+											<span class="sr-only">
+												{p.tipo} {p.nome}, {p.detalhe}. {selo[p.status]}. Agendar prova.
+											</span>
+										</a>
+									);
+								})}
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</div>
+
+		<div class="dw-legend" aria-live="polite">
+			<p class="dw-hint t-mono" data-legend="hint">Passe o cursor pelas peças</p>
 			{
-				pecas.map((p) => (
-					<li>
-						<a href="#provas" class="piece" aria-label={`${p.tipo} ${p.nome}, ${p.detalhe}. ${selo[p.status]}. Agendar prova.`}>
-							<div class="piece-media reveal-wrap">
-								<div class="reveal-inner">
-									<Picture
-										src={p.foto}
-										alt={p.alt}
-										formats={['avif', 'webp']}
-										width={720}
-										widths={[360, 540, 720, 960]}
-										sizes="(max-width: 960px) calc(50vw - 2.5rem), 22vw"
-										loading="lazy"
-										class="piece-foto"
-										style={`object-position: ${p.posicao}`}
-									/>
-								</div>
-								<span class="piece-ref t-mono">Ref. {p.ref}</span>
-							</div>
-							<div class="piece-body">
-								<div>
-									<p class="piece-name">
-										{p.tipo} <em>{p.nome}</em>
-									</p>
-									<p class="t-mono piece-detail">{p.detalhe}</p>
-								</div>
-								<span class={`badge badge-${p.status}`}>{selo[p.status]}</span>
-							</div>
-						</a>
-					</li>
+				pecas.map((p, i) => (
+					<div class="dw-info" data-legend={i} hidden>
+						<p class="piece-name">
+							{p.tipo} <em>{p.nome}</em>
+						</p>
+						<p class="t-mono dw-meta">
+							{p.detalhe} · Ref. {p.ref}
+						</p>
+						<span class={`badge badge-${p.status}`}>{selo[p.status]}</span>
+					</div>
 				))
 			}
-		</ul>
+		</div>
 	</div>
 </section>
 
 <style>
-	.pieces {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: clamp(1rem, 2vw, 2rem);
+	.acervo {
+		overflow: hidden;
 	}
-	/* as peças pares descem um degrau, como no design system */
-	.pieces > li:nth-child(even) {
-		margin-top: 4rem;
-	}
-	@media (max-width: 960px) {
-		.pieces {
-			grid-template-columns: 1fr 1fr;
-			row-gap: 2.5rem;
-		}
-		.pieces > li:nth-child(even) {
-			margin-top: 2.5rem;
-		}
+	.dw-stage {
+		position: relative;
+		margin-top: clamp(-1rem, -2vw, 0rem);
 	}
 
-	.piece-media {
+	/* ── parede ─────────────────────────────────────────────── */
+	.dw-wall {
+		--dw-tile-w: 200px;
+		--dw-tile-h: 266px;
+		--dw-gap: 18px;
+		--dw-radius: clamp(0.75rem, 1.2vw, 1.1rem);
+		--dw-lift: 64px;
+		--dw-dim: 0.55;
+		--dw-overlay: var(--bg-alt);
+		--dw-edge: 40%;
 		position: relative;
+		width: 100%;
+		height: clamp(560px, 84vh, 820px);
+		overflow: hidden;
+		perspective: 1200px;
+		perspective-origin: 50% 50%;
+		-webkit-mask-image:
+			radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+			linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+		-webkit-mask-composite: source-in;
+		mask-image:
+			radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+			linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+		mask-composite: intersect;
 	}
-	.piece-foto {
+	.dw-plane {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		display: flex;
+		transform-style: preserve-3d;
+		transform-origin: 50% 50%;
+		transform: translate(-50%, -50%) scale(1.18) rotateX(16deg) rotateY(-14deg) translateZ(-120px);
+		will-change: transform;
+	}
+	.dw-col {
+		position: relative;
+		width: calc(var(--dw-tile-w) + var(--dw-gap));
+		transform-style: preserve-3d;
+	}
+	.dw-track {
+		display: flex;
+		flex-direction: column;
+		transform-style: preserve-3d;
+		will-change: transform;
+	}
+	.dw-tile {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: calc(var(--dw-tile-h) + var(--dw-gap));
+		flex: 0 0 auto;
+		outline: none;
+		transform-style: preserve-3d;
+		-webkit-user-drag: none;
+	}
+	/* as cópias são criadas depois do Layout ligar o cursor próprio */
+	@media (hover: hover) and (pointer: fine) {
+		.dw-tile {
+			cursor: none;
+		}
+	}
+	.dw-inner {
+		position: absolute;
+		inset: calc(var(--dw-gap) / 2);
+		display: block;
+		border-radius: var(--dw-radius);
+		overflow: hidden;
+		background: var(--manteiga);
+		opacity: var(--dw-dim);
+		transform: translateZ(0);
+		pointer-events: none;
+		transition:
+			transform 0.42s var(--ease-out),
+			opacity 0.42s var(--ease-out),
+			box-shadow 0.42s var(--ease-out);
+	}
+	.dw-inner :global(img) {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 		display: block;
-		transition: transform 1.2s var(--ease-out);
+		filter: saturate(0.85);
+		user-select: none;
+		transition: filter 0.42s var(--ease-out);
 	}
-	.piece:hover .piece-foto {
-		transform: scale(1.04);
-	}
-	.piece-ref {
+	.dw-overlay {
 		position: absolute;
-		left: 0.9rem;
-		bottom: 0.8rem;
-		padding: 0.3rem 0.6rem;
+		inset: 0;
+		background: var(--dw-overlay);
+		opacity: 0.42;
+		pointer-events: none;
+		transition: opacity 0.42s var(--ease-out);
+	}
+	.dw-tile:global(.is-active) .dw-inner {
+		opacity: 1;
+		transform: translateZ(var(--dw-lift));
+		box-shadow: var(--shadow-lift);
+	}
+	.dw-tile:global(.is-active) .dw-inner :global(img) {
+		filter: saturate(1.05);
+	}
+	.dw-tile:global(.is-active) .dw-overlay {
+		opacity: 0;
+	}
+	/* foco de teclado: o anel vai na cópia trazida ao centro */
+	.dw-wall:global(.is-keyboard) .dw-tile:global(.is-active) .dw-inner {
+		box-shadow:
+			var(--shadow-lift),
+			0 0 0 2px var(--accent);
+	}
+
+	/* ── legenda ────────────────────────────────────────────── */
+	.dw-legend {
+		position: absolute;
+		left: 50%;
+		bottom: clamp(1rem, 3vw, 2.25rem);
+		transform: translateX(-50%);
+		z-index: 2;
+		min-width: min(26rem, calc(100% - 2rem));
+		max-width: calc(100% - 2rem);
+		padding: 0.9rem 1.4rem;
+		border: 1px solid var(--line);
 		border-radius: var(--radius-pill);
-		background: rgba(255, 253, 248, 0.78);
-		backdrop-filter: blur(6px);
-		color: var(--ink-soft);
-		font-size: 0.6rem;
+		background: rgba(255, 253, 248, 0.82);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		text-align: center;
+		pointer-events: none;
 	}
-	.piece-name {
+	.dw-hint {
 		margin: 0;
+		color: var(--ink-mute);
 	}
-	.piece:hover .piece-name em {
-		color: var(--bronze);
-	}
-	.piece-detail {
-		margin: 0.4rem 0 0;
-	}
-	.piece-body {
+	.dw-info:not([hidden]) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		flex-wrap: wrap;
-		align-items: flex-start;
+		gap: 0.35rem 1rem;
 	}
-	.piece:focus-visible {
-		outline: 1px solid var(--accent);
-		outline-offset: 6px;
-		border-radius: var(--radius-media);
+	.dw-info .piece-name {
+		margin: 0;
+		font-size: 1.45rem;
+	}
+	.dw-meta {
+		margin: 0;
+		color: var(--ink-soft);
 	}
 	@media (max-width: 560px) {
-		.piece-name {
-			font-size: 1.3rem;
+		.dw-legend {
+			border-radius: var(--radius-media);
+			padding: 0.8rem 1rem;
 		}
+	}
+	/* sem mouse não há "passar o cursor": a legenda some e as fotos ficam acesas */
+	@media (hover: none) {
+		.dw-legend {
+			display: none;
+		}
+		.dw-wall {
+			--dw-dim: 0.9;
+		}
+		.dw-overlay {
+			opacity: 0.12;
+		}
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
 	}
 </style>
 
 <script>
 	import { gsap, reduceMotion, CONFIG } from '../scripts/motion.js';
+	import { createDriftWall } from '../scripts/driftwall.js';
 
-	if (!reduceMotion && document.querySelector('.acervo')) {
-		gsap.from('.acervo .head-row > *', {
-			y: 36,
-			autoAlpha: 0,
-			duration: 1.1,
-			stagger: 0.1,
-			ease: CONFIG.ease,
-			scrollTrigger: { trigger: '.acervo .head-row', start: 'top 82%' },
+	const wall = document.querySelector<HTMLElement>('.acervo [data-driftwall]');
+	const legend = document.querySelector<HTMLElement>('.acervo .dw-legend');
+
+	if (wall && legend) {
+		const parts = [...legend.querySelectorAll<HTMLElement>('[data-legend]')];
+		const cursor = document.getElementById('cursor');
+		createDriftWall(wall, {
+			tilt: 16,
+			turn: -14,
+			depth: 120,
+			speed: 42,
+			direction: 'up',
+			variance: 0.45,
+			parallax: 0.6,
+			gap: 18,
+			aspect: 4 / 3,
+			reduced: reduceMotion,
+			onActive: (item: number | null) => {
+				const key = item === null ? 'hint' : String(item);
+				parts.forEach((p) => (p.hidden = p.dataset.legend !== key));
+				cursor?.classList.toggle('is-link', item !== null);
+			},
 		});
 
-		/* cada foto sobe numa cortina e assenta, com um pequeno atraso entre os cards */
-		document.querySelectorAll<HTMLElement>('.acervo .reveal-wrap').forEach((wrap, i) => {
-			gsap
-				.timeline({
-					delay: (i % 4) * 0.08,
-					defaults: { ease: CONFIG.ease, duration: 1.3 },
-					scrollTrigger: { trigger: wrap, start: 'top 85%' },
-				})
-				.to(wrap, { clipPath: 'inset(0% 0 0 0)' })
-				.fromTo(wrap.querySelector('.reveal-inner'), { scale: 1.15 }, { scale: 1 }, 0);
-		});
-
-		gsap.from('.acervo .piece-body', {
-			y: 18,
-			autoAlpha: 0,
-			duration: 0.9,
-			stagger: 0.08,
-			ease: CONFIG.ease,
-			scrollTrigger: { trigger: '.acervo .pieces', start: 'top 75%' },
-		});
+		if (!reduceMotion) {
+			gsap.from('.acervo .head-row > *', {
+				y: 36,
+				autoAlpha: 0,
+				duration: 1.1,
+				stagger: 0.1,
+				ease: CONFIG.ease,
+				scrollTrigger: { trigger: '.acervo .head-row', start: 'top 82%' },
+			});
+			gsap.from(wall, {
+				autoAlpha: 0,
+				y: 60,
+				duration: 1.6,
+				ease: CONFIG.ease,
+				scrollTrigger: { trigger: wall, start: 'top 85%' },
+			});
+		}
 	}
 </script>
