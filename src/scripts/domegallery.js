@@ -13,7 +13,7 @@
      enlargeMs, reduced,
      onActive(item | null),                 // peça sob o cursor (data-item)
      onOpen(tile), onClose(tile)
-   }) → { close(), destroy() }
+   }) → { close(), spin(graus), destroy() }
 
    Marcação: .dg-root > .dg-main > .dg-stage > .dg-sphere > .dg-item > .dg-tile
              .dg-root > .dg-viewer > .dg-scrim + .dg-card > .dg-card-media > img
@@ -293,8 +293,16 @@ export function createDomeGallery(root, options = {}) {
 	}
 	window.addEventListener('keydown', onKey);
 
+	/* giro externo (ex.: rolagem da página); somado ao arraste e à inércia */
+	function spin(deg) {
+		if (opened || drag?.moved) return;
+		rot = { x: rot.x, y: wrapSigned(rot.y + deg) };
+		apply();
+	}
+
 	return {
 		close,
+		spin,
 		destroy() {
 			stopInertia();
 			ro.disconnect();
