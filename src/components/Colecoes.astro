@@ -1,0 +1,151 @@
+---
+// Coleções (ØDE catalogue): o acervo listado por ocasião. Com mouse, uma prévia
+// segue o cursor e mostra a peça da coleção sob ele; sem foto real ainda, a prévia
+// usa o painel de tecido com croqui do design system. Em telas de toque a prévia
+// não aparece e a lista funciona como links simples.
+import { Picture } from 'astro:assets';
+import noivaRenda from '../assets/maison/noiva-renda.jpg';
+import debutanteRosa from '../assets/colecoes/debutante-rosa.jpg';
+import formaturaDourado from '../assets/colecoes/formatura-dourado.jpg';
+import galaAzul from '../assets/colecoes/gala-azul.jpg';
+
+const colecoes = [
+	{ nome: 'Noivas', meta: 'Renda · cauda · véu', foto: noivaRenda, posicao: '50% 70%' },
+	{ nome: '<em>Madrinhas</em>', meta: 'Longos · fluidos · cor', tecido: 'rose', croqui: 'sereia' },
+	{ nome: 'Debutantes', meta: 'Volume · tule · brilho', foto: debutanteRosa, posicao: '50% 62%' },
+	{ nome: 'Formaturas', meta: 'Coluna · fenda · cetim', foto: formaturaDourado, posicao: '50% 55%' },
+	{ nome: 'Gala &amp; <em>black tie</em>', meta: 'Sereia · bordado · noite', foto: galaAzul, posicao: '50% 58%' },
+	{ nome: 'Trajes <em>masculinos</em>', meta: 'Smoking · fraque · costume', tecido: 'ouro', croqui: 'smoking' },
+];
+const total = String(colecoes.length).padStart(2, '0');
+---
+
+<section class="section colecoes" id="colecoes" aria-labelledby="colecoes-title">
+	<div class="wrap">
+		<div class="head-row">
+			<div>
+				<p class="eyebrow"><span class="t-caps">Coleções</span><span class="t-mono">{total}</span></p>
+				<h2 class="t-display-l" id="colecoes-title">O acervo,<br /><span class="t-italic">por ocasião.</span></h2>
+			</div>
+			<p class="t-body head-note">
+				Cada coleção reúne peças escolhidas para um tipo de noite, e todas podem ser ajustadas no ateliê.
+			</p>
+		</div>
+		<ul class="cat-list" role="list">
+			{
+				colecoes.map((c, i) => (
+					<li>
+						<a class="cat-row" href="#acervo" data-preview={i}>
+							<span class="cat-no">{String(i + 1).padStart(2, '0')}</span>
+							<span class="cat-name" set:html={c.nome} />
+							<span class="cat-meta">{c.meta}</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<div class="cat-preview" aria-hidden="true">
+		{
+			colecoes.map((c) =>
+				c.foto ? (
+					<div class="cat-frame">
+						<Picture
+							src={c.foto}
+							alt=""
+							formats={['avif', 'webp']}
+							width={600}
+							widths={[300, 600]}
+							sizes="300px"
+							loading="lazy"
+							style={`object-position: ${c.posicao}`}
+						/>
+					</div>
+				) : (
+					<div class={`cat-frame fabric fabric--${c.tecido}`}>
+						<span data-croqui={c.croqui} />
+					</div>
+				),
+			)
+		}
+	</div>
+</section>
+
+<style>
+	/* a prévia segue o padrão das fotos do site: cantos suaves */
+	.cat-preview {
+		border-radius: var(--radius-media);
+		overflow: hidden;
+	}
+	.cat-preview > .cat-frame {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition: opacity 0.45s ease;
+	}
+	.cat-preview > .cat-frame.is-on {
+		opacity: 1;
+	}
+	.cat-frame :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.cat-row:focus-visible {
+		outline: 1px solid var(--accent);
+		outline-offset: 4px;
+	}
+</style>
+
+<script>
+	import { gsap, reduceMotion, finePointer } from '../scripts/motion.js';
+
+	const list = document.querySelector<HTMLElement>('.colecoes .cat-list');
+	const preview = document.querySelector<HTMLElement>('.colecoes .cat-preview');
+
+	if (list && preview) {
+		const rows = gsap.utils.toArray<HTMLElement>('.colecoes .cat-row');
+		const frames = [...preview.children] as HTMLElement[];
+
+		if (!reduceMotion) {
+			gsap.from('.colecoes .head-row > *', {
+				y: 36,
+				autoAlpha: 0,
+				duration: 1.1,
+				stagger: 0.1,
+				ease: 'power3.out',
+				scrollTrigger: { trigger: '.colecoes .head-row', start: 'top 82%' },
+			});
+			gsap.from(rows, {
+				autoAlpha: 0,
+				y: 24,
+				duration: 0.9,
+				stagger: 0.08,
+				clearProps: 'opacity,visibility,transform',
+				scrollTrigger: { trigger: list, start: 'top 82%' },
+			});
+		}
+
+		/* prévia no cursor: só com mouse e com movimento liberado */
+		if (finePointer && !reduceMotion) {
+			gsap.set(preview, { xPercent: -50, yPercent: -50, scale: 0.88, autoAlpha: 0, rotate: -3 });
+			const px = gsap.quickTo(preview, 'x', { duration: 0.6, ease: 'power3' });
+			const py = gsap.quickTo(preview, 'y', { duration: 0.6, ease: 'power3' });
+			const show = (i: number) => {
+				frames.forEach((f, k) => f.classList.toggle('is-on', k === i));
+				gsap.to(preview, { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.55, ease: 'power3' });
+			};
+
+			list.addEventListener('mouseenter', (e) => gsap.set(preview, { x: e.clientX, y: e.clientY }));
+			list.addEventListener('mousemove', (e) => {
+				px(e.clientX);
+				py(e.clientY);
+			});
+			rows.forEach((row) => row.addEventListener('mouseenter', () => show(Number(row.dataset.preview))));
+			list.addEventListener('mouseleave', () =>
+				gsap.to(preview, { autoAlpha: 0, scale: 0.88, rotate: -3, duration: 0.4, ease: 'power3' }),
+			);
+		}
+	}
+</script>
