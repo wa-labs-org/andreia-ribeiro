@@ -1,0 +1,310 @@
+---
+// Rodapé + contato (#contato): chamada "Reserve a sua prova." com o CTA
+// magnético, dados do ateliê e o formulário de pedido de prova (ØDE + Soma).
+// Diferente do design system, o formulário não finge que enviou: ele monta a
+// mensagem e abre o WhatsApp do ateliê com o pedido escrito. Dados de contato
+// em src/data/contato.ts (marcadores até serem configurados).
+import { contato, linkWhatsapp } from '../data/contato';
+
+const ocasioes = ['Casamento — noiva', 'Casamento — madrinha', 'Debutante', 'Formatura', 'Gala / black tie', 'Outro'];
+const estilos = ['Ainda não sei — quero sugestões', 'Princesa / volume', 'Sereia', 'Coluna / fluido', 'Traje masculino'];
+const whats = linkWhatsapp('Olá! Gostaria de agendar uma prova no ateliê.');
+const ano = new Date().getFullYear();
+---
+
+<footer class="footer section-dark rodape" id="contato" aria-labelledby="contato-title">
+	<div class="wrap footer-grid">
+		<div>
+			<p class="eyebrow"><span class="t-caps">Reservas</span><span class="t-mono">Com hora marcada</span></p>
+			<h2 class="footer-cta" id="contato-title">
+				<span class="cta-clip"><span class="cta-line">Reserve a</span></span>
+				<span class="cta-clip"
+					><span class="cta-line"><span class="cta-better t-foil">sua prova</span>.<span class="cta-underline"></span></span></span
+				>
+			</h2>
+			<div class="footer-magnet">
+				<a class="magnet" href={whats ?? '#pedido'} target={whats ? '_blank' : undefined} rel={whats ? 'noopener' : undefined}>
+					Falar com o ateliê <ar-icon name="arrow-right-up"></ar-icon>
+				</a>
+			</div>
+			<div class="footer-info">
+				<div>
+					<p class="t-mono">Ateliê</p>
+					<p>{contato.endereco[0]}<br />{contato.endereco[1]}</p>
+				</div>
+				<div>
+					<p class="t-mono">Contato</p>
+					<p>
+						{whats ? <a class="tel" href={whats} target="_blank" rel="noopener">WhatsApp {contato.whatsappExibicao}</a> : <span class="tel">WhatsApp {contato.whatsappExibicao}</span>}
+						<br />
+						{contato.email ? <a href={`mailto:${contato.email}`}>{contato.email}</a> : <span>E-mail do ateliê</span>}
+					</p>
+				</div>
+				<div>
+					<p class="t-mono">Siga</p>
+					<p>
+						{contato.instagram ? <a href={contato.instagram} target="_blank" rel="noopener">Instagram</a> : <span>Instagram</span>}
+						<br />
+						{contato.pinterest ? <a href={contato.pinterest} target="_blank" rel="noopener">Pinterest</a> : <span>Pinterest</span>}
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<form class="form" id="pedido" data-whatsapp={contato.whatsapp} aria-label="Pedido de prova">
+			<div class="field">
+				<input id="pedido-nome" name="nome" type="text" placeholder=" " autocomplete="name" required />
+				<label for="pedido-nome">Seu nome</label>
+			</div>
+			<div class="field">
+				<input id="pedido-whats" name="whatsapp" type="tel" placeholder=" " autocomplete="tel" inputmode="tel" />
+				<label for="pedido-whats">Seu WhatsApp (opcional)</label>
+			</div>
+			<div class="field">
+				<input id="pedido-data" name="data" type="text" placeholder=" " data-date />
+				<label for="pedido-data">Data do evento</label>
+			</div>
+			<div class="field">
+				<select id="pedido-ocasiao" name="ocasiao" class="js-select">
+					<option value="" disabled selected hidden></option>
+					{ocasioes.map((o) => <option>{o}</option>)}
+				</select>
+				<label for="pedido-ocasiao">Ocasião</label>
+				<ar-icon class="chev" name="alt-arrow-down"></ar-icon>
+			</div>
+			<div class="field span-2">
+				<select id="pedido-estilo" name="estilo" class="js-select">
+					<option value="" disabled selected hidden></option>
+					{estilos.map((o) => <option>{o}</option>)}
+				</select>
+				<label for="pedido-estilo">Estilo desejado</label>
+				<ar-icon class="chev" name="alt-arrow-down"></ar-icon>
+			</div>
+			<div class="field span-2">
+				<textarea id="pedido-msg" name="mensagem" placeholder=" "></textarea>
+				<label for="pedido-msg">Conte um pouco sobre a sua ocasião</label>
+			</div>
+			<p class="span-2 t-small form-nota">Ao enviar, abrimos o WhatsApp do ateliê com o seu pedido já escrito — é só confirmar o envio por lá.</p>
+			<div class="span-2">
+				<button type="submit" class="btn btn-gold btn-lg">Enviar pedido de prova <ar-icon name="arrow-right"></ar-icon></button>
+			</div>
+			<p class="span-2 t-small form-status" role="status" aria-live="polite"></p>
+		</form>
+	</div>
+	<div class="footer-ghost" aria-hidden="true">ANDRÉIA RIBEIRO</div>
+	<div class="wrap footer-base">
+		<p class="t-mono">© {ano} Andréia Ribeiro Atelier</p>
+		<p class="t-mono" data-relogio>Brasília · —:—</p>
+		<p class="t-mono">Sob medida para locação</p>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		position: relative;
+		overflow: hidden;
+		padding: clamp(6rem, 12vw, 10rem) var(--gutter) 2rem;
+	}
+	.eyebrow,
+	.footer-base p,
+	.footer-info .t-mono {
+		margin: 0;
+	}
+	.footer-grid {
+		display: grid;
+		grid-template-columns: 1.1fr 1fr;
+		gap: clamp(3rem, 7vw, 8rem);
+	}
+	.footer-cta {
+		margin: 2rem 0 0;
+		font-family: var(--f-display);
+		font-weight: 300;
+		font-size: clamp(3.4rem, 8vw, 7.5rem);
+		line-height: 0.9;
+	}
+	.cta-clip {
+		display: block;
+		overflow: hidden;
+		padding-bottom: 0.06em;
+	}
+	.cta-line {
+		position: relative;
+		display: inline-block;
+	}
+	.cta-better {
+		position: relative;
+		font-style: italic;
+	}
+	.cta-underline {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0.06em;
+		height: 1px;
+		background: var(--ouro-claro);
+		transform: scaleX(0);
+		transform-origin: left;
+	}
+	.footer-magnet {
+		margin-top: clamp(2.5rem, 5vw, 4rem);
+	}
+	.footer-info {
+		margin-top: clamp(3rem, 6vw, 5rem);
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+	}
+	.footer-info p:not(.t-mono) {
+		margin: 0.55rem 0 0;
+		color: var(--on-dark-soft);
+		font-size: 0.95rem;
+	}
+	.footer-info a {
+		color: var(--marfim);
+	}
+	/* o telefone não quebra no meio */
+	.tel {
+		white-space: nowrap;
+	}
+	.footer-info a:hover {
+		color: var(--ouro-claro);
+	}
+	.form {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.6rem 2rem;
+		position: relative;
+		align-content: start;
+	}
+	.span-2 {
+		grid-column: span 2;
+	}
+	.form-nota {
+		margin: 0;
+		color: var(--on-dark-soft);
+	}
+	.form-status {
+		margin: 0;
+		min-height: 1.5em;
+		color: var(--ouro-claro);
+	}
+	.field input:invalid:not(:placeholder-shown),
+	.field input[aria-invalid='true'] {
+		border-bottom-color: #d9a08a;
+	}
+	.footer-ghost {
+		margin-top: clamp(4rem, 9vw, 8rem);
+		text-align: center;
+		font-family: var(--f-sans);
+		font-weight: 200;
+		font-size: 9.2vw;
+		letter-spacing: 0.06em;
+		line-height: 0.8;
+		white-space: nowrap;
+		color: rgba(198, 175, 108, 0.08);
+		user-select: none;
+	}
+	.footer-base {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin-top: 1.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--line-dark);
+	}
+	@media (max-width: 960px) {
+		.footer-grid,
+		.form {
+			grid-template-columns: 1fr;
+		}
+		.span-2 {
+			grid-column: auto;
+		}
+		.footer-info {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, reduceMotion, finePointer, CONFIG } from '../scripts/motion.js';
+
+	/* "Reserve a sua prova.": as linhas sobem e a linha dourada se desenha */
+	if (reduceMotion) gsap.set('.rodape .cta-underline', { scaleX: 1 });
+	else
+		gsap
+			.timeline({ scrollTrigger: { trigger: '.rodape .footer-cta', start: 'top 85%' } })
+			.from('.rodape .footer-cta .cta-line', { yPercent: 115, duration: 1.1, stagger: 0.18, ease: CONFIG.ease })
+			.to('.rodape .cta-underline', { scaleX: 1, duration: 0.8, ease: CONFIG.ease }, '-=0.2');
+
+	/* CTA magnético */
+	const m = document.querySelector<HTMLElement>('.rodape .magnet');
+	if (m && finePointer && !reduceMotion) {
+		m.addEventListener('mousemove', (e) => {
+			const r = m.getBoundingClientRect();
+			gsap.to(m, { x: (e.clientX - r.left - r.width / 2) * 0.35, y: (e.clientY - r.top - r.height / 2) * 0.35, duration: 0.6, ease: CONFIG.ease });
+		});
+		m.addEventListener('mouseleave', () => gsap.to(m, { x: 0, y: 0, duration: 0.9, ease: 'elastic.out(1,.5)' }));
+	}
+
+	/* relógio de Brasília */
+	const relogio = document.querySelector('.rodape [data-relogio]');
+	if (relogio) {
+		const fmt = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
+		const tick = () => (relogio.textContent = 'Brasília · ' + fmt.format(new Date()));
+		tick();
+		setInterval(tick, 30000);
+	}
+
+	/* rótulo flutuante dos selects e do campo de data */
+	document.querySelectorAll<HTMLSelectElement>('.rodape .js-select').forEach((s) =>
+		s.addEventListener('change', () => s.classList.toggle('has-value', !!s.value)),
+	);
+	const data = document.querySelector<HTMLInputElement>('.rodape [data-date]');
+	data?.addEventListener('focus', () => (data.type = 'date'));
+	data?.addEventListener('blur', () => {
+		if (!data.value) data.type = 'text';
+	});
+
+	/* pedido de prova: monta a mensagem e abre o WhatsApp do ateliê */
+	const form = document.querySelector<HTMLFormElement>('.rodape .form');
+	const status = form?.querySelector('.form-status');
+	form?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const nome = form.querySelector<HTMLInputElement>('[name="nome"]')!;
+		if (!nome.value.trim()) {
+			nome.setAttribute('aria-invalid', 'true');
+			if (status) status.textContent = 'Escreva o seu nome para enviarmos o pedido.';
+			nome.focus();
+			return;
+		}
+		nome.removeAttribute('aria-invalid');
+		const f = new FormData(form);
+		const v = (k: string) => String(f.get(k) ?? '').trim();
+		let dataEvento = v('data');
+		if (/^\d{4}-\d{2}-\d{2}$/.test(dataEvento)) dataEvento = dataEvento.split('-').reverse().join('/');
+		const campos = [
+			['Nome', v('nome')],
+			['WhatsApp', v('whatsapp')],
+			['Data do evento', dataEvento],
+			['Ocasião', v('ocasiao')],
+			['Estilo desejado', v('estilo')],
+		]
+			.filter(([, valor]) => valor)
+			.map(([rotulo, valor]) => `${rotulo}: ${valor}`);
+		const texto = [
+			'Olá! Gostaria de agendar uma prova no ateliê.',
+			'',
+			...campos,
+			...(v('mensagem') ? ['', v('mensagem')] : []),
+		].join('\n');
+		const numero = form.dataset.whatsapp;
+		if (!numero) {
+			if (status) status.textContent = 'O WhatsApp do ateliê ainda não foi configurado no site.';
+			return;
+		}
+		window.open(`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener');
+		if (status) status.textContent = 'Abrimos o WhatsApp com o seu pedido. É só confirmar o envio por lá.';
+	});
+</script>
