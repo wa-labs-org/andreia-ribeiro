@@ -174,6 +174,23 @@ const total = String(etapas.length).padStart(2, '0');
 					},
 				);
 			});
+
+			/* saída, ligada à rolagem (e reversível): só depois que a travessia termina e a seção
+			   é liberada, os cards sobem e esmaecem. O fim da seção (que inclui o espaço da
+			   fixação) chega ao pé da tela exatamente quando a travessia acaba. Age na lista,
+			   não na fila que anda na horizontal. */
+			gsap.to('.processo .etapas', {
+				y: -70,
+				opacity: 0,
+				ease: 'none',
+				scrollTrigger: {
+					trigger: '.processo',
+					start: 'bottom bottom',
+					end: 'bottom top',
+					scrub: true,
+					refreshPriority: -1,
+				},
+			});
 		}
 	}
 </script>
