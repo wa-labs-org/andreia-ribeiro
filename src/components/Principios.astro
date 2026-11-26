@@ -50,7 +50,7 @@
 		/* as palavras começam quase transparentes e ganham cor conforme a frase passa pela tela */
 		document.fonts.ready.then(() => {
 			const s = new SplitText(fill, { type: 'words', wordsClass: 'word', aria: 'none' });
-			gsap.set(s.words, { opacity: 0.14 });
+			gsap.set(s.words, { opacity: 0.55 }); // 0.55: mesmo antes de preencher, a frase passa 3:1 de contraste
 			gsap.to(s.words, {
 				opacity: 1,
 				ease: 'none',

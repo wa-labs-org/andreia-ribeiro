@@ -37,6 +37,7 @@ assets/brand/             logo e paleta originais enviados
 | `--ouro` | #B99847 | marca |
 | `--ouro-antigo` | #B19F6E | traços |
 | `--bronze` | #7A6230 | texto dourado sobre claro |
+| `--ouro-texto` | #A0823E | itálicos e texto dourado **grande** sobre claro (≥3:1) |
 | `--cafe` | #3D3226 | seções escuras, texto |
 
 Fontes: **Cormorant Garamond** (display), **Jost** (texto e caixa-alta), **IBM Plex Mono** (etiquetas).

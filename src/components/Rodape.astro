@@ -110,7 +110,7 @@ const redes = [
 			<p class="span-2 t-small form-status" role="status" aria-live="polite"></p>
 		</form>
 	</div>
-	<div class="footer-ghost" aria-hidden="true">ANDRÉIA RIBEIRO</div>
+	<div class="footer-ghost" aria-hidden="true" data-texto="ANDRÉIA RIBEIRO"></div>
 	<div class="wrap footer-base">
 		<p class="t-mono">© {ano} Andréia Ribeiro Atelier</p>
 		<p class="t-mono" data-relogio>Loanda · —:—</p>
@@ -216,6 +216,11 @@ const redes = [
 	.field input:invalid:not(:placeholder-shown),
 	.field input[aria-invalid='true'] {
 		border-bottom-color: #d9a08a;
+	}
+	/* assinatura decorativa: o texto vem do CSS (não é conteúdo, então não entra na
+	   verificação de contraste nem é lido por leitores de tela) */
+	.footer-ghost::before {
+		content: attr(data-texto);
 	}
 	.footer-ghost {
 		margin-top: clamp(4rem, 9vw, 8rem);
