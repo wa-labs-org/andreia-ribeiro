@@ -10,6 +10,10 @@ const ocasioes = ['Casamento — noiva', 'Casamento — madrinha', 'Debutante', 
 const estilos = ['Ainda não sei — quero sugestões', 'Princesa / volume', 'Sereia', 'Coluna / fluido', 'Traje masculino'];
 const whats = linkWhatsapp('Olá! Gostaria de agendar uma prova no ateliê.');
 const ano = new Date().getFullYear();
+const redes = [
+	{ nome: 'Instagram', url: contato.instagram },
+	{ nome: 'Pinterest', url: contato.pinterest },
+].filter((r): r is { nome: string; url: string } => !!r.url);
 ---
 
 <footer class="footer section-dark rodape" id="contato" aria-labelledby="contato-title">
@@ -30,24 +34,35 @@ const ano = new Date().getFullYear();
 			<div class="footer-info">
 				<div>
 					<p class="t-mono">Ateliê</p>
-					<p>{contato.endereco[0]}<br />{contato.endereco[1]}</p>
+					<p>
+						<a href={contato.mapa} target="_blank" rel="noopener">{contato.endereco[0]}<br />{contato.endereco[1]}</a>
+					</p>
 				</div>
 				<div>
 					<p class="t-mono">Contato</p>
 					<p>
 						{whats ? <a class="tel" href={whats} target="_blank" rel="noopener">WhatsApp {contato.whatsappExibicao}</a> : <span class="tel">WhatsApp {contato.whatsappExibicao}</span>}
-						<br />
-						{contato.email ? <a href={`mailto:${contato.email}`}>{contato.email}</a> : <span>E-mail do ateliê</span>}
+						{contato.email && (
+							<>
+								<br />
+								<a href={`mailto:${contato.email}`}>{contato.email}</a>
+							</>
+						)}
 					</p>
 				</div>
+				{redes.length > 0 && (
 				<div>
 					<p class="t-mono">Siga</p>
-					<p>
-						{contato.instagram ? <a href={contato.instagram} target="_blank" rel="noopener">Instagram</a> : <span>Instagram</span>}
-						<br />
-						{contato.pinterest ? <a href={contato.pinterest} target="_blank" rel="noopener">Pinterest</a> : <span>Pinterest</span>}
-					</p>
+					{/* cada rede só aparece quando o link estiver em src/data/contato.ts */}
+					{redes.map((r) => (
+						<p class="rede">
+							<a href={r.url} target="_blank" rel="noopener">
+								{r.nome}
+							</a>
+						</p>
+					))}
 				</div>
+				)}
 			</div>
 		</div>
 
@@ -94,7 +109,7 @@ const ano = new Date().getFullYear();
 	<div class="footer-ghost" aria-hidden="true">ANDRÉIA RIBEIRO</div>
 	<div class="wrap footer-base">
 		<p class="t-mono">© {ano} Andréia Ribeiro Atelier</p>
-		<p class="t-mono" data-relogio>Brasília · —:—</p>
+		<p class="t-mono" data-relogio>Loanda · —:—</p>
 		<p class="t-mono">Sob medida para locação</p>
 	</div>
 </footer>
@@ -248,11 +263,11 @@ const ano = new Date().getFullYear();
 		m.addEventListener('mouseleave', () => gsap.to(m, { x: 0, y: 0, duration: 0.9, ease: 'elastic.out(1,.5)' }));
 	}
 
-	/* relógio de Brasília */
+	/* relógio local do ateliê (Loanda — PR, horário de Brasília) */
 	const relogio = document.querySelector('.rodape [data-relogio]');
 	if (relogio) {
 		const fmt = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
-		const tick = () => (relogio.textContent = 'Brasília · ' + fmt.format(new Date()));
+		const tick = () => (relogio.textContent = 'Loanda · ' + fmt.format(new Date()));
 		tick();
 		setInterval(tick, 30000);
 	}
