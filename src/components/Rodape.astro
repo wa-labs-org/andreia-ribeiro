@@ -265,6 +265,27 @@ const redes = [
 			.from('.rodape .footer-cta .cta-line', { yPercent: 115, duration: 1.1, stagger: 0.18, ease: CONFIG.ease })
 			.to('.rodape .cta-underline', { scaleX: 1, duration: 0.8, ease: CONFIG.ease }, '-=0.2');
 
+	/* saída, ligada à rolagem (e reversível): os blocos da coluna da esquerda sobem e
+	   esmaecem um a um quando estão saindo pelo topo da tela. O formulário não tem saída (esmaecer
+	   um campo enquanto a cliente digita atrapalharia), e a assinatura e a linha de baixo
+	   nunca saem da tela. Age nos blocos inteiros: o título tem a entrada nas linhas e o
+	   botão o efeito magnético. */
+	if (!reduceMotion)
+		gsap.utils
+			.toArray<HTMLElement>(
+				'.rodape .eyebrow, .rodape .footer-cta, .rodape .footer-lead, .rodape .footer-magnet, .rodape .footer-info > div',
+			)
+			.forEach((el) =>
+				gsap.to(el, {
+					y: -40,
+					opacity: 0,
+					ease: 'none',
+					/* só nos últimos 15% da tela (a faixa do header): a página acaba no rodapé, e
+					   uma saída mais longa deixaria o título parado e meio apagado no fim dela */
+					scrollTrigger: { trigger: el, start: 'bottom 15%', end: 'bottom top', scrub: true },
+				}),
+			);
+
 	/* CTA magnético */
 	const m = document.querySelector<HTMLElement>('.rodape .magnet');
 	if (m && finePointer && !reduceMotion) {
