@@ -1,0 +1,180 @@
+---
+// Lâminas (ØDE pinned cross-dissolve, fundo café): a seção fica fixa e quatro
+// peças do acervo se dissolvem uma na outra com a rolagem, com legenda e
+// contador. No design system o centro de cada lâmina é um croqui; aqui é a foto
+// inteira da peça numa moldura vertical, sobre o tecido café.
+// Nomes iguais aos do Acervo; descrições a confirmar com o ateliê.
+import { Picture } from 'astro:assets';
+import noivaRenda from '../assets/maison/noiva-renda.jpg';
+import galaAzul from '../assets/colecoes/gala-azul.jpg';
+import debutanteRosa from '../assets/colecoes/debutante-rosa.jpg';
+import formaturaDouradoCapa from '../assets/acervo/formatura-dourado-capa.jpg';
+
+const laminas = [
+	{
+		nome: 'Aurora',
+		texto: 'Renda sobre cetim, mangas longas de renda recortada e uma saia ampla que se abre a cada passo.',
+		foto: noivaRenda,
+		posicao: '50% 70%',
+	},
+	{
+		nome: 'Celeste',
+		texto: 'Cetim azul tomara que caia, com um bordado de folhas que desce do corpete pela saia.',
+		foto: galaAzul,
+		posicao: '50% 60%',
+	},
+	{
+		nome: 'Camélia',
+		texto: 'Jacquard rosé em camadas e corpete estruturado — feito para girar.',
+		foto: debutanteRosa,
+		posicao: '50% 60%',
+	},
+	{
+		nome: 'Âmbar',
+		texto: 'Bordado dourado em linhas, uma fenda que aparece no passo e uma capa de tule que cai dos ombros.',
+		foto: formaturaDouradoCapa,
+		posicao: '50% 40%',
+	},
+];
+const total = String(laminas.length).padStart(2, '0');
+---
+
+<section class="plates laminas" id="laminas" aria-labelledby="laminas-title">
+	<div aria-hidden="true">
+		{
+			laminas.map((l) => (
+				<div class="plate-frame">
+					<div class="plate-img fabric fabric--cafe">
+						<div class="lamina-foto">
+							<Picture
+								src={l.foto}
+								alt=""
+								formats={['avif', 'webp']}
+								width={960}
+								widths={[480, 720, 960, 1280]}
+								sizes="(max-width: 860px) 60vw, 34vw"
+								style={`object-position: ${l.posicao}`}
+							/>
+						</div>
+					</div>
+				</div>
+			))
+		}
+	</div>
+	<div class="plates-scrim" aria-hidden="true"></div>
+	<h2 class="plates-label" id="laminas-title">O acervo — em movimento</h2>
+	<span class="plates-count" aria-hidden="true"><b class="pl-now">01</b> / {total}</span>
+	<div class="plates-caps">
+		{
+			laminas.map((l, i) => (
+				<p class:list={['plate-cap', { 'is-on': i === 0 }]}>
+					<span class="plate-cap-title">
+						Vestido <em>{l.nome}</em>
+					</span>
+					<span class="plate-cap-text">{l.texto}</span>
+				</p>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.plates-label {
+		margin: 0;
+		font-weight: 400;
+	}
+	/* a foto inteira numa moldura vertical, no lugar do croqui do design system */
+	.lamina-foto {
+		position: absolute;
+		top: 13%;
+		bottom: 9%;
+		left: 64%;
+		aspect-ratio: 2 / 3;
+		transform: translateX(-50%);
+		border-radius: var(--radius-media);
+		overflow: hidden;
+		isolation: isolate;
+		box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.55);
+	}
+	.lamina-foto :global(picture),
+	.lamina-foto :global(img) {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	.lamina-foto :global(img) {
+		object-fit: cover;
+	}
+	/* legenda à esquerda da foto no desktop */
+	.plate-cap {
+		max-width: min(40rem, 46vw);
+	}
+	@media (max-width: 860px) {
+		/* celular: a foto fica em cima e a legenda embaixo */
+		.lamina-foto {
+			top: 8.75rem;
+			bottom: auto;
+			left: 50%;
+			height: 52svh;
+		}
+		.plate-cap {
+			max-width: none;
+		}
+	}
+	/* movimento reduzido: as lâminas ficam empilhadas (regra .is-reduced do design system)
+	   e todas as legendas aparecem em sequência, abaixo delas */
+	.laminas:global(.is-reduced) .plates-count {
+		display: none;
+	}
+	.laminas:global(.is-reduced) .plate-img {
+		transform: none;
+	}
+	.laminas:global(.is-reduced) .plates-caps {
+		position: static;
+		display: grid;
+		gap: 2.5rem;
+		min-height: 0;
+		padding: var(--section-s, 4rem) var(--gutter);
+	}
+	.laminas:global(.is-reduced) .plate-cap {
+		position: static;
+		opacity: 1;
+		transform: none;
+	}
+</style>
+
+<script>
+	import { gsap, ScrollTrigger, reduceMotion } from '../scripts/motion.js';
+
+	const el = document.querySelector<HTMLElement>('.laminas');
+	if (el) {
+		const frames = gsap.utils.toArray<HTMLElement>('.laminas .plate-frame');
+		const imgs = gsap.utils.toArray<HTMLElement>('.laminas .plate-img');
+		const caps = gsap.utils.toArray<HTMLElement>('.laminas .plate-cap');
+		const nowEl = el.querySelector('.pl-now');
+		const n = frames.length;
+
+		if (reduceMotion) {
+			el.classList.add('is-reduced');
+		} else {
+			gsap.set(frames, { opacity: (i: number) => (i === 0 ? 1 : 0) });
+			/* a seção fica fixa; cada lâmina se dissolve na próxima conforme a rolagem */
+			ScrollTrigger.create({
+				trigger: el,
+				start: 'top top',
+				end: '+=' + n * 90 + '%',
+				pin: true,
+				scrub: 1,
+				anticipatePin: 1,
+				onUpdate: (self) => {
+					const p = self.progress * (n - 1);
+					const idx = Math.round(p);
+					frames.forEach((f, i) => gsap.set(f, { opacity: Math.max(0, 1 - Math.abs(p - i)) }));
+					gsap.set(imgs, { scale: 1.12 - 0.12 * self.progress });
+					caps.forEach((c, i) => c.classList.toggle('is-on', i === idx));
+					if (nowEl) nowEl.textContent = String(idx + 1).padStart(2, '0');
+				},
+			});
+		}
+	}
+</script>
