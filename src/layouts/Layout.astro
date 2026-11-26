@@ -5,16 +5,52 @@
 import '../../andreia-ribeiro-design-system/assets/ar.css';
 import '../styles/site.css';
 import Loader from '../components/Loader.astro';
+import { contato } from '../data/contato';
 
 interface Props {
 	title?: string;
 	description?: string;
+	/** imagem de compartilhamento (caminho em /public), 1200 × 630 */
+	image?: string;
+	imageAlt?: string;
 }
 
 const {
-	title = 'Andréia Ribeiro Atelier — Sob medida para locação',
-	description = 'Vestidos de noiva, de festa e trajes de gala para locar, provados com calma e ajustados à mão no ateliê.',
+	title = 'Andréia Ribeiro Atelier · Aluguel de vestidos em Loanda – PR',
+	description = 'Aluguel de vestidos de noiva, madrinha, debutante, formatura e gala em Loanda – PR. Provas com hora marcada e ajustes sob medida, feitos à mão no ateliê.',
+	image = '/og.jpg',
+	imageAlt = 'Andréia Ribeiro Atelier — noiva em vestido de renda com mangas longas, sobre o fundo marfim do ateliê.',
 } = Astro.props;
+
+/* SEO: endereço canônico e URLs absolutas a partir de `site` (astro.config.mjs) */
+const site = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+const nome = 'Andréia Ribeiro Atelier';
+
+/* dados estruturados (schema.org) do ateliê como negócio local */
+const tel = contato.whatsapp ? `+${contato.whatsapp.slice(0, 2)} ${contato.whatsapp.slice(2, 4)} ${contato.whatsapp.slice(4, 9)}-${contato.whatsapp.slice(9)}` : undefined;
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'ClothingStore',
+	'@id': `${site.href.replace(/\/$/, '')}/#atelie`,
+	name: nome,
+	description,
+	url: site.href,
+	image: ogImage,
+	telephone: tel,
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: contato.enderecoPartes.rua,
+		addressLocality: contato.enderecoPartes.cidade,
+		addressRegion: contato.enderecoPartes.estado,
+		postalCode: contato.enderecoPartes.cep,
+		addressCountry: contato.enderecoPartes.pais,
+	},
+	hasMap: contato.mapa,
+	areaServed: { '@type': 'City', name: `${contato.enderecoPartes.cidade} – ${contato.enderecoPartes.estado}` },
+	sameAs: [contato.instagram, contato.pinterest].filter(Boolean),
+};
 ---
 
 <!doctype html>
@@ -24,8 +60,32 @@ const {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{title}</title>
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#FFFDF8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<!-- compartilhamento (WhatsApp, Instagram, Facebook, LinkedIn…) -->
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="pt_BR" />
+		<meta property="og:site_name" content={nome} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={imageAlt} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={imageAlt} />
+
+		<!-- dados estruturados: o ateliê como negócio local -->
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
