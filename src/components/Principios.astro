@@ -54,5 +54,16 @@
 				scrollTrigger: { trigger: fill, start: 'top 80%', end: 'bottom 55%', scrub: true },
 			});
 		});
+
+		/* saída, ligada à rolagem (e reversível): depois que a frase termina de se preencher
+		   (fim em 'bottom 55%'), ela e o rótulo sobem e esmaecem. Age no parágrafo inteiro,
+		   não nas palavras que se preenchem. */
+		gsap
+			.timeline({
+				defaults: { ease: 'none' },
+				scrollTrigger: { trigger: fill, start: 'bottom 45%', end: 'bottom top', scrub: true },
+			})
+			.to('.principios h2', { y: -40, opacity: 0, duration: 0.6 }, 0)
+			.to(fill, { y: -60, opacity: 0, duration: 1 }, 0.1);
 	}
 </script>
