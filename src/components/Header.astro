@@ -9,9 +9,10 @@ const links = [
 ---
 
 <header class="site-header" id="site-header">
-	<a href="#top" class="wordmark" aria-label="Andréia Ribeiro Atelier — início">
-		<span data-lotus></span>
-		<span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span><span class="wordmark-sub">Atelier</span></span>
+	<a href="#top" class="wordmark">
+		<span data-lotus aria-hidden="true"></span>
+		<span class="wordmark-text"><span class="wordmark-name">Andréia Ribeiro</span> <span class="wordmark-sub">Atelier</span></span>
+		<span class="sr-only">, início</span>
 	</a>
 	<nav class="site-nav" aria-label="Principal">
 		{links.map((l) => <a href={l.href}>{l.label}</a>)}

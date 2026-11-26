@@ -30,3 +30,17 @@
 .principios {
 	overflow-x: clip;
 }
+
+/* texto só para leitores de tela (ex.: frases animadas letra a letra, que ficam escondidas
+   deles para não serem lidas em pedaços) */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}

@@ -1,9 +1,8 @@
 /* Base de movimento compartilhada por todas as seções.
- * Os scripts do design system (ícones, lótus, seda) entram primeiro: o lótus
+ * Os scripts do design system (ícones, lótus, croquis) entram primeiro: o lótus
  * é montado de forma síncrona e precisa existir antes de o GSAP animá-lo. */
 import '../../andreia-ribeiro-design-system/assets/icons.js';
 import '../../andreia-ribeiro-design-system/assets/lotus.js';
-import '../../andreia-ribeiro-design-system/assets/silk.js';
 import '../../andreia-ribeiro-design-system/assets/croquis.js';
 
 import { gsap } from 'gsap';

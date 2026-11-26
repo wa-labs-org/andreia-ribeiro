@@ -10,7 +10,9 @@
      colors: ['#FDF7E7', '#F9F1D8', '#C6AF6C', '#B19F6E'], // base, dobra, brilho, sombra
      satin: .55, shadow: .14,          // força do brilho e da sombra (como no ARSilk)
      speed, scale, detail, warp, rotation,
-     mouseReact, amplitude, stir, sheen, clickSwirl, resolution
+     mouseReact, amplitude, stir, sheen, clickSwirl,
+     resolution, maxDpr,              // escala da tela desenhada e teto do devicePixelRatio
+     fps                              // quadros por segundo (padrão 60)
    }) → { destroy() }
 
    • movimento reduzido → um quadro parado, sem mexer nem redemoinho
@@ -140,6 +142,8 @@ export function createIridescence(root, options = {}) {
 		sheen: 0.3,
 		clickSwirl: true,
 		resolution: 1,
+		maxDpr: 2,
+		fps: 60,
 		...options,
 	};
 	o.scale = Math.max(0.05, o.scale);
@@ -322,6 +326,11 @@ export function createIridescence(root, options = {}) {
 	const frame = (now) => {
 		raf = 0;
 		if (!alive || !visible) return;
+		/* limita a taxa de quadros (o tecido é lento; 30 qps bastam e poupam a bateria) */
+		if (o.fps < 60 && last && now - last < 1000 / o.fps - 2) {
+			raf = requestAnimationFrame(frame);
+			return;
+		}
 		const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
 		last = now;
 		const moving = !reduce;
@@ -385,7 +394,7 @@ export function createIridescence(root, options = {}) {
 	};
 
 	const resize = () => {
-		const dpr = Math.min(window.devicePixelRatio || 1, 2) * o.resolution;
+		const dpr = Math.min(window.devicePixelRatio || 1, o.maxDpr) * o.resolution;
 		state.width = Math.max(1, root.clientWidth);
 		state.height = Math.max(1, root.clientHeight);
 		canvas.width = Math.max(1, Math.round(state.width * dpr));

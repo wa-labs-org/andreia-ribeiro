@@ -4,6 +4,11 @@
 // papel, cursor e loader.
 import '../../andreia-ribeiro-design-system/assets/ar.css';
 import '../styles/site.css';
+import '../styles/fonts.css';
+/* fontes da hero, pré-carregadas para a primeira pintura não esperar o CSS */
+import cormorant300 from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-300-normal.woff2?url';
+import cormorant300i from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-300-italic.woff2?url';
+import jost300 from '@fontsource/jost/files/jost-latin-300-normal.woff2?url';
 import Loader from '../components/Loader.astro';
 import { contato } from '../data/contato';
 
@@ -86,12 +91,9 @@ const jsonLd = {
 
 		<!-- dados estruturados: o ateliê como negócio local -->
 		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
-		/>
+		<link rel="preload" href={cormorant300} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={cormorant300i} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={jost300} as="font" type="font/woff2" crossorigin />
 	</head>
 	<body>
 		<div class="progress" id="progress"></div>

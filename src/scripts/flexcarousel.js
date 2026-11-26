@@ -24,6 +24,8 @@ const BEND_PRESETS = {
 const FIT_ASPECT = { portrait: 0.75, square: 1, landscape: 4 / 3 };
 const TAPS = 12;
 const PIXEL_BUDGET = 4.5e6;
+/* em telas de toque, teto de DPR menor: o efeito continua nítido e custa bem menos */
+const MAX_DPR = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches ? 1.5 : 2;
 const INTRO_DURATION = { rise: 2.1, bloom: 1.6, spin: 2.2, deal: 1.5, fade: 0.35 };
 
 const wrap = (value, size) => ((((value + size / 2) % size) + size) % size) - size / 2;
@@ -186,7 +188,7 @@ export function createFlexCarousel(container, items, options = {}, callbacks = {
 	const cb = { onChange() {}, onReveal() {}, onFocusChange() {}, onHover() {}, onSelect() {}, ...callbacks };
 
 	const renderer = new Renderer({
-		dpr: Math.min(window.devicePixelRatio || 1, 2),
+		dpr: Math.min(window.devicePixelRatio || 1, MAX_DPR),
 		alpha: true,
 		premultipliedAlpha: true,
 		antialias: false,
@@ -520,7 +522,7 @@ export function createFlexCarousel(container, items, options = {}, callbacks = {
 	const applyResize = () => {
 		width = Math.max(1, container.clientWidth);
 		height = Math.max(1, container.clientHeight);
-		renderer.dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(PIXEL_BUDGET / (width * height)));
+		renderer.dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR, Math.sqrt(PIXEL_BUDGET / (width * height)));
 		renderer.setSize(width, height);
 		target.setSize(Math.max(2, Math.round(width * renderer.dpr)), Math.max(2, Math.round(height * renderer.dpr)));
 		lensUniforms.tScene.value = target.texture;

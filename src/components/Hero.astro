@@ -14,8 +14,9 @@
 			<span class="t-caps">Ateliê sob medida</span><span class="t-mono">— locação de trajes</span>
 		</p>
 		<h1 class="t-display-xl">
-			<span class="hero-line">Sob medida</span>{' '}
-			<span class="hero-line is-italic">para sua ocasião.</span>
+			<span class="sr-only">Sob medida para sua ocasião.</span>
+			<span class="hero-line" aria-hidden="true">Sob medida</span>{' '}
+			<span class="hero-line is-italic" aria-hidden="true">para sua ocasião.</span>
 		</h1>
 		<div class="hero-foot hero-sub">
 			<p class="t-body-l">
@@ -170,7 +171,16 @@
 	import { createIridescence } from '../scripts/iridescence.js';
 
 	/* iridescência em cetim: mesmo desenho do componente original, cores da seda */
-	createIridescence(document.getElementById('hero-iridescence')!, {
+	/* desempenho: o tecido é criado quando o navegador fica livre (o loader cobre a hero
+	   nesse meio-tempo), em meia resolução (é um degradê suave, a diferença não aparece) e,
+	   em telas de toque, a 30 quadros por segundo com teto de DPR 1,5 */
+	const toque = window.matchMedia('(pointer: coarse)').matches;
+	const quandoLivre = (fn: () => void) =>
+		'requestIdleCallback' in window ? (window as any).requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 200);
+	quandoLivre(() => createIridescence(document.getElementById('hero-iridescence')!, {
+		resolution: 0.5,
+		maxDpr: toque ? 1.5 : 2,
+		fps: toque ? 30 : 60,
 		colors: ['#FFFDF8', '#FDF7E7', '#C6AF6C', '#B19F6E'], // marfim-claro (fundo), marfim, ouro-claro, ouro-antigo
 		satin: 0.4,
 		shadow: 0.1,
@@ -184,7 +194,7 @@
 		stir: 0.5,
 		sheen: 0.3,
 		clickSwirl: true,
-	});
+	}));
 
 	/* loader → hero */
 	const counter = { v: 0 };
@@ -218,7 +228,7 @@
 
 	document.fonts.ready.then(() => {
 		/* palavras + letras: as letras animam, mas a quebra de linha respeita a palavra */
-		const split = new SplitText('.hero-line', { type: 'words,chars', wordsClass: 'word', charsClass: 'char' });
+		const split = new SplitText('.hero-line', { type: 'words,chars', wordsClass: 'word', charsClass: 'char', aria: 'none' });
 		gsap.set('.hero-line', { overflow: 'hidden', paddingBottom: '.08em', paddingRight: '.12em' });
 		const done = () => {
 			document.body.style.overflow = '';
