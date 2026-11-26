@@ -324,19 +324,20 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
 /* select do design system: o <select> fica escondido no formulário e um botão + lista
    (role combobox/listbox) fazem a interface — a lista nativa não aceita estilo.
    Comportamento em src/scripts/select.js (enhanceSelect). */
-.ar-select__native { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; white-space: nowrap; }
-.ar-select__trigger {
+.ar-select__native, .ar-date__native { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; white-space: nowrap; }
+.ar-select__trigger, .ar-date__trigger {
   display: block; width: 100%; min-height: 3.2rem; padding: 1.35rem 1.75rem .6rem 0; text-align: left;
   border-bottom: 1px solid rgba(198, 175, 108, .3); color: var(--marfim);
   font-family: var(--f-sans); font-weight: 300; font-size: 1rem; line-height: 1.3;
   transition: border-color var(--dur) var(--ease-out);
 }
 /* herdam o cursor da página (o site usa o anel dourado no lugar da seta) */
-.ar-select__trigger, .ar-select__option { cursor: inherit; }
-.ar-select__trigger:focus-visible { outline: none; border-color: var(--ouro-claro); }
-.ar-select.is-open .ar-select__trigger { border-color: var(--ouro-claro); }
-.ar-select__value { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ar-select.is-filled label, .ar-select.is-open label, .ar-select:focus-within label {
+.ar-select__trigger, .ar-select__option, .ar-date__trigger, .ar-date__nav, .ar-date__day { cursor: inherit; }
+.ar-select__trigger:focus-visible, .ar-date__trigger:focus-visible { outline: none; border-color: var(--ouro-claro); }
+.ar-select.is-open .ar-select__trigger, .ar-date.is-open .ar-date__trigger { border-color: var(--ouro-claro); }
+.ar-select__value, .ar-date__value { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ar-select.is-filled label, .ar-select.is-open label, .ar-select:focus-within label,
+.ar-date.is-filled label, .ar-date.is-open label, .ar-date:focus-within label {
   top: 0; font-size: .62rem; letter-spacing: .24em; text-transform: uppercase; color: var(--ouro-claro);
 }
 .ar-select .chev { transition: transform var(--dur) var(--ease-out); }
@@ -360,6 +361,41 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
   content: ''; position: absolute; left: 1rem; top: 50%; width: 5px; height: 5px; margin-top: -2.5px;
   transform: rotate(45deg); background: var(--ouro-claro);
 }
+
+/* calendário do design system: o <input> fica escondido no formulário e um botão + diálogo
+   com a grade do mês fazem a interface. Comportamento em src/scripts/datepicker.js (enhanceDate). */
+.ar-date .chev { transition: color var(--dur) var(--ease-out); }
+.ar-date__cal {
+  position: absolute; left: 0; top: calc(100% + .6rem); z-index: 20; width: min(19rem, calc(100vw - 2 * var(--gutter)));
+  padding: 1rem 1rem .8rem; background: #45392c; border: 1px solid var(--line-dark); border-radius: 1rem;
+  box-shadow: 0 24px 50px -20px rgba(0, 0, 0, .6);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: opacity .3s var(--ease-out), transform .45s var(--ease-out), visibility 0s linear .3s;
+}
+.ar-date.is-open .ar-date__cal { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.ar-date__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .7rem; }
+.ar-date__month { margin: 0; font-family: var(--f-display); font-style: italic; font-size: 1.35rem; color: var(--marfim); }
+.ar-date__month::first-letter { text-transform: uppercase; }
+.ar-date__nav {
+  width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 1px solid rgba(198, 175, 108, .35);
+  display: grid; place-items: center; color: var(--ouro-claro); font-size: 1rem;
+  transition: background-color .3s ease, border-color .3s ease, opacity .3s ease;
+}
+.ar-date__nav:hover:not(:disabled) { background: rgba(198, 175, 108, .14); border-color: var(--ouro-claro); }
+.ar-date__nav:disabled { opacity: .3; }
+.ar-date__grid { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ar-date__grid th { padding: 0 0 .4rem; font-family: var(--f-mono); font-weight: 400; font-size: .6rem; letter-spacing: .2em; color: var(--on-dark-soft); text-align: center; }
+.ar-date__grid td { padding: 1px; text-align: center; }
+.ar-date__day {
+  width: 100%; aspect-ratio: 1; max-width: 2.4rem; border-radius: 50%; border: 1px solid transparent;
+  font-family: var(--f-sans); font-weight: 300; font-size: .9rem; color: var(--marfim);
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+.ar-date__day:hover:not(:disabled) { background: rgba(198, 175, 108, .14); }
+.ar-date__day[aria-current="date"] { border-color: rgba(198, 175, 108, .5); }
+.ar-date__day[aria-pressed="true"] { background: var(--ouro); color: var(--cafe); font-weight: 400; }
+.ar-date__day:disabled { color: rgba(253, 247, 231, .22); }
+.ar-date__day:focus-visible, .ar-date__nav:focus-visible { outline: 1px solid var(--ouro-claro); outline-offset: 2px; }
 
 /* ═════════ Tabs (Soma schedule) ═════════ */
 .tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
