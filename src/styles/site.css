@@ -21,3 +21,12 @@
 	margin: 0;
 	color: var(--ink-soft);
 }
+
+/* As saídas com deslizamento lateral (rótulos, linhas das Coleções) não podem criar
+   rolagem horizontal: cada seção corta o que passa das bordas. `clip` não cria área de
+   rolagem própria (não atrapalha Lenis nem ScrollTrigger). */
+.numeros,
+.colecoes,
+.principios {
+	overflow-x: clip;
+}

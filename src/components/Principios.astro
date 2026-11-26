@@ -55,15 +55,15 @@
 			});
 		});
 
-		/* saída, ligada à rolagem (e reversível): depois que a frase termina de se preencher
-		   (fim em 'bottom 55%'), ela e o rótulo sobem e esmaecem. Age no parágrafo inteiro,
-		   não nas palavras que se preenchem. */
+		/* saída, ligada à rolagem (e reversível), só com movimento: depois que a frase termina
+		   de se preencher (fim em 'bottom 55%'), o rótulo corre para a esquerda e a frase sobe
+		   mais rápido que a página. Age no parágrafo inteiro, não nas palavras. */
 		gsap
 			.timeline({
 				defaults: { ease: 'none' },
-				scrollTrigger: { trigger: fill, start: 'bottom 45%', end: 'bottom top', scrub: true },
+				scrollTrigger: { trigger: fill, start: 'bottom 50%', end: 'bottom top', scrub: true },
 			})
-			.to('.principios h2', { y: -40, opacity: 0, duration: 0.6 }, 0)
-			.to(fill, { y: -60, opacity: 0, duration: 1 }, 0.1);
+			.to('.principios h2', { x: -220, duration: 1 }, 0)
+			.to(fill, { y: -200, duration: 1 }, 0);
 	}
 </script>
