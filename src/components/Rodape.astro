@@ -19,13 +19,16 @@ const redes = [
 <footer class="footer section-dark rodape" id="contato" aria-labelledby="contato-title">
 	<div class="wrap footer-grid">
 		<div>
-			<p class="eyebrow"><span class="t-caps">Reservas</span><span class="t-mono">Com hora marcada</span></p>
+			<p class="eyebrow"><span class="t-caps">Atendimento com hora marcada</span></p>
 			<h2 class="footer-cta" id="contato-title">
-				<span class="cta-clip"><span class="cta-line">Reserve a</span></span>
+				<span class="cta-clip"><span class="cta-line">Reserve</span></span>
 				<span class="cta-clip"
-					><span class="cta-line"><span class="cta-better t-foil">sua prova</span>.<span class="cta-underline"></span></span></span
+					><span class="cta-line"><span class="cta-better t-foil">seu atendimento</span><span class="cta-underline"></span></span></span
 				>
 			</h2>
+			<p class="t-body-l footer-lead">
+				As provas acontecem no ateliê, uma cliente por vez. Escolha o dia para ver os horários de atendimento.
+			</p>
 			<div class="footer-magnet">
 				<a class="magnet" href={whats ?? '#pedido'} target={whats ? '_blank' : undefined} rel={whats ? 'noopener' : undefined}>
 					Falar com o ateliê <ar-icon name="arrow-right-up"></ar-icon>
@@ -134,8 +137,9 @@ const redes = [
 		margin: 2rem 0 0;
 		font-family: var(--f-display);
 		font-weight: 300;
-		font-size: clamp(3.4rem, 8vw, 7.5rem);
-		line-height: 0.9;
+		/* menor que no design system (3.4–7.5rem) para "seu atendimento" caber numa linha */
+		font-size: clamp(2.6rem, 5.4vw, 5.25rem);
+		line-height: 0.95;
 	}
 	.cta-clip {
 		display: block;
@@ -145,6 +149,7 @@ const redes = [
 	.cta-line {
 		position: relative;
 		display: inline-block;
+		white-space: nowrap;
 	}
 	.cta-better {
 		position: relative;
@@ -159,6 +164,10 @@ const redes = [
 		background: var(--ouro-claro);
 		transform: scaleX(0);
 		transform-origin: left;
+	}
+	.footer-lead {
+		margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+		max-width: 30rem;
 	}
 	.footer-magnet {
 		margin-top: clamp(2.5rem, 5vw, 4rem);
@@ -244,6 +253,7 @@ const redes = [
 
 <script>
 	import { gsap, reduceMotion, finePointer, CONFIG } from '../scripts/motion.js';
+	import { enhanceSelect } from '../scripts/select.js';
 
 	/* "Reserve a sua prova.": as linhas sobem e a linha dourada se desenha */
 	if (reduceMotion) gsap.set('.rodape .cta-underline', { scaleX: 1 });
@@ -273,9 +283,8 @@ const redes = [
 	}
 
 	/* rótulo flutuante dos selects e do campo de data */
-	document.querySelectorAll<HTMLSelectElement>('.rodape .js-select').forEach((s) =>
-		s.addEventListener('change', () => s.classList.toggle('has-value', !!s.value)),
-	);
+	/* selects no estilo do design system (lista própria por cima do <select>) */
+	document.querySelectorAll<HTMLSelectElement>('.rodape .js-select').forEach((s) => enhanceSelect(s));
 	const data = document.querySelector<HTMLInputElement>('.rodape [data-date]');
 	data?.addEventListener('focus', () => (data.type = 'date'));
 	data?.addEventListener('blur', () => {
