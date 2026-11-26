@@ -110,12 +110,15 @@ const total = String(etapas.length).padStart(2, '0');
 		padding: 0;
 		list-style: none;
 	}
+	/* cards menores que os do design system (17rem–24rem): cerca de 3/4 */
 	.etapas > .step {
 		flex: none;
-		width: clamp(17rem, 26vw, 24rem);
+		width: clamp(14rem, 19vw, 18rem);
+		gap: 1.25rem;
 	}
 	.step-title {
 		margin: 0;
+		font-size: 1.6rem;
 	}
 	.step .t-small {
 		margin: 0;
