@@ -412,20 +412,20 @@ const linhas = [
 			}),
 		);
 
-		/* saída de cada linha, ligada à rolagem (e reversível): quando a linha começa a deixar
-		   a tela, o bloco de texto sobe e esmaece; a imagem (monte de fotos ou foto) vai
-		   atrás, mais devagar, encolhendo de leve. Age nos blocos inteiros, não nos elementos
-		   internos que já têm animação de entrada. */
-		gsap.utils.toArray<HTMLElement>('.maison-row').forEach((row) => {
+		/* saída de cada linha, ligada à rolagem (e reversível), só com movimento: o texto
+		   sobe mais rápido que a página e a imagem encolhe e inclina, para um lado na
+		   primeira linha e para o outro na segunda. Age nos blocos inteiros, não nos
+		   elementos internos que já têm animação de entrada. */
+		gsap.utils.toArray<HTMLElement>('.maison-row').forEach((row, i) => {
 			const copy = row.querySelector('.maison-copy');
 			const media = row.querySelector('.maison-media');
 			gsap
 				.timeline({
 					defaults: { ease: 'none' },
-					scrollTrigger: { trigger: row, start: 'top 15%', end: 'bottom top', scrub: true },
+					scrollTrigger: { trigger: row, start: 'top 40%', end: 'bottom top', scrub: true },
 				})
-				.to(copy, { y: -80, opacity: 0, duration: 0.8 }, 0)
-				.to(media, { y: -40, scale: 0.95, opacity: 0, duration: 0.8 }, 0.2);
+				.to(copy, { y: -200, duration: 1 }, 0)
+				.to(media, { y: -60, scale: 0.84, rotate: i % 2 ? 5 : -5, transformOrigin: '50% 100%', duration: 1 }, 0);
 		});
 	}
 </script>

@@ -196,9 +196,10 @@
 		document.body.style.overflow = 'hidden';
 	}
 
-	/* saída da hero, ligada à rolagem (e reversível): o conteúdo sai de cima para baixo,
-	   na ordem de leitura, subindo um pouco mais rápido que a página e esmaecendo; o tecido
-	   do fundo amplia e desce mais devagar (paralaxe) e as linhas da estrutura recolhem.
+	/* saída da hero, ligada à rolagem (e reversível), só com movimento: o título se abre
+	   como uma cortina ("Sob medida" para a esquerda, "para sua ocasião." para a direita),
+	   o lótus sobe girando, o rótulo corre para a esquerda e a faixa de baixo sobe mais
+	   rápido que a página; o tecido amplia e desce (paralaxe) e as linhas recolhem.
 	   Criada só depois da entrada, para as duas não disputarem os mesmos elementos. */
 	const criarSaida = () => {
 		gsap
@@ -206,11 +207,12 @@
 				defaults: { ease: 'none' },
 				scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
 			})
-			.to('.hero-mark', { y: -60, opacity: 0, duration: 0.35 }, 0)
-			.to('.hero .eyebrow', { y: -50, opacity: 0, duration: 0.35 }, 0.06)
-			.to('.hero h1 .hero-line', { yPercent: -35, opacity: 0, duration: 0.45, stagger: 0.1 }, 0.12)
-			.to('.hero-foot', { y: -70, opacity: 0, duration: 0.45 }, 0.3)
-			.to('.hero-bg', { scale: 1.08, yPercent: 14, duration: 1 }, 0)
+			.to('.hero-mark', { y: -160, rotate: -60, duration: 0.6 }, 0)
+			.to('.hero .eyebrow', { x: -220, duration: 0.6 }, 0.05)
+			.to('.hero h1 .hero-line:not(.is-italic)', { xPercent: -22, y: -40, duration: 0.8 }, 0.1)
+			.to('.hero h1 .hero-line.is-italic', { xPercent: 22, y: -40, duration: 0.8 }, 0.1)
+			.to('.hero-foot', { y: -180, duration: 0.8 }, 0.2)
+			.to('.hero-bg', { scale: 1.15, yPercent: 20, duration: 1 }, 0)
 			.to('.hero .rules i', { scaleY: 0, transformOrigin: '50% 0%', duration: 0.8 }, 0.1);
 	};
 
