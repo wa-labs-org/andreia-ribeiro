@@ -1,0 +1,258 @@
+---
+// Agenda de provas (Soma schedule tabs): abas por dia da semana e os horários
+// de atendimento de cada dia. Diferente do design system, sem selos de
+// "Disponível / Reservado": uma página estática não sabe a disponibilidade real,
+// então cada horário leva ao agendamento (#contato). Horários de exemplo, a
+// confirmar com o ateliê.
+const dias = [
+	{
+		curto: 'Seg',
+		nome: 'Segunda-feira',
+		horarios: [
+			['10:00', 'Prova de noiva', '90 min'],
+			['14:30', 'Prova de madrinha', '60 min'],
+			['17:00', 'Ajuste final', '45 min'],
+		],
+	},
+	{
+		curto: 'Ter',
+		nome: 'Terça-feira',
+		horarios: [
+			['09:30', 'Escolha de acervo', '75 min'],
+			['15:00', 'Prova de debutante', '90 min'],
+		],
+	},
+	{
+		curto: 'Qua',
+		nome: 'Quarta-feira',
+		horarios: [
+			['10:00', 'Prova de noiva', '90 min'],
+			['13:30', 'Traje masculino', '45 min'],
+			['16:30', 'Prova de formatura', '60 min'],
+		],
+	},
+	{
+		curto: 'Qui',
+		nome: 'Quinta-feira',
+		horarios: [
+			['11:00', 'Escolha de acervo', '75 min'],
+			['16:00', 'Ajuste final', '45 min'],
+		],
+	},
+	{
+		curto: 'Sex',
+		nome: 'Sexta-feira',
+		horarios: [
+			['10:00', 'Prova de gala', '60 min'],
+			['14:00', 'Prova de noiva', '90 min'],
+			['17:30', 'Retirada', '30 min'],
+		],
+	},
+	{
+		curto: 'Sáb',
+		nome: 'Sábado',
+		horarios: [
+			['09:00', 'Prova de noiva', '90 min'],
+			['11:30', 'Escolha de acervo', '75 min'],
+		],
+	},
+];
+---
+
+<section class="section section-alt provas" id="provas" aria-labelledby="provas-title">
+	<div class="wrap fittings">
+		<div class="fittings-intro">
+			<p class="eyebrow"><span class="t-caps">Agenda de provas</span><span class="t-mono">Com hora marcada</span></p>
+			<h2 class="t-display-l" id="provas-title">Reserve o<br /><span class="t-italic">seu horário.</span></h2>
+			<p class="t-body-l">
+				As provas acontecem no ateliê, uma cliente por vez. Escolha o dia para ver os horários de atendimento.
+			</p>
+		</div>
+		<div class="panel">
+			<div class="tabs" role="tablist" aria-label="Dias da semana">
+				{
+					dias.map((d, i) => (
+						<button
+							class:list={['tab', { 'is-active': i === 0 }]}
+							type="button"
+							role="tab"
+							id={`provas-tab-${i}`}
+							aria-selected={i === 0 ? 'true' : 'false'}
+							aria-controls={`provas-dia-${i}`}
+							aria-label={d.nome}
+							tabindex={i === 0 ? 0 : -1}
+							data-i={i}
+						>
+							{d.curto}
+						</button>
+					))
+				}
+			</div>
+			<div class="hairline"></div>
+			<div class="days">
+				{
+					dias.map((d, i) => (
+						<div
+							class:list={['day', { 'is-active': i === 0 }]}
+							role="tabpanel"
+							id={`provas-dia-${i}`}
+							aria-labelledby={`provas-tab-${i}`}
+							hidden={i !== 0}
+							data-i={i}
+						>
+							{d.horarios.map(([hora, tipo, duracao]) => {
+								const [h, m] = hora.split(':');
+								return (
+									<a class="slot" href="#contato" aria-label={`${d.nome}, ${hora}: ${tipo}, ${duracao}. Agendar`}>
+										<span class="slot-time" aria-hidden="true">
+											{h}
+											<small>:{m}</small>
+										</span>
+										<span>
+											<span class="slot-title">{tipo}</span>
+											<span class="slot-meta">
+												<span class="t-mono">{duracao}</span>
+												<span class="t-mono">Ateliê · sala única</span>
+											</span>
+										</span>
+										<span class="slot-cta link" aria-hidden="true">
+											Agendar <ar-icon name="arrow-right" />
+										</span>
+									</a>
+								);
+							})}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.fittings {
+		display: grid;
+		grid-template-columns: minmax(0, 26rem) 1fr;
+		gap: clamp(2rem, 6vw, 7rem);
+		align-items: start;
+	}
+	.eyebrow {
+		margin: 0;
+	}
+	.fittings-intro h2,
+	.fittings-intro .t-body-l {
+		margin: 1.5rem 0 0;
+	}
+	.panel {
+		padding: 0.5rem 0 0;
+	}
+	.hairline {
+		margin-top: 1.25rem;
+	}
+	.day {
+		display: flex;
+		flex-direction: column;
+	}
+	.day[hidden] {
+		display: none;
+	}
+	.slot {
+		color: inherit;
+	}
+	.slot-title {
+		display: block;
+	}
+	/* "Agendar" com a linha dourada que cresce (mesmo efeito do link da hero) */
+	.slot:hover .slot-cta::after,
+	.slot:focus-visible .slot-cta::after {
+		width: 100%;
+	}
+	@media (max-width: 960px) {
+		.fittings {
+			grid-template-columns: 1fr;
+		}
+		.slot {
+			grid-template-columns: 5rem 1fr;
+		}
+		.slot-cta {
+			grid-column: 2;
+			justify-self: start;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, reduceMotion, CONFIG } from '../scripts/motion.js';
+
+	const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.provas .tab'));
+	const days = Array.from(document.querySelectorAll<HTMLElement>('.provas .day'));
+	let busy = false;
+
+	const mostrar = (i: number, foco = false) => {
+		const atual = days.find((d) => !d.hidden);
+		const proximo = days[i];
+		if (!proximo || proximo === atual || busy) return;
+		tabs.forEach((t, k) => {
+			const ativo = k === i;
+			t.classList.toggle('is-active', ativo);
+			t.setAttribute('aria-selected', String(ativo));
+			t.tabIndex = ativo ? 0 : -1;
+		});
+		if (foco) tabs[i].focus();
+		const trocar = () => {
+			if (atual) {
+				atual.hidden = true;
+				atual.classList.remove('is-active');
+			}
+			proximo.hidden = false;
+			proximo.classList.add('is-active');
+		};
+		if (reduceMotion || !atual) {
+			trocar();
+			return;
+		}
+		/* o dia atual sai, o novo entra com os horários em sequência */
+		busy = true;
+		gsap.to(atual, {
+			opacity: 0,
+			y: -10,
+			duration: 0.3,
+			ease: 'power2.in',
+			onComplete: () => {
+				gsap.set(atual, { clearProps: 'opacity,transform' });
+				trocar();
+				gsap.fromTo(
+					proximo.children,
+					{ opacity: 0, y: 12 },
+					{ opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: 'power2.out', clearProps: 'opacity,transform', onComplete: () => (busy = false) },
+				);
+			},
+		});
+	};
+
+	tabs.forEach((t, i) => {
+		t.addEventListener('click', () => mostrar(i));
+		/* setas, Home e End trocam de dia, como numa lista de abas */
+		t.addEventListener('keydown', (e) => {
+			const n = tabs.length;
+			const alvo = { ArrowRight: (i + 1) % n, ArrowLeft: (i - 1 + n) % n, Home: 0, End: n - 1 }[e.key];
+			if (alvo === undefined) return;
+			e.preventDefault();
+			mostrar(alvo, true);
+		});
+	});
+
+	/* a introdução sobe ao entrar */
+	if (!reduceMotion) {
+		const intro = document.querySelector('.provas .fittings-intro');
+		if (intro)
+			gsap.from(intro.children, {
+				y: 36,
+				autoAlpha: 0,
+				duration: 1.1,
+				stagger: 0.1,
+				ease: CONFIG.ease,
+				scrollTrigger: { trigger: intro, start: 'top 82%' },
+			});
+	}
+</script>
