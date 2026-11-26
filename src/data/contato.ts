@@ -6,6 +6,14 @@ export const contato = {
 	endereco: ['Av. Londrina, 250 — Centro', 'Loanda — PR · 87900-000'],
 	// abre o endereço no Google Maps
 	mapa: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Avenida Londrina, 250, Centro, Loanda - PR, 87900-000'),
+	// endereço por partes, para os dados estruturados (schema.org) do Google
+	enderecoPartes: {
+		rua: 'Avenida Londrina, 250 — Centro',
+		cidade: 'Loanda',
+		estado: 'PR',
+		cep: '87900-000',
+		pais: 'BR',
+	},
 	whatsapp: '5544999756139', // só dígitos, com 55 + DDD
 	whatsappExibicao: '(44) 99975-6139',
 	email: null as string | null,
