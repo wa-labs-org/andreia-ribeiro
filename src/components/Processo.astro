@@ -1,0 +1,176 @@
+---
+// Como funciona: o processo da locação em seis etapas, numa faixa horizontal
+// que fica fixa na tela enquanto a página rola (ØDE pinned horizontal). O croqui
+// de cada etapa se desenha quando ela entra. As imagens são painéis de tecido
+// com croqui (marcam o lugar das fotos reais de cada etapa).
+const etapas = [
+	{
+		artigo: 'A',
+		nome: 'escolha',
+		texto: 'Uma conversa sobre a ocasião, o estilo e a data — e uma seleção de peças separada para você.',
+		tecido: 'marfim',
+		croqui: 'princesa',
+	},
+	{
+		artigo: 'A',
+		nome: 'prova',
+		texto: 'No ateliê, com hora marcada. Vestimos, observamos o caimento e marcamos cada ajuste.',
+		tecido: 'rose',
+		croqui: 'sereia',
+	},
+	{
+		artigo: 'O',
+		nome: 'ajuste',
+		texto: 'Barra, cintura, alças e busto acertados à mão — o traje passa a ter as suas medidas.',
+		tecido: 'champagne',
+		croqui: 'coluna',
+	},
+	{
+		artigo: 'A',
+		nome: 'retirada',
+		texto: 'Uma última prova, o traje passado e embalado em capa de tecido, pronto para a noite.',
+		tecido: 'ouro',
+		croqui: 'noiva',
+	},
+	{
+		artigo: 'A',
+		nome: 'noite',
+		texto: 'A parte que é toda sua. Nós só pedimos que viva o traje sem medo.',
+		tecido: 'cafe',
+		croqui: 'sereia',
+	},
+	{
+		artigo: 'A',
+		nome: 'devolução',
+		texto: 'O traje volta ao ateliê e a limpeza fica por nossa conta. Ele descansa, e se prepara para outra história.',
+		tecido: 'manteiga',
+		lotus: true,
+	},
+];
+const total = String(etapas.length).padStart(2, '0');
+---
+
+<section class="processo" id="processo" aria-labelledby="processo-title">
+	<div class="h-stage">
+		<div class="h-track">
+			<div class="h-intro">
+				<p class="eyebrow">
+					<span class="t-caps">Como funciona</span><span class="t-mono">{total} etapas</span>
+				</p>
+				<h2 class="t-display-l" id="processo-title">
+					Da escolha<br /><span class="t-italic">à devolução.</span>
+				</h2>
+				<p class="t-body-l">
+					Role para atravessar a locação, do primeiro encontro com o traje até a volta dele ao ateliê.
+				</p>
+			</div>
+			<ol class="etapas" role="list">
+				{
+					etapas.map((e, i) => (
+						<li class="step">
+							<div class="step-media">
+								{e.lotus ? (
+									<div class={`fabric fabric--${e.tecido} fabric-lotus`}>
+										<span data-lotus />
+									</div>
+								) : (
+									<div class={`fabric fabric--${e.tecido}`}>
+										<span data-croqui={e.croqui} />
+									</div>
+								)}
+							</div>
+							<div class="step-head">
+								<h3 class="step-title">
+									{e.artigo} <em>{e.nome}</em>
+								</h3>
+								<span class="t-mono">{String(i + 1).padStart(2, '0')}</span>
+							</div>
+							<p class="t-small">{e.texto}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+</section>
+
+<style>
+	.eyebrow {
+		margin: 0;
+	}
+	.h-intro h2,
+	.h-intro .t-body-l {
+		margin: 1.5rem 0 0;
+	}
+	/* as etapas são uma lista, mas continuam na mesma fila horizontal da introdução */
+	.etapas {
+		display: flex;
+		gap: inherit;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.etapas > .step {
+		flex: none;
+		width: clamp(17rem, 26vw, 24rem);
+	}
+	.step-title {
+		margin: 0;
+	}
+	.step .t-small {
+		margin: 0;
+	}
+	.fabric-lotus {
+		display: grid;
+		place-items: center;
+	}
+	.fabric-lotus [data-lotus] {
+		width: 38%;
+		aspect-ratio: 1;
+	}
+</style>
+
+<script>
+	import { gsap, reduceMotion } from '../scripts/motion.js';
+
+	const stage = document.querySelector<HTMLElement>('.processo .h-stage');
+	const track = document.querySelector<HTMLElement>('.processo .h-track');
+
+	if (stage && track) {
+		if (reduceMotion) {
+			/* sem fixar a seção: as etapas ficam numa fila com rolagem lateral nativa */
+			stage.style.height = 'auto';
+			stage.style.overflowX = 'auto';
+			stage.style.paddingBlock = 'var(--section)';
+		} else {
+			const overflow = () => Math.max(0, track.scrollWidth - window.innerWidth);
+			/* a seção fica fixa e a fila anda na horizontal enquanto a página rola */
+			const travessia = gsap.to(track, {
+				x: () => -overflow(),
+				ease: 'none',
+				scrollTrigger: {
+					trigger: stage,
+					start: 'top top',
+					end: () => '+=' + overflow(),
+					pin: true,
+					scrub: 0.7,
+					invalidateOnRefresh: true,
+				},
+			});
+			/* o croqui (ou o lótus) de cada etapa se desenha quando ela entra */
+			gsap.utils.toArray<HTMLElement>('.processo .step').forEach((s) => {
+				gsap.fromTo(
+					s.querySelectorAll('[data-croqui] path, [data-lotus] .lp'),
+					{ strokeDasharray: 100, strokeDashoffset: 100 },
+					{
+						strokeDashoffset: 0,
+						duration: 1.8,
+						stagger: 0.04,
+						ease: 'power2.inOut',
+						scrollTrigger: { trigger: s, containerAnimation: travessia, start: 'left 85%' },
+					},
+				);
+			});
+		}
+	}
+</script>
