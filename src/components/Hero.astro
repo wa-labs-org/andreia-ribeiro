@@ -50,6 +50,10 @@
 		inset: 0;
 		z-index: 0;
 		overflow: hidden;
+		/* base nas cores do tecido, enquanto o WebGL não começa (ou se não houver WebGL) */
+		background:
+			radial-gradient(120% 80% at 70% 20%, rgba(198, 175, 108, 0.18), transparent 60%),
+			linear-gradient(160deg, #fffdf8 0%, #fdf7e7 55%, #fffdf8 100%);
 	}
 	.hero-veil {
 		position: absolute;
@@ -171,13 +175,19 @@
 	import { createIridescence } from '../scripts/iridescence.js';
 
 	/* iridescência em cetim: mesmo desenho do componente original, cores da seda */
-	/* desempenho: o tecido é criado quando o navegador fica livre (o loader cobre a hero
-	   nesse meio-tempo), em meia resolução (é um degradê suave, a diferença não aparece) e,
-	   em telas de toque, a 30 quadros por segundo com teto de DPR 1,5 */
+	/* desempenho: o tecido (WebGL) é criado só depois do carregamento completo da página,
+	   para não disputar a thread principal com a primeira pintura (o LCP é o título, pintado
+	   no primeiro quadro, por baixo do loader). O loader cobre a hero por ~2,5 s, então o
+	   tecido já está pronto quando ela aparece; até lá fica o degradê do CSS (.hero-bg).
+	   Meia resolução (é um degradê suave, a diferença não aparece) e, em telas de toque,
+	   30 quadros por segundo com teto de DPR 1,5. */
 	const toque = window.matchMedia('(pointer: coarse)').matches;
-	const quandoLivre = (fn: () => void) =>
-		'requestIdleCallback' in window ? (window as any).requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 200);
-	quandoLivre(() => createIridescence(document.getElementById('hero-iridescence')!, {
+	const depoisDoCarregamento = (fn: () => void) => {
+		const agendar = () => ('requestIdleCallback' in window ? (window as any).requestIdleCallback(fn, { timeout: 600 }) : setTimeout(fn, 100));
+		if (document.readyState === 'complete') agendar();
+		else window.addEventListener('load', agendar, { once: true });
+	};
+	depoisDoCarregamento(() => createIridescence(document.getElementById('hero-iridescence')!, {
 		resolution: 0.5,
 		maxDpr: toque ? 1.5 : 2,
 		fps: toque ? 30 : 60,
@@ -226,7 +236,15 @@
 			.to('.hero .rules i', { scaleY: 0, transformOrigin: '50% 0%', duration: 0.8 }, 0.1);
 	};
 
-	document.fonts.ready.then(() => {
+	/* a abertura espera as fontes do título (a divisão em letras precisa das medidas finais)
+	   e é preparada dois quadros depois: assim a primeira pintura — que já mostra o título,
+	   o LCP, por baixo do loader — não divide a thread principal com esse trabalho */
+	const fontesDoTitulo = Promise.all([
+		document.fonts.load('300 1em "Cormorant Garamond"'),
+		document.fonts.load('italic 300 1em "Cormorant Garamond"'),
+	]).catch(() => undefined);
+	const depoisDoPrimeiroQuadro = () => new Promise<void>((ok) => requestAnimationFrame(() => requestAnimationFrame(() => ok())));
+	Promise.all([fontesDoTitulo, depoisDoPrimeiroQuadro()]).then(() => {
 		/* palavras + letras: as letras animam, mas a quebra de linha respeita a palavra */
 		const split = new SplitText('.hero-line', { type: 'words,chars', wordsClass: 'word', charsClass: 'char', aria: 'none' });
 		gsap.set('.hero-line', { overflow: 'hidden', paddingBottom: '.08em', paddingRight: '.12em' });
