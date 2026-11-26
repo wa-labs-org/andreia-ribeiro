@@ -1,0 +1,21 @@
+/* Fontes servidas pelo próprio site (Fontsource), só o subconjunto latino — que cobre o
+   português (ã, ç, é, ê, õ…). Antes vinham do Google Fonts, que bloqueava a primeira
+   pintura com uma conexão extra. Mesmos pesos e estilos de antes. */
+
+/* Cormorant Garamond — display */
+@import '@fontsource/cormorant-garamond/latin-300.css';
+@import '@fontsource/cormorant-garamond/latin-400.css';
+@import '@fontsource/cormorant-garamond/latin-500.css';
+@import '@fontsource/cormorant-garamond/latin-300-italic.css';
+@import '@fontsource/cormorant-garamond/latin-400-italic.css';
+@import '@fontsource/cormorant-garamond/latin-500-italic.css';
+
+/* Jost — texto e caixa-alta */
+@import '@fontsource/jost/latin-200.css';
+@import '@fontsource/jost/latin-300.css';
+@import '@fontsource/jost/latin-400.css';
+@import '@fontsource/jost/latin-500.css';
+
+/* IBM Plex Mono — etiquetas */
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';

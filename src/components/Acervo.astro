@@ -348,46 +348,59 @@ const total = String(itens.length).padStart(2, '0');
 		/* o botão da prova não deve virar arraste nem fechar a foto */
 		['pointerdown', 'pointerup'].forEach((t) => cta.addEventListener(t, (e) => e.stopPropagation()));
 
-		const carousel = createFlexCarousel(
-			root,
-			items,
-			{
-				preset: 'liquid',
-				intro: 'rise',
-				cardHeight: 0.5,
-				gap: 12,
-				squeeze: 0.2,
-				focusOnClick: true,
-				fit: 'natural',
-				radius: 18, // cantos suaves como as outras fotos do site
-				captureWheel: false, // a roda vertical continua rolando a página
-			},
-			{
-				onChange: show,
-				onReveal: () => (caption.hidden = false),
-				onFocusChange: (open: boolean) => {
-					root.toggleAttribute('data-focus-open', open);
-					cta.tabIndex = open ? 0 : -1;
+		/* desempenho: o efeito em WebGL (shaders + envio das fotos) só é criado quando o
+		   carrossel chega perto da tela, e não no carregamento da página */
+		const iniciar = () => {
+			const carousel = createFlexCarousel(
+				root,
+				items,
+				{
+					preset: 'liquid',
+					intro: 'rise',
+					cardHeight: 0.5,
+					gap: 12,
+					squeeze: 0.2,
+					focusOnClick: true,
+					fit: 'natural',
+					radius: 18, // cantos suaves como as outras fotos do site
+					captureWheel: false, // a roda vertical continua rolando a página
 				},
-				onHover: (h: string) => cursor?.classList.toggle('is-link', !!h),
-			},
-		);
+				{
+					onChange: show,
+					onReveal: () => (caption.hidden = false),
+					onFocusChange: (open: boolean) => {
+						root.toggleAttribute('data-focus-open', open);
+						cta.tabIndex = open ? 0 : -1;
+					},
+					onHover: (h: string) => cursor?.classList.toggle('is-link', !!h),
+				},
+			);
 
-		if (!carousel) {
-			root.classList.add('no-gl');
-			root.removeAttribute('tabindex');
-		} else if (!reduceMotion) {
-			/* rolar a página empurra a fila, só enquanto o carrossel está na tela */
-			const PX_POR_PX = 0.8;
-			let naTela = false;
-			let ultimo = lenis.scroll;
-			new IntersectionObserver(([e]) => (naTela = e.isIntersecting)).observe(root);
-			lenis.on('scroll', (e: { scroll: number }) => {
-				const delta = e.scroll - ultimo;
-				ultimo = e.scroll;
-				if (naTela && delta) carousel.nudge(delta * PX_POR_PX);
-			});
-		}
+			if (!carousel) {
+				root.classList.add('no-gl');
+				root.removeAttribute('tabindex');
+			} else if (!reduceMotion) {
+				/* rolar a página empurra a fila, só enquanto o carrossel está na tela */
+				const PX_POR_PX = 0.8;
+				let naTela = false;
+				let ultimo = lenis.scroll;
+				new IntersectionObserver(([e]) => (naTela = e.isIntersecting)).observe(root);
+				lenis.on('scroll', (e: { scroll: number }) => {
+					const delta = e.scroll - ultimo;
+					ultimo = e.scroll;
+					if (naTela && delta) carousel.nudge(delta * PX_POR_PX);
+				});
+			}
+		};
+		const perto = new IntersectionObserver(
+			([e]) => {
+				if (!e.isIntersecting) return;
+				perto.disconnect();
+				iniciar();
+			},
+			{ rootMargin: '800px 0px' },
+		);
+		perto.observe(root);
 
 		if (!reduceMotion) {
 			gsap.from('.acervo .head-row > *', {

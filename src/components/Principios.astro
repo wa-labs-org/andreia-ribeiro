@@ -7,7 +7,11 @@
 <section class="section principios" aria-labelledby="principios-title">
 	<div class="wrap principles">
 		<h2 class="t-mono" id="principios-title">Princípios / Leia devagar</h2>
-		<p class="fill-text">
+		<p class="sr-only">
+			Um traje sob medida não pertence a uma pessoa — pertence a uma ocasião. Por isso cada peça volta ao ateliê, é
+			cuidada à mão, ajustada outra vez e entregue a quem vai vivê-la a seguir, como se fosse a primeira.
+		</p>
+		<p class="fill-text" aria-hidden="true">
 			Um traje sob medida não pertence a uma pessoa — pertence a uma ocasião. Por isso cada peça volta ao ateliê, é
 			cuidada à mão, ajustada outra vez e entregue a quem vai vivê-la a seguir, como se fosse a primeira.
 		</p>
@@ -45,7 +49,7 @@
 	if (fill && !reduceMotion) {
 		/* as palavras começam quase transparentes e ganham cor conforme a frase passa pela tela */
 		document.fonts.ready.then(() => {
-			const s = new SplitText(fill, { type: 'words', wordsClass: 'word' });
+			const s = new SplitText(fill, { type: 'words', wordsClass: 'word', aria: 'none' });
 			gsap.set(s.words, { opacity: 0.14 });
 			gsap.to(s.words, {
 				opacity: 1,
