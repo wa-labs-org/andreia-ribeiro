@@ -411,5 +411,21 @@ const linhas = [
 				scrollTrigger: { trigger: el, start: 'top 82%' },
 			}),
 		);
+
+		/* saída de cada linha, ligada à rolagem (e reversível): quando a linha começa a deixar
+		   a tela, o bloco de texto sobe e esmaece; a imagem (monte de fotos ou foto) vai
+		   atrás, mais devagar, encolhendo de leve. Age nos blocos inteiros, não nos elementos
+		   internos que já têm animação de entrada. */
+		gsap.utils.toArray<HTMLElement>('.maison-row').forEach((row) => {
+			const copy = row.querySelector('.maison-copy');
+			const media = row.querySelector('.maison-media');
+			gsap
+				.timeline({
+					defaults: { ease: 'none' },
+					scrollTrigger: { trigger: row, start: 'top 15%', end: 'bottom top', scrub: true },
+				})
+				.to(copy, { y: -80, opacity: 0, duration: 0.8 }, 0)
+				.to(media, { y: -40, scale: 0.95, opacity: 0, duration: 0.8 }, 0.2);
+		});
 	}
 </script>

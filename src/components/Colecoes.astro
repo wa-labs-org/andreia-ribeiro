@@ -72,6 +72,24 @@ const total = String(colecoes.length).padStart(2, '0');
 				clearProps: 'opacity,visibility,transform',
 				scrollTrigger: { trigger: list, start: 'top 82%' },
 			});
+
+			/* saída, ligada à rolagem (e reversível): o topo (título e texto) sobe e esmaece, e
+			   cada linha da lista se dissolve ao chegar perto do header. Age no bloco do topo e
+			   nos itens <li>, não nos elementos que já têm animação de entrada. */
+			gsap.to('.colecoes .head-row', {
+				y: -60,
+				opacity: 0,
+				ease: 'none',
+				scrollTrigger: { trigger: '.colecoes .head-row', start: 'top 15%', end: 'bottom top', scrub: true },
+			});
+			gsap.utils.toArray<HTMLElement>('.colecoes .cat-list > li').forEach((li) =>
+				gsap.to(li, {
+					y: -30,
+					opacity: 0,
+					ease: 'none',
+					scrollTrigger: { trigger: li, start: 'top 22%', end: 'bottom 8%', scrub: true },
+				}),
+			);
 		}
 	}
 </script>
