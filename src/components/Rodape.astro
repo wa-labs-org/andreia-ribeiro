@@ -81,6 +81,7 @@ const redes = [
 			<div class="field">
 				<input id="pedido-data" name="data" type="text" placeholder=" " data-date />
 				<label for="pedido-data">Data do evento</label>
+				<ar-icon class="chev" name="calendar"></ar-icon>
 			</div>
 			<div class="field">
 				<select id="pedido-ocasiao" name="ocasiao" class="js-select">
@@ -254,6 +255,7 @@ const redes = [
 <script>
 	import { gsap, reduceMotion, finePointer, CONFIG } from '../scripts/motion.js';
 	import { enhanceSelect } from '../scripts/select.js';
+	import { enhanceDate } from '../scripts/datepicker.js';
 
 	/* "Reserve a sua prova.": as linhas sobem e a linha dourada se desenha */
 	if (reduceMotion) gsap.set('.rodape .cta-underline', { scaleX: 1 });
@@ -285,11 +287,9 @@ const redes = [
 	/* rótulo flutuante dos selects e do campo de data */
 	/* selects no estilo do design system (lista própria por cima do <select>) */
 	document.querySelectorAll<HTMLSelectElement>('.rodape .js-select').forEach((s) => enhanceSelect(s));
+	/* data do evento no calendário do design system (a partir de hoje) */
 	const data = document.querySelector<HTMLInputElement>('.rodape [data-date]');
-	data?.addEventListener('focus', () => (data.type = 'date'));
-	data?.addEventListener('blur', () => {
-		if (!data.value) data.type = 'text';
-	});
+	if (data) enhanceDate(data);
 
 	/* pedido de prova: monta a mensagem e abre o WhatsApp do ateliê */
 	const form = document.querySelector<HTMLFormElement>('.rodape .form');
