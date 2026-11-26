@@ -448,6 +448,11 @@ ar-icon { display: inline-flex; line-height: 0; vertical-align: middle; }
 }
 .cursor b { position: absolute; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--ouro); }
 .cursor.is-link i { transform: scale(1.7); background: rgba(243, 223, 210, .5); }
+/* sobre fundos escuros (café): dourado-claro e sem multiply, que faria o anel sumir */
+.cursor.is-dark { mix-blend-mode: normal; }
+.cursor.is-dark i { border-color: var(--ouro-claro); }
+.cursor.is-dark b { background: var(--ouro-claro); }
+.cursor.is-dark.is-link i { background: rgba(198, 175, 108, .18); }
 @media (pointer: coarse) { .cursor { display: none; } }
 
 @media (prefers-reduced-motion: reduce) {

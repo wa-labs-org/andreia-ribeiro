@@ -83,9 +83,23 @@ const {
 				document.body.style.cursor = 'none';
 				const xTo = gsap.quickTo(cur, 'x', { duration: 0.2, ease: 'power3.out' });
 				const yTo = gsap.quickTo(cur, 'y', { duration: 0.2, ease: 'power3.out' });
+				/* sobre áreas escuras (café) o cursor vira dourado-claro: o anel padrão usa
+				   mix-blend multiply e some no escuro. Marque outras áreas com data-cursor-escuro. */
+				const ESCURO = '.section-dark, .mmenu, .fabric--cafe, [data-cursor-escuro]';
+				let px = -1;
+				let py = -1;
+				const atualizarTom = (alvo: Element | null) =>
+					cur.classList.toggle('is-dark', !!alvo?.closest(ESCURO));
 				window.addEventListener('mousemove', (e) => {
-					xTo(e.clientX);
-					yTo(e.clientY);
+					px = e.clientX;
+					py = e.clientY;
+					xTo(px);
+					yTo(py);
+					atualizarTom(e.target as Element);
+				});
+				/* a página pode rolar por baixo do mouse parado */
+				lenis.on('scroll', () => {
+					if (px >= 0) atualizarTom(document.elementFromPoint(px, py));
 				});
 				document.querySelectorAll<HTMLElement>('a, button, input, select, textarea, label').forEach((el) => {
 					el.style.cursor = 'none';
