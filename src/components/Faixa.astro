@@ -64,5 +64,14 @@ const ocasioes = [
 		lenis.on('scroll', (e: { direction: number; velocity: number }) => {
 			volta.timeScale((e.direction || 1) * (1 + Math.min(Math.abs(e.velocity || 0) * 0.05, 3.5)));
 		});
+
+		/* saída, ligada à rolagem (e reversível): as palavras esmaecem e a faixa sobe um pouco,
+		   sem parar de correr (age na fileira, não nas trilhas que correm) */
+		gsap.to('.faixa .marquee-row', {
+			y: -24,
+			opacity: 0,
+			ease: 'none',
+			scrollTrigger: { trigger: '.faixa', start: 'top 20%', end: 'bottom top', scrub: true },
+		});
 	}
 </script>

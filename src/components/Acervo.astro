@@ -398,6 +398,23 @@ const total = String(itens.length).padStart(2, '0');
 				ease: CONFIG.ease,
 				scrollTrigger: { trigger: '.acervo .head-row', start: 'top 82%' },
 			});
+
+			/* saída, ligada à rolagem (e reversível): o topo sobe e esmaece; o carrossel vai
+			   atrás, mais devagar, encolhendo de leve. A ampliação do carrossel acontece dentro
+			   do quadro (sem posição fixa), então transformar o quadro inteiro é seguro. */
+			gsap.to('.acervo .head-row', {
+				y: -60,
+				opacity: 0,
+				ease: 'none',
+				scrollTrigger: { trigger: '.acervo .head-row', start: 'top 15%', end: 'bottom top', scrub: true },
+			});
+			gsap.to(root, {
+				y: -40,
+				scale: 0.96,
+				opacity: 0,
+				ease: 'none',
+				scrollTrigger: { trigger: root, start: 'top 10%', end: 'bottom top', scrub: true },
+			});
 		}
 	}
 </script>
