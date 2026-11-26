@@ -1,0 +1,59 @@
+---
+// Princípios (ØDE scrub word-fill): uma frase grande em que as palavras ganham
+// cor uma a uma conforme a página rola. No design system a seção usa o fundo
+// manteiga; aqui fica no fundo claro para alternar com a Agenda de provas, que
+// vem logo antes e já é manteiga. "Noite" virou "ocasião", como na hero.
+---
+
+<section class="section principios" aria-labelledby="principios-title">
+	<div class="wrap principles">
+		<h2 class="t-mono" id="principios-title">Princípios / Leia devagar</h2>
+		<p class="fill-text">
+			Um traje sob medida não pertence a uma pessoa — pertence a uma ocasião. Por isso cada peça volta ao ateliê, é
+			cuidada à mão, ajustada outra vez e entregue a quem vai vivê-la a seguir, como se fosse a primeira.
+		</p>
+	</div>
+</section>
+
+<style>
+	.principles {
+		display: grid;
+		grid-template-columns: minmax(0, 14rem) 1fr;
+		gap: 2rem;
+	}
+	h2 {
+		margin: 0.8rem 0 0;
+		font-weight: 400;
+	}
+	.fill-text {
+		font-family: var(--f-display);
+		font-weight: 300;
+		font-size: clamp(2rem, 4.3vw, 4rem);
+		line-height: 1.12;
+		margin: 0;
+	}
+	@media (max-width: 860px) {
+		.principles {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<script>
+	import { gsap, SplitText, reduceMotion } from '../scripts/motion.js';
+
+	const fill = document.querySelector<HTMLElement>('.principios .fill-text');
+	if (fill && !reduceMotion) {
+		/* as palavras começam quase transparentes e ganham cor conforme a frase passa pela tela */
+		document.fonts.ready.then(() => {
+			const s = new SplitText(fill, { type: 'words', wordsClass: 'word' });
+			gsap.set(s.words, { opacity: 0.14 });
+			gsap.to(s.words, {
+				opacity: 1,
+				ease: 'none',
+				stagger: 0.5,
+				scrollTrigger: { trigger: fill, start: 'top 80%', end: 'bottom 55%', scrub: true },
+			});
+		});
+	}
+</script>
